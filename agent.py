@@ -9,68 +9,76 @@ ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB"  # Adam
 GOOGLE_API_KEY = "AQ.Ab8RN6K5TsT5T_a5ww-PeNkA8FaCpCljA_G4iDl7YaAjy5KdbQ"
 
 # ── Story scenes ───────────────────────────────────────────────────────────────
-scenes = [
+PARTS = [
+    # ── Part 1: The Awakening ──────────────────────────────────────────────────
     {
-        "text": "They told you the deep ocean was empty. They lied.",
-        "prompt": "Cinematic dark moody shot, deep underwater abyss, photorealistic horror, 9:16 aspect ratio",
+        "output": "part1_awakening.mp4",
+        "scenes": [
+            {"text": "They told you the deep ocean was empty. They lied.", "prompt": "Cinematic dark moody shot, deep underwater abyss, photorealistic horror, 9:16 aspect ratio"},
+            {"text": "In 1997, scientists recorded a sound louder than a blue whale.", "prompt": "Submarine sonar screen glowing green in pitch black ocean water, retro tech, horror atmosphere, 9:16 aspect ratio"},
+            {"text": "The military classified it immediately. They called it The Bloop.", "prompt": "Classified government stamp on a manila folder, red TOP SECRET text, dark moody office, 9:16 aspect ratio"},
+            {"text": "The military claimed it was just ice shifting. But the data says otherwise.", "prompt": "Classified military documents on a dark wooden table, old folder, dramatic overhead lighting, 9:16 aspect ratio"},
+            {"text": "The coordinates pointed to a trench that sat silent for thirty years.", "prompt": "Deep oceanic trench mapping software on an old CRT monitor, glitch effect, eerie, 9:16 aspect ratio"},
+            {"text": "Until last night, when the sound started repeating. What is waking up?", "prompt": "Massive glowing eyes waking up in the deep dark ocean abyss, terrifying cinematic shot, 9:16 aspect ratio"},
+            {"text": "A research vessel was sent to the trench. It never came back.", "prompt": "Abandoned research ship drifting in dark fog covered ocean at night, horror cinematic, 9:16 aspect ratio"},
+            {"text": "The last transmission was a single image. Something was looking back at them.", "prompt": "Grainy underwater camera footage showing a massive dark shape rising from below, horror, 9:16 aspect ratio"},
+            {"text": "Scientists estimate the creature is larger than a city. Older than humanity.", "prompt": "Enormous ancient sea creature silhouette dwarfing skyscrapers underwater, scale horror, cinematic, 9:16 aspect ratio"},
+            {"text": "It has been down there since before the dinosaurs. Sleeping. Waiting.", "prompt": "Ancient deep sea creature dormant on ocean floor covered in barnacles and sediment, cosmic horror, 9:16 aspect ratio"},
+            {"text": "Three governments have gone dark on all ocean monitoring systems.", "prompt": "World map with multiple locations going dark one by one, news alert screen, eerie blue glow, 9:16 aspect ratio"},
+            {"text": "Coastal cities are being quietly evacuated. No official reason given.", "prompt": "People quietly evacuating a coastal city at night, military trucks, no panic but eerie silence, 9:16 aspect ratio"},
+            {"text": "The ocean floor is rising. Something enormous is pushing up from below.", "prompt": "Ocean surface bulging and rising from below, massive underwater displacement wave, horror, 9:16 aspect ratio"},
+            {"text": "They knew this day would come. They just never told us.", "prompt": "Government officials in a dark bunker watching screens showing ocean disturbance, tense atmosphere, 9:16 aspect ratio"},
+            {"text": "The sound has a rhythm now. Like breathing. It is almost here.", "prompt": "Sonar display showing rhythmic pulse getting closer and closer to surface, horror tech, 9:16 aspect ratio"},
+        ],
     },
+    # ── Part 2: The Surface ────────────────────────────────────────────────────
     {
-        "text": "In 1997, scientists recorded a sound louder than a blue whale.",
-        "prompt": "Submarine sonar screen glowing green in pitch black ocean water, retro tech, horror atmosphere, 9:16 aspect ratio",
+        "output": "part2_surface.mp4",
+        "scenes": [
+            {"text": "At 3:47 AM, it breached the surface for the first time in sixty million years.", "prompt": "Colossal ancient creature breaking the ocean surface at night, massive water displacement, cinematic horror, 9:16 aspect ratio"},
+            {"text": "The shockwave alone leveled buildings across five coastal cities.", "prompt": "City buildings crumbling from a massive shockwave at night, cinematic disaster, 9:16 aspect ratio"},
+            {"text": "Every ocean sensor on Earth went offline simultaneously.", "prompt": "Global map of sensor networks going dark all at once, eerie tech horror, 9:16 aspect ratio"},
+            {"text": "Pilots reported seeing it from thirty thousand feet. They refused to land.", "prompt": "View from airplane cockpit at night looking down at an enormous creature in the ocean, horror, 9:16 aspect ratio"},
+            {"text": "It stood taller than Mount Everest. And it was still rising.", "prompt": "Impossibly large creature towering above storm clouds over the ocean, scale horror, cinematic, 9:16 aspect ratio"},
+            {"text": "The creature did not attack. It simply... looked.", "prompt": "Close up of ancient massive creature eye reflecting city lights, calm but terrifying, 9:16 aspect ratio"},
+            {"text": "Ancient symbols covered its skin. Scientists recognized them. Cave paintings. Found worldwide.", "prompt": "Glowing ancient symbols on the surface of a massive creature's skin, cosmic horror, cinematic, 9:16 aspect ratio"},
+            {"text": "Our ancestors had seen this before. They left us warnings we never understood.", "prompt": "Ancient cave paintings showing massive sea creature and terrified humans running, torchlight, 9:16 aspect ratio"},
+            {"text": "Every whale on Earth began swimming toward it. Every bird flew inland.", "prompt": "Hundreds of whales swimming together toward a massive silhouette, aerial cinematic, 9:16 aspect ratio"},
+            {"text": "The electromagnetic pulse it released wiped every device on the coast.", "prompt": "City going dark in a wave of blackouts from the ocean inward, aerial night shot, 9:16 aspect ratio"},
+            {"text": "One scientist managed to record one word before losing signal. Remember.", "prompt": "Scientist holding a crackling radio with static, dark emergency bunker, single word on screen, 9:16 aspect ratio"},
+            {"text": "Military strikes had no effect. Missiles dissolved before reaching its skin.", "prompt": "Military missiles disintegrating before hitting a massive creature, futile military attack, cinematic, 9:16 aspect ratio"},
+            {"text": "It turned and faced the deepest point of the ocean. Then it spoke.", "prompt": "Massive ancient creature facing the open ocean and releasing a deep resonant sound, cinematic, 9:16 aspect ratio"},
+            {"text": "The sound it made registered on every seismograph on the planet simultaneously.", "prompt": "Seismograph needles going haywire all around the world simultaneously, global horror, 9:16 aspect ratio"},
+            {"text": "And from seven other trenches across the world, something answered back.", "prompt": "World map showing seven points in the ocean simultaneously lighting up with activity, horror, 9:16 aspect ratio"},
+        ],
     },
+    # ── Part 3: The Reckoning ──────────────────────────────────────────────────
     {
-        "text": "The military classified it immediately. They called it The Bloop.",
-        "prompt": "Classified government stamp on a manila folder, red TOP SECRET text, dark moody office, 9:16 aspect ratio",
-    },
-    {
-        "text": "The military claimed it was just ice shifting. But the data says otherwise.",
-        "prompt": "Classified military documents on a dark wooden table, old folder, dramatic overhead lighting, 9:16 aspect ratio",
-    },
-    {
-        "text": "The coordinates pointed to a trench that sat silent for thirty years.",
-        "prompt": "Deep oceanic trench mapping software on an old CRT monitor, glitch effect, eerie, 9:16 aspect ratio",
-    },
-    {
-        "text": "Until last night, when the sound started repeating. What is waking up?",
-        "prompt": "Massive glowing eyes waking up in the deep dark ocean abyss, terrifying cinematic shot, 9:16 aspect ratio",
-    },
-    {
-        "text": "A research vessel was sent to the trench. It never came back.",
-        "prompt": "Abandoned research ship drifting in dark fog covered ocean at night, horror cinematic, 9:16 aspect ratio",
-    },
-    {
-        "text": "The last transmission was a single image. Something was looking back at them.",
-        "prompt": "Grainy underwater camera footage showing a massive dark shape rising from below, horror, 9:16 aspect ratio",
-    },
-    {
-        "text": "Scientists estimate the creature is larger than a city. Older than humanity.",
-        "prompt": "Enormous ancient sea creature silhouette dwarfing skyscrapers underwater, scale horror, cinematic, 9:16 aspect ratio",
-    },
-    {
-        "text": "It has been down there since before the dinosaurs. Sleeping. Waiting.",
-        "prompt": "Ancient deep sea creature dormant on ocean floor covered in barnacles and sediment, cosmic horror, 9:16 aspect ratio",
-    },
-    {
-        "text": "Three governments have gone dark on all ocean monitoring systems.",
-        "prompt": "World map with multiple locations going dark one by one, news alert screen, eerie blue glow, 9:16 aspect ratio",
-    },
-    {
-        "text": "Coastal cities are being quietly evacuated. No official reason given.",
-        "prompt": "People quietly evacuating a coastal city at night, military trucks, no panic but eerie silence, 9:16 aspect ratio",
-    },
-    {
-        "text": "The ocean floor is rising. Something enormous is pushing up from below.",
-        "prompt": "Ocean surface bulging and rising from below, massive underwater displacement wave, horror, 9:16 aspect ratio",
-    },
-    {
-        "text": "They knew this day would come. They just never told us.",
-        "prompt": "Government officials in a dark bunker watching screens showing ocean disturbance, tense atmosphere, 9:16 aspect ratio",
-    },
-    {
-        "text": "The sound has a rhythm now. Like breathing. It is almost here.",
-        "prompt": "Sonar display showing rhythmic pulse getting closer and closer to surface, horror tech, 9:16 aspect ratio",
+        "output": "part3_reckoning.mp4",
+        "scenes": [
+            {"text": "Seven of them. Seven creatures. One for each continent.", "prompt": "Seven enormous ancient creatures rising from different oceans worldwide, epic cinematic horror, 9:16 aspect ratio"},
+            {"text": "They had divided the Earth between them before humans ever existed.", "prompt": "Ancient map of Earth with seven territories marked, pre-human era, cosmic scale, 9:16 aspect ratio"},
+            {"text": "Ancient texts had called them gods. Demons. Guardians.", "prompt": "Ancient stone tablets and scrolls depicting massive sea creatures worshipped by early humans, 9:16 aspect ratio"},
+            {"text": "They were none of those things. They were the original owners.", "prompt": "Creature standing in the ocean looking down at human civilization with calm ancient eyes, 9:16 aspect ratio"},
+            {"text": "Humanity had sixty hours. That was the message encoded in the pulse.", "prompt": "Scientists decoding an electromagnetic signal on screens, countdown clock, bunker setting, 9:16 aspect ratio"},
+            {"text": "Every living translator on Earth agreed. Leave the ocean.", "prompt": "Translators and scientists in an emergency meeting all pointing to the same conclusion on a screen, 9:16 aspect ratio"},
+            {"text": "We had been poisoning their home for three hundred years.", "prompt": "Ocean filled with pollution, plastic, oil spills seen from underwater looking up, somber cinematic, 9:16 aspect ratio"},
+            {"text": "The creatures did not want war. They wanted the ocean back.", "prompt": "Ancient creature looking at ocean pollution with sorrowful ancient eyes, emotional cinematic, 9:16 aspect ratio"},
+            {"text": "World leaders met in an emergency summit lasting eleven minutes.", "prompt": "World leaders at emergency summit table, tense expressions, flags, dark room, cinematic, 9:16 aspect ratio"},
+            {"text": "The decision was unanimous. For the first time in human history.", "prompt": "World leaders all nodding in agreement, rare moment of unity, dramatic lighting, 9:16 aspect ratio"},
+            {"text": "Every offshore platform. Every submarine. Every ship. Recalled.", "prompt": "Oil rigs being abandoned, ships turning back to shore, submarines surfacing, cinematic montage, 9:16 aspect ratio"},
+            {"text": "The creatures watched. They did not move.", "prompt": "Seven massive creatures standing still in the ocean watching human ships retreat, dawn light, 9:16 aspect ratio"},
+            {"text": "On the sixty-first hour, the first creature turned and descended.", "prompt": "Massive ancient creature slowly sinking back beneath the ocean surface at golden hour, cinematic, 9:16 aspect ratio"},
+            {"text": "One by one, they returned to the dark. Back to the deep.", "prompt": "Sequence of enormous creatures slowly descending back into the ocean depths, peaceful, cinematic, 9:16 aspect ratio"},
+            {"text": "The ocean was theirs again. And they would be watching. Always watching.", "prompt": "Calm empty ocean surface at sunrise, but deep below two massive glowing eyes watching upward, 9:16 aspect ratio"},
+        ],
     },
 ]
+
+# Active part to generate — change index to run a different part
+ACTIVE_PART = 0  # 0=Part1, 1=Part2, 2=Part3
+
+scenes = PARTS[ACTIVE_PART]["scenes"]
 
 
 # ── Step A: ElevenLabs Voiceover ───────────────────────────────────────────────
@@ -224,7 +232,7 @@ def assemble_video():
         "-c:v", "libx264",
         "-c:a", "aac",
         "-shortest",
-        "google_veo_horror_full.mp4",
+        PARTS[ACTIVE_PART]["output"],
     ]
 
     print("    Running:", " ".join(cmd))
@@ -233,7 +241,7 @@ def assemble_video():
         print("    FFmpeg stderr:\n", result.stderr)
         raise RuntimeError("FFmpeg failed — see stderr above.")
 
-    print("    Saved google_veo_horror.mp4")
+    print(f"    Saved {PARTS[ACTIVE_PART]['output']}")
 
 
 # ── Step E: Cleanup ────────────────────────────────────────────────────────────
@@ -253,7 +261,7 @@ if __name__ == "__main__":
         generate_videos()
         assemble_video()
         cleanup()
-        print("\nDone! Final video: google_veo_horror.mp4")
+        print(f"\nDone! Final video: {PARTS[ACTIVE_PART]['output']}")
     except Exception as e:
         print(f"\nPipeline error: {e}")
         raise
