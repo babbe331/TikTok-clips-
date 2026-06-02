@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brand Story — TABBE Designs</title>
+  <meta name="description" content="The story of TABBE Designs and founder Talia Abbe — fashion for the mind, born from a personal mental-health journey and handmade in NYC." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%238a5cff'/></svg>" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="header-mount"></div>
+
+  <main>
+    <section class="page-hero wrap">
+      <div class="bg-blobs"><i></i><i></i><i></i></div>
+      <span class="eyebrow" data-reveal style="justify-content:center">Our story</span>
+      <h1 data-reveal data-reveal-delay="1">Fashion for the mind</h1>
+      <p data-reveal data-reveal-delay="2">TABBE Designs turns feeling into form. Founded by Talia Abbe, the brand explores how the world's positive and negative stimuli affect us — inside and out — and challenges the stigma around mental health through clothing you can feel something in.</p>
+    </section>
+
+    <section class="section wrap">
+      <div class="split">
+        <div class="split-art" data-reveal><div id="aboutArt"></div></div>
+        <div data-reveal data-reveal-delay="1">
+          <span class="eyebrow">The designer</span>
+          <h2 style="font-size:clamp(1.9rem,4vw,3rem);margin:.6rem 0 1rem">Talia Abbe</h2>
+          <p class="muted">A New York native, Talia earned a BS in Textile &amp; Fashion Design with a certificate in Entrepreneurship from the University of Wisconsin–Madison, then an MFA in Fashion Design from the Fashion Institute of Technology (FIT).</p>
+          <p class="muted">Originating as a creative response to the emotional toll of isolation in 2020, her work uses inflated latex to create exaggerated, uplifting shapes — amplified by a vibrant palette. The clothes evoke child-like playfulness, underpinned by an adult sensibility.</p>
+          <blockquote class="quote" id="mission">"Our mission is to challenge mental health stigma while creating clothing that encourages self-expression, emotional release, and freedom."</blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="head-row"><div><span class="eyebrow" data-reveal>The journey</span><h2 data-reveal data-reveal-delay="1">From feeling to form</h2></div></div>
+      <div class="timeline">
+        <div class="tl-item" data-reveal><div class="yr">2020</div><div><h3>A creative response</h3><p>During pandemic isolation, Talia begins translating the emotional weight of the moment into sculptural design — the seed of TABBE.</p></div></div>
+        <div class="tl-item" data-reveal data-reveal-delay="1"><div class="yr">2024</div><div><h3>TABBE is born</h3><p>The ready-to-wear brand launches in NYC with a mission to destigmatize mental-health conversations through expressive, wearable pieces.</p></div></div>
+        <div class="tl-item" data-reveal data-reveal-delay="2"><div class="yr">SS25</div><div><h3>The Butterfly Effect</h3><p>Cognitive-abstraction prints and brainwave-inspired graphics arrive — small changes, big effects.</p></div></div>
+        <div class="tl-item" data-reveal data-reveal-delay="3"><div class="yr">FW26</div><div><h3>In Play</h3><p>The most wearable world yet, bringing playful latex and ready-to-wear side by side.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="values">
+        <div class="value-card" data-reveal><div class="ico">🫧</div><h3>Pure latex, by hand</h3><p>Made-to-order couture is cut, bonded and sealed in NYC over roughly four weeks.</p></div>
+        <div class="value-card" data-reveal data-reveal-delay="1"><div class="ico">🧠</div><h3>Mind-forward</h3><p>From EEG-printed catsuits to uplifting silhouettes, the brain is the brief.</p></div>
+        <div class="value-card" data-reveal data-reveal-delay="2"><div class="ico">🌈</div><h3>Joy, on purpose</h3><p>A pastel palette designed to lift the mood and invite emotional release.</p></div>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="newsletter" data-reveal style="text-align:center">
+        <div class="bg-blobs"><i></i><i></i><i></i></div>
+        <div style="position:relative;z-index:1">
+          <h2>Wear the feeling.</h2>
+          <p style="margin-inline:auto">Explore the collection and find a piece that says what you can't.</p>
+          <a href="shop.html" class="btn btn--grad btn--lg" style="margin-top:1.6rem">Shop now</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-mount"></div>
+
+  <script src="js/products.js"></script>
+  <script>window.productArt = productArt;</script>
+  <script src="js/site.js"></script>
+  <script>
+    document.getElementById("aboutArt").innerHTML = productArt(["lilac","rose"], 9);
+    window.TABBE && TABBE.reveals();
+  </script>
+</body>
+</html>
