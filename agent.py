@@ -19,6 +19,10 @@ scenes = [
         "prompt": "Submarine sonar screen glowing green in pitch black ocean water, retro tech, horror atmosphere, 9:16 aspect ratio",
     },
     {
+        "text": "The military classified it immediately. They called it The Bloop.",
+        "prompt": "Classified government stamp on a manila folder, red TOP SECRET text, dark moody office, 9:16 aspect ratio",
+    },
+    {
         "text": "The military claimed it was just ice shifting. But the data says otherwise.",
         "prompt": "Classified military documents on a dark wooden table, old folder, dramatic overhead lighting, 9:16 aspect ratio",
     },
@@ -29,6 +33,42 @@ scenes = [
     {
         "text": "Until last night, when the sound started repeating. What is waking up?",
         "prompt": "Massive glowing eyes waking up in the deep dark ocean abyss, terrifying cinematic shot, 9:16 aspect ratio",
+    },
+    {
+        "text": "A research vessel was sent to the trench. It never came back.",
+        "prompt": "Abandoned research ship drifting in dark fog covered ocean at night, horror cinematic, 9:16 aspect ratio",
+    },
+    {
+        "text": "The last transmission was a single image. Something was looking back at them.",
+        "prompt": "Grainy underwater camera footage showing a massive dark shape rising from below, horror, 9:16 aspect ratio",
+    },
+    {
+        "text": "Scientists estimate the creature is larger than a city. Older than humanity.",
+        "prompt": "Enormous ancient sea creature silhouette dwarfing skyscrapers underwater, scale horror, cinematic, 9:16 aspect ratio",
+    },
+    {
+        "text": "It has been down there since before the dinosaurs. Sleeping. Waiting.",
+        "prompt": "Ancient deep sea creature dormant on ocean floor covered in barnacles and sediment, cosmic horror, 9:16 aspect ratio",
+    },
+    {
+        "text": "Three governments have gone dark on all ocean monitoring systems.",
+        "prompt": "World map with multiple locations going dark one by one, news alert screen, eerie blue glow, 9:16 aspect ratio",
+    },
+    {
+        "text": "Coastal cities are being quietly evacuated. No official reason given.",
+        "prompt": "People quietly evacuating a coastal city at night, military trucks, no panic but eerie silence, 9:16 aspect ratio",
+    },
+    {
+        "text": "The ocean floor is rising. Something enormous is pushing up from below.",
+        "prompt": "Ocean surface bulging and rising from below, massive underwater displacement wave, horror, 9:16 aspect ratio",
+    },
+    {
+        "text": "They knew this day would come. They just never told us.",
+        "prompt": "Government officials in a dark bunker watching screens showing ocean disturbance, tense atmosphere, 9:16 aspect ratio",
+    },
+    {
+        "text": "The sound has a rhythm now. Like breathing. It is almost here.",
+        "prompt": "Sonar display showing rhythmic pulse getting closer and closer to surface, horror tech, 9:16 aspect ratio",
     },
 ]
 
@@ -184,7 +224,7 @@ def assemble_video():
         "-c:v", "libx264",
         "-c:a", "aac",
         "-shortest",
-        "google_veo_horror.mp4",
+        "google_veo_horror_full.mp4",
     ]
 
     print("    Running:", " ".join(cmd))
