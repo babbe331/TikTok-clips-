@@ -34,6 +34,7 @@ def get_twitch_clip_url(twitch_handle: str) -> str | None:
     url = f"https://www.twitch.tv/{twitch_handle}/clips?filter=clips&range=7d"
     cmd = [
         "yt-dlp",
+        "--no-check-certificate",
         "--flat-playlist",
         "--playlist-items", "1",
         "--print", "url",
@@ -50,6 +51,7 @@ def get_youtube_video_url(yt_handle: str) -> str | None:
     channel_url = f"https://www.youtube.com/@{yt_handle.lstrip('@')}/videos"
     cmd = [
         "yt-dlp",
+        "--no-check-certificate",
         "--flat-playlist",
         "--playlist-items", "1",
         "--print", "url",
@@ -66,6 +68,7 @@ def download_video(url: str, out_path: str, max_duration: int = 3600) -> bool:
     """Download up to max_duration seconds of video."""
     cmd = [
         "yt-dlp",
+        "--no-check-certificate",
         "-f", "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best",
         "--merge-output-format", "mp4",
         "--download-sections", f"*0-{max_duration}",
