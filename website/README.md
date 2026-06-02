@@ -43,8 +43,12 @@ python3 -m http.server 8080
 
 ## Notes
 
-- Product imagery is generated as on-brand sculptural gradient art. To use real
-  photography, set `image` on a product in `js/products.js` and render it in place
-  of `productArt(...)`.
-- Prices and product names are sourced from tabbedesigns.com (Ready-to-Wear and
-  Made-to-Order collections). Checkout is a demo — wire up Shopify/Stripe to go live.
+- **Theme:** bright, futuristic — iridescent pastel aurora, holographic chrome
+  gradients, frosted glass, mono/technical type — tuned to match the brand's
+  cotton-candy, sculptural designs.
+- **Real designs:** product names, prices, descriptions, sizes and **images** in
+  `js/products.js` are pulled straight from the live tabbedesigns.com Shopify feed
+  (`/products.json`). Images load from her own `cdn.shopify.com` store, so the site
+  always shows her actual current pieces.
+- Checkout is a demo — wire up Shopify/Stripe to go live. To fully self-host the
+  images, download the URLs in `js/products.js` into `/assets` and rewrite the paths.

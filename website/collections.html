@@ -13,7 +13,6 @@
 
   <main>
     <section class="page-hero wrap">
-      <div class="bg-blobs"><i></i><i></i><i></i></div>
       <span class="eyebrow" data-reveal style="justify-content:center">The worlds of TABBE</span>
       <h1 data-reveal data-reveal-delay="1">Collections</h1>
       <p data-reveal data-reveal-delay="2">Each collection is a different feeling — translated into volume, print and pure latex. Step into the one that speaks to you.</p>
@@ -29,41 +28,28 @@
   <div id="footer-mount"></div>
 
   <script src="js/products.js"></script>
-  <script>window.productArt = productArt;</script>
   <script src="js/site.js"></script>
   <script>
     (function () {
-      const money = (n) => "$" + n.toLocaleString("en-US");
-      document.getElementById("collectionsBig").innerHTML = COLLECTIONS.map(c => `
+      const rep = (c) => PRODUCTS.find((p) => p.collection === c.name) || PRODUCTS[0];
+      document.getElementById("collectionsBig").innerHTML = COLLECTIONS.map((c) => `
         <a class="collection-card" href="#${c.id}" data-reveal>
-          ${productArt(c.art, c.name.length)}
+          <img src="${TABBE.img(rep(c))}" alt="${c.name}" loading="lazy">
           <div class="info"><div class="season">${c.season}</div><h3>${c.name}</h3>
-            <p style="opacity:.85;font-size:.85rem;margin-top:.3rem">${c.blurb}</p>
+            <p style="opacity:.85;font-size:.85rem;margin-top:.3rem;color:#fff">${c.blurb}</p>
             <span class="go">Shop the world →</span></div>
         </a>`).join("");
 
-      function card(p) {
-        return `<article class="card" data-reveal>
-          <div class="card-media">${p.badge?`<span class="card-badge ${p.line==="made-to-order"?"mto":""}">${p.badge}</span>`:""}
-            <a href="product.html?id=${p.id}">${productArt(p.art, p.name.length)}</a>
-            <button class="card-quick" data-add="${p.id}">Quick add — ${money(p.price)}</button>
-          </div>
-          <a class="card-body" href="product.html?id=${p.id}">
-            <span class="card-cat">${p.category}</span><span class="card-name">${p.name}</span>
-            <span class="card-price">${money(p.price)}</span>
-          </a></article>`;
-      }
-
-      document.getElementById("collectionSections").innerHTML = COLLECTIONS.map(c => {
-        const items = PRODUCTS.filter(p => p.collection === c.name);
+      document.getElementById("collectionSections").innerHTML = COLLECTIONS.map((c) => {
+        const items = PRODUCTS.filter((p) => p.collection === c.name);
         if (!items.length) return "";
         return `<section class="section" id="${c.id}" style="scroll-margin-top:90px">
           <div class="head-row"><div><span class="eyebrow">${c.season}</span><h2 style="margin-top:.5rem">${c.name}</h2><p>${c.blurb}</p></div></div>
-          <div class="grid-products">${items.map(card).join("")}</div>
+          <div class="grid-products">${items.map((p) => TABBE.productCard(p)).join("")}</div>
         </section>`;
       }).join("");
 
-      window.TABBE && TABBE.reveals();
+      TABBE.reveals();
     })();
   </script>
 </body>

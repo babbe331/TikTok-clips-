@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TABBE Designs — Dress the Feeling | Sculptural Fashion from NYC</title>
-  <meta name="description" content="TABBE Designs by Talia Abbe — ready-to-wear and made-to-order latex couture handmade in NYC. Sculptural, playful, pastel fashion for the mind. Dress the feeling." />
+  <title>TABBE Designs — Dress the Feeling | Futuristic Sculptural Fashion, NYC</title>
+  <meta name="description" content="TABBE Designs by Talia Abbe — ready-to-wear and made-to-order latex couture handmade in NYC. Sculptural, playful, iridescent fashion for the mind. Dress the feeling." />
   <meta property="og:title" content="TABBE Designs — Dress the Feeling" />
   <meta property="og:description" content="Sculptural ready-to-wear & made-to-order latex couture, handmade in NYC." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%238a5cff'/></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%232bc4ff'/><stop offset='0.5' stop-color='%238a5cff'/><stop offset='1' stop-color='%23ff5fc4'/></linearGradient></defs><circle cx='16' cy='16' r='12' fill='url(%23g)'/></svg>" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -16,28 +16,28 @@
   <main>
     <!-- HERO -->
     <section class="hero">
-      <div class="bg-blobs"><i></i><i></i><i></i></div>
       <div class="wrap">
         <div class="hero-grid">
           <div>
             <span class="eyebrow" data-reveal>Handmade in New York City</span>
-            <h1 data-reveal data-reveal-delay="1">Dress<br>the <span class="grad">feeling.</span></h1>
+            <h1 data-reveal data-reveal-delay="1">Dress<br>the <span class="grad-text">feeling.</span></h1>
             <p class="lead" data-reveal data-reveal-delay="2">
               Sculptural ready-to-wear and made-to-order latex couture by Talia Abbe.
-              Bold volume, vibrant pastels, and a quiet mission: fashion for the mind.
+              Inflated volume, iridescent pastels, and a quiet mission: fashion for the mind.
             </p>
             <div class="hero-cta" data-reveal data-reveal-delay="3">
               <a href="shop.html" class="btn btn--primary btn--lg">Shop the collection</a>
               <a href="about.html" class="btn btn--ghost btn--lg">Our story</a>
             </div>
             <div class="hero-stats" data-reveal data-reveal-delay="4">
-              <div><div class="n">2024</div><div class="l">Founded by Talia Abbe</div></div>
-              <div><div class="n">100%</div><div class="l">Handmade in NYC</div></div>
-              <div><div class="n">FIT</div><div class="l">MFA Fashion Design</div></div>
+              <div><div class="n grad-text">2024</div><div class="l">Founded · Talia Abbe</div></div>
+              <div><div class="n grad-text">100%</div><div class="l">Handmade in NYC</div></div>
+              <div><div class="n grad-text">27</div><div class="l">Designs live now</div></div>
             </div>
           </div>
           <div class="hero-art" data-reveal data-reveal-delay="2">
-            <div class="blob-card" id="heroArt"></div>
+            <img id="heroImg" src="" alt="TABBE Designs signature latex piece" />
+            <div class="scan"></div>
             <div class="hero-floaty one"><span class="emo">🫧</span> Pure latex couture</div>
             <div class="hero-floaty two"><span class="emo">💜</span> Fashion for the mind</div>
           </div>
@@ -47,18 +47,15 @@
 
     <!-- MARQUEE -->
     <div class="strip"><div class="track">
-      <span>Bubble Wrap <i class="star">✦</i> Cotton Candy <i class="star">✦</i> The Butterfly Effect <i class="star">✦</i> In Play <i class="star">✦</i> Inflatable Latex Capsule <i class="star">✦</i></span>
-      <span>Bubble Wrap <i class="star">✦</i> Cotton Candy <i class="star">✦</i> The Butterfly Effect <i class="star">✦</i> In Play <i class="star">✦</i> Inflatable Latex Capsule <i class="star">✦</i></span>
+      <span>Bubble Wrap <i class="star">✦</i> Cotton Candy <i class="star">✦</i> The Butterfly Effect <i class="star">✦</i> In Play <i class="star">✦</i> Inflatable Latex <i class="star">✦</i></span>
+      <span>Bubble Wrap <i class="star">✦</i> Cotton Candy <i class="star">✦</i> The Butterfly Effect <i class="star">✦</i> In Play <i class="star">✦</i> Inflatable Latex <i class="star">✦</i></span>
     </div></div>
 
     <!-- BESTSELLERS -->
     <section class="section wrap">
       <div class="head-row">
-        <div>
-          <span class="eyebrow" data-reveal>Most loved</span>
-          <h2 data-reveal data-reveal-delay="1">Ready-to-wear favorites</h2>
-        </div>
-        <a href="shop.html?line=ready-to-wear" class="btn btn--ghost" data-reveal>Shop all ready-to-wear</a>
+        <div><span class="eyebrow" data-reveal>Ready to wear</span><h2 data-reveal data-reveal-delay="1">Everyday icons</h2></div>
+        <a href="shop.html?line=ready-to-wear" class="btn btn--ghost" data-reveal>Shop ready-to-wear</a>
       </div>
       <div class="grid-products" id="featuredGrid"></div>
     </section>
@@ -66,21 +63,21 @@
     <!-- VALUES -->
     <section class="section wrap">
       <div class="values">
-        <div class="value-card" data-reveal><div class="ico">🧠</div><h3>Fashion for the mind</h3><p>Born from a personal mental-health journey, every piece is designed to help you process and embrace emotion.</p></div>
-        <div class="value-card" data-reveal data-reveal-delay="1"><div class="ico">✂️</div><h3>Handmade in NYC</h3><p>Cut, bonded and sealed by hand in our New York studio — made-to-order, never mass-produced.</p></div>
-        <div class="value-card" data-reveal data-reveal-delay="2"><div class="ico">🎈</div><h3>Sculptural & playful</h3><p>Inflated latex and voluminous silhouettes evoke child-like joy with an adult sensibility.</p></div>
-        <div class="value-card" data-reveal data-reveal-delay="3"><div class="ico">🌈</div><h3>Vibrant by design</h3><p>A pastel-forward palette built to lift the mood the moment you put it on.</p></div>
+        <div class="value-card" data-reveal><div class="ico">🧠</div><h3>Fashion for the mind</h3><p>Born from a personal mental-health journey, every piece helps you process and embrace emotion.</p></div>
+        <div class="value-card" data-reveal data-reveal-delay="1"><div class="ico">✂️</div><h3>Handmade in NYC</h3><p>Cut, bonded and sealed by hand in New York — made-to-order, never mass-produced.</p></div>
+        <div class="value-card" data-reveal data-reveal-delay="2"><div class="ico">🎈</div><h3>Inflated & sculptural</h3><p>Pure-latex bubbles and balloon silhouettes evoke child-like joy with an adult edge.</p></div>
+        <div class="value-card" data-reveal data-reveal-delay="3"><div class="ico">🌈</div><h3>Iridescent by design</h3><p>A pastel-forward palette built to lift the mood the moment you put it on.</p></div>
       </div>
     </section>
 
     <!-- SPLIT FEATURE -->
     <section class="section wrap">
       <div class="split">
-        <div class="split-art" data-reveal><div id="splitArt"></div></div>
+        <div class="split-art" data-reveal><img id="splitImg" src="" alt="Pure latex couture by TABBE" /></div>
         <div data-reveal data-reveal-delay="1">
           <span class="eyebrow">Made to order</span>
-          <h2>Pure latex, sculpted to feeling.</h2>
-          <p>Our couture capsule is handcrafted in New York City from pure latex — cut, bonded and sealed over roughly four weeks. Inflated bubbles, balloon dresses and brainwave-printed catsuits turn emotion into wearable architecture.</p>
+          <h2>Pure latex,<br>sculpted to feeling.</h2>
+          <p>Our couture capsule is handcrafted in NYC from pure latex — cut, bonded and sealed over roughly four weeks. Inflated bubbles, balloon dresses and brainwave-printed catsuits turn emotion into wearable architecture.</p>
           <blockquote class="quote">"I use inflated latex to create exaggerated, uplifting shapes — joy you can wear."</blockquote>
           <a href="shop.html?line=made-to-order" class="btn btn--primary btn--lg">Explore the couture capsule</a>
         </div>
@@ -108,16 +105,13 @@
     <!-- NEWSLETTER -->
     <section class="section wrap">
       <div class="newsletter" data-reveal>
-        <div class="bg-blobs"><i></i><i></i><i></i></div>
-        <div style="position:relative;z-index:1">
-          <span class="eyebrow" style="color:var(--cotton-candy)">Join the world</span>
-          <h2>Be first to feel it.</h2>
-          <p>Early access to drops, made-to-order openings, and the stories behind each collection. No noise — just feeling.</p>
-          <form class="news-form" id="newsForm">
-            <input type="email" placeholder="you@email.com" required aria-label="Email" />
-            <button class="btn btn--grad btn--lg" type="submit">Subscribe</button>
-          </form>
-        </div>
+        <span class="eyebrow">Join the world</span>
+        <h2>Be first to feel it.</h2>
+        <p>Early access to drops, made-to-order openings, and the stories behind each collection. No noise — just feeling.</p>
+        <form class="news-form" id="newsForm">
+          <input type="email" placeholder="you@email.com" required aria-label="Email" />
+          <button class="btn btn--primary btn--lg" type="submit">Subscribe</button>
+        </form>
       </div>
     </section>
   </main>
@@ -127,46 +121,29 @@
   <script src="js/products.js"></script>
   <script src="js/site.js"></script>
   <script>
-    // expose art generator globally for site.js
-    window.productArt = productArt;
-  </script>
-  <script>
     (function () {
-      const money = (n) => "$" + n.toLocaleString("en-US");
-      function card(p) {
-        const swatches = (p.colors || []).slice(0,4).map(c => `<i style="background:${c}"></i>`).join("");
-        const badge = p.badge ? `<span class="card-badge ${p.line==="made-to-order"?"mto":""}">${p.badge}</span>` : "";
-        return `<article class="card" data-reveal>
-          <div class="card-media">${badge}
-            <a href="product.html?id=${p.id}">${productArt(p.art, p.name.length)}</a>
-            <button class="card-quick" data-add="${p.id}">Quick add — ${money(p.price)}</button>
-          </div>
-          <a class="card-body" href="product.html?id=${p.id}">
-            <span class="card-cat">${p.category}</span>
-            <span class="card-name">${p.name}</span>
-            <span class="card-price">${money(p.price)}</span>
-            <div class="card-swatches">${swatches}</div>
-          </a></article>`;
-      }
-      const feat = PRODUCTS.filter(p => p.line === "ready-to-wear").slice(0, 4);
-      document.getElementById("featuredGrid").innerHTML = feat.map(card).join("");
-      const cout = PRODUCTS.filter(p => p.line === "made-to-order").slice(0, 4);
-      document.getElementById("coutureGrid").innerHTML = cout.map(card).join("");
+      const find = (id) => PRODUCTS.find((p) => p.id === id) || {};
+      const featIds = ["blake-dress", "rose-bodysuit-swimsuit", "alessandra-mesh-top", "cameron-top"];
+      const feat = featIds.map(find).filter((p) => p.id);
+      document.getElementById("featuredGrid").innerHTML = feat.map((p) => TABBE.productCard(p)).join("");
 
-      document.getElementById("collectionsGrid").innerHTML = COLLECTIONS.map(c => `
-        <a class="collection-card" href="shop.html" data-reveal>
-          ${productArt(c.art, c.name.length)}
-          <div class="info"><div class="season">${c.season}</div><h3>${c.name}</h3>
-            <span class="go">Explore →</span></div>
-        </a>`).join("");
+      const cout = PRODUCTS.filter((p) => p.line === "made-to-order").slice(0, 4);
+      document.getElementById("coutureGrid").innerHTML = cout.map((p) => TABBE.productCard(p)).join("");
 
-      document.getElementById("heroArt").innerHTML = productArt(["cottonCandy","grape"], 7);
-      document.getElementById("splitArt").innerHTML = productArt(["bubbleBlue","rose"], 13);
+      // collections use a representative product image
+      document.getElementById("collectionsGrid").innerHTML = COLLECTIONS.map((c) => {
+        const rep = PRODUCTS.find((p) => p.collection === c.name) || PRODUCTS[0];
+        return `<a class="collection-card" href="shop.html" data-reveal>
+          <img src="${TABBE.img(rep)}" alt="${c.name}" loading="lazy">
+          <div class="info"><div class="season">${c.season}</div><h3>${c.name}</h3><span class="go">Explore →</span></div>
+        </a>`;
+      }).join("");
 
-      document.getElementById("newsForm").addEventListener("submit", (e) => {
-        e.preventDefault(); e.target.reset(); window.TABBE.toast("You're in 💜 Welcome to TABBE.", true);
-      });
-      window.TABBE && TABBE.reveals();
+      document.getElementById("heroImg").src = TABBE.img(find("double-bubble-dress").id ? find("double-bubble-dress") : PRODUCTS[0]);
+      document.getElementById("splitImg").src = TABBE.img(find("cotton-candy-dress").id ? find("cotton-candy-dress") : PRODUCTS[0]);
+
+      document.getElementById("newsForm").addEventListener("submit", (e) => { e.preventDefault(); e.target.reset(); TABBE.toast("You're in 💜 Welcome to TABBE.", true); });
+      TABBE.reveals();
     })();
   </script>
 </body>

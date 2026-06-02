@@ -13,7 +13,6 @@
 
   <main>
     <section class="page-hero wrap">
-      <div class="bg-blobs"><i></i><i></i><i></i></div>
       <span class="eyebrow" data-reveal style="justify-content:center">Our story</span>
       <h1 data-reveal data-reveal-delay="1">Fashion for the mind</h1>
       <p data-reveal data-reveal-delay="2">TABBE Designs turns feeling into form. Founded by Talia Abbe, the brand explores how the world's positive and negative stimuli affect us — inside and out — and challenges the stigma around mental health through clothing you can feel something in.</p>
@@ -21,7 +20,7 @@
 
     <section class="section wrap">
       <div class="split">
-        <div class="split-art" data-reveal><div id="aboutArt"></div></div>
+        <div class="split-art" data-reveal><img id="aboutImg" src="" alt="A TABBE Designs latex piece" /></div>
         <div data-reveal data-reveal-delay="1">
           <span class="eyebrow">The designer</span>
           <h2 style="font-size:clamp(1.9rem,4vw,3rem);margin:.6rem 0 1rem">Talia Abbe</h2>
@@ -52,11 +51,10 @@
 
     <section class="section wrap">
       <div class="newsletter" data-reveal style="text-align:center">
-        <div class="bg-blobs"><i></i><i></i><i></i></div>
         <div style="position:relative;z-index:1">
           <h2>Wear the feeling.</h2>
           <p style="margin-inline:auto">Explore the collection and find a piece that says what you can't.</p>
-          <a href="shop.html" class="btn btn--grad btn--lg" style="margin-top:1.6rem">Shop now</a>
+          <a href="shop.html" class="btn btn--primary btn--lg" style="margin-top:1.6rem">Shop now</a>
         </div>
       </div>
     </section>
@@ -65,11 +63,11 @@
   <div id="footer-mount"></div>
 
   <script src="js/products.js"></script>
-  <script>window.productArt = productArt;</script>
   <script src="js/site.js"></script>
   <script>
-    document.getElementById("aboutArt").innerHTML = productArt(["lilac","rose"], 9);
-    window.TABBE && TABBE.reveals();
+    var hero = PRODUCTS.find(function (p) { return p.id === "bubble-ruffle-dress"; }) || PRODUCTS[0];
+    document.getElementById("aboutImg").src = TABBE.img(hero);
+    TABBE.reveals();
   </script>
 </body>
 </html>
