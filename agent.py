@@ -76,7 +76,7 @@ PARTS = [
 ]
 
 # Active part to generate — change index to run a different part
-ACTIVE_PART = 0  # 0=Part1, 1=Part2, 2=Part3
+ACTIVE_PART = 1  # 0=Part1, 1=Part2, 2=Part3
 
 scenes = PARTS[ACTIVE_PART]["scenes"]
 
