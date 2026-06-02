@@ -4,9 +4,9 @@ import subprocess
 import glob
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-ELEVENLABS_API_KEY = "PASTE_YOUR_ELEVENLABS_KEY_HERE"
+ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "PASTE_YOUR_ELEVENLABS_KEY_HERE")
 ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB"  # Adam
-GOOGLE_API_KEY = "PASTE_YOUR_GOOGLE_KEY_HERE"
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "PASTE_YOUR_GOOGLE_KEY_HERE")
 
 # ── Story scenes ───────────────────────────────────────────────────────────────
 PARTS = [
