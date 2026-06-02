@@ -5,7 +5,7 @@ import glob
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 ELEVENLABS_API_KEY = "PASTE_YOUR_ELEVENLABS_KEY_HERE"
-ELEVENLABS_VOICE_ID = "Adam"
+ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB"  # Adam
 GOOGLE_API_KEY = "PASTE_YOUR_GOOGLE_KEY_HERE"
 
 # ── Story scenes ───────────────────────────────────────────────────────────────
@@ -119,7 +119,7 @@ def generate_videos():
         while attempt < 3:
             try:
                 operation = client.models.generate_videos(
-                    model="veo-2.0-generate-preview",
+                    model="veo-2.0-generate-001",
                     prompt=scene["prompt"],
                     config={"aspect_ratio": "9:16"},
                 )
@@ -143,7 +143,9 @@ def generate_videos():
             operation = client.operations.get(operation)
 
         video = operation.result.generated_videos[0]
-        client.files.download(file=video.video, download_path=clip_path)
+        video_bytes = client.files.download(file=video.video)
+        with open(clip_path, "wb") as f:
+            f.write(video_bytes)
         print(f"    Saved {clip_path}")
 
         # Respect free-tier rate limits between scenes
