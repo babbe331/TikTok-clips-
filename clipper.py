@@ -19,7 +19,14 @@ CREATORS = [
     "adinross",
     "xqc",
     "fanum",
+    "jynxzi",
+    "caseoh_",
+    "nickeh30",
+    "tarik",
+    "hasanabi",
 ]
+
+MIN_CLIP_DURATION = 60  # seconds
 
 OUTPUT_DIR = "tiktok_clips"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -148,14 +155,15 @@ def pick_best_window(words: list[dict], creator: str, title: str) -> tuple[float
 
         Reply ONLY with JSON: {{"start": 0.0, "end": 60.0, "reason": "why"}}
         Rules:
-        - end - start must be 55–65 seconds
-        - If clip is under 65s, use start=0 and end={total:.0f}
+        - end - start must be exactly 60 seconds (±3s)
+        - Always pick the most entertaining 60s window, not just the first
+        - If total clip is under 63s, use start=0 and end={min(total, 60):.0f}
 
         Transcript:
         {chr(10).join(lines)}
     """)
 
-    resp = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+    resp = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
     raw = re.sub(r"```(?:json)?", "", resp.text.strip()).strip().rstrip("`").strip()
     data = json.loads(raw)
     print(f"    Gemini: {data['start']:.1f}s → {data['end']:.1f}s | {data['reason']}")
@@ -250,7 +258,18 @@ def process_creator(login: str, token: str):
             continue
         print(f"  Downloaded {os.path.getsize(raw_path)/1_000_000:.1f}MB")
 
-        print(f"  Transcribing with Whisper...")
+        # Check duration before transcribing
+        probe = subprocess.run(
+            ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", raw_path],
+            capture_output=True, text=True)
+        fmt_data = json.loads(probe.stdout).get("format", {})
+        clip_dur = float(fmt_data.get("duration", 0))
+        if clip_dur < MIN_CLIP_DURATION:
+            print(f"  Clip is only {clip_dur:.0f}s — need at least {MIN_CLIP_DURATION}s, trying next...")
+            os.remove(raw_path)
+            continue
+
+        print(f"  Transcribing with Whisper... (clip is {clip_dur:.0f}s)")
         words = transcribe(raw_path)
         if len(words) < 5:
             print(f"  Too little speech, trying next...")
@@ -262,8 +281,8 @@ def process_creator(login: str, token: str):
         try:
             start, end = pick_best_window(words, login, title)
         except Exception as e:
-            print(f"  Gemini failed ({e}), using full clip")
-            start, end = 0.0, min(60.0, words[-1]["end"] if words else 60.0)
+            print(f"  Gemini failed ({e}), defaulting to first 60s")
+            start, end = 0.0, 60.0
 
         print(f"  Cutting and formatting...")
         success = make_tiktok_clip(raw_path, start, end, words, out_path, login)
