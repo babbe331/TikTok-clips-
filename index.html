@@ -228,7 +228,10 @@
   <section class="page active" id="page-dashboard">
     <div class="pagehead-row">
       <div><h2 class="pagehead">Welcome back 👋</h2><p>Here's everything at a glance.</p></div>
-      <button class="btn" onclick="go('newsale')">＋ Start a New Sale</button>
+      <div class="row-flex">
+        <button class="btn secondary" onclick="document.getElementById('csvFile').click()">⬆ Import inventory</button>
+        <button class="btn" onclick="go('newsale')">＋ Start a New Sale</button>
+      </div>
     </div>
 
     <div class="stats" id="dashStats"></div>
@@ -792,7 +795,7 @@ function runImport(mode){
   if(mode==="replace"){
     if(!confirm(`Replace ALL ${db.products.length} current inventory item(s) with the ${importStaging.length} from your spreadsheet(s)? This can't be undone (use Backup first if unsure).`)) return;
     db.products=importStaging.map(p=>({id:uid(),...p}));
-    save(); closeModal("importModal"); renderInventory();
+    save(); closeModal("importModal"); renderInventory(); renderDashboard();
     toast(`Inventory replaced ✓ ${db.products.length} item(s) loaded`);
   }else{
     let added=0,updated=0;
@@ -801,7 +804,7 @@ function runImport(mode){
       if(existing){ Object.assign(existing,np); updated++; }
       else{ db.products.push({id:uid(),...np}); added++; }
     });
-    save(); closeModal("importModal"); renderInventory();
+    save(); closeModal("importModal"); renderInventory(); renderDashboard();
     toast(`Imported ✓ ${added} added, ${updated} updated`);
   }
   importStaging=[];
