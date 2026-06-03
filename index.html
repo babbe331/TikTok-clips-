@@ -167,9 +167,39 @@
   details.help summary{cursor:pointer;color:var(--green);font-weight:600;font-size:13px}
   details.help div{font-size:13px;color:var(--muted);padding:8px 0;line-height:1.6}
   code.k{background:#eef2ee;padding:1px 6px;border-radius:5px;font-size:12.5px}
+
+  /* ---- Passcode gate ---- */
+  #gate{position:fixed;inset:0;z-index:500;background:linear-gradient(135deg,var(--green-dark),var(--green));
+    display:flex;align-items:center;justify-content:center;padding:20px}
+  #gate .box{background:#fff;border-radius:18px;box-shadow:var(--shadow-lg);padding:34px 30px;
+    width:100%;max-width:360px;text-align:center}
+  #gate .lock{font-size:42px}
+  #gate h1{font-size:21px;margin:10px 0 2px}
+  #gate p{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+  #gate input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;
+    font-size:18px;text-align:center;letter-spacing:2px;margin-bottom:12px}
+  #gate input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-light)}
+  #gate button{width:100%;background:var(--green);color:#fff;border:none;padding:13px;border-radius:10px;
+    font-size:15px;font-weight:700}
+  #gate button:hover{background:var(--green-dark)}
+  #gate .err{color:var(--red);font-size:13px;font-weight:600;min-height:18px;margin-bottom:6px}
+  body.locked{overflow:hidden}
 </style>
 </head>
-<body>
+<body class="locked">
+
+<!-- ============ PASSCODE GATE ============ -->
+<div id="gate">
+  <div class="box">
+    <div class="lock">🔒</div>
+    <h1>Farmlind Produce</h1>
+    <p>Enter the passcode to continue.</p>
+    <div class="err" id="gateErr"></div>
+    <input type="password" id="gateInput" inputmode="text" autocomplete="off"
+           placeholder="Passcode" onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button onclick="tryUnlock()">Unlock</button>
+  </div>
+</div>
 
 <header class="topbar">
   <span class="logo">🥬</span>
@@ -181,6 +211,7 @@
   <button class="topbtn" onclick="exportBackup()">⬇ Backup</button>
   <button class="topbtn" onclick="document.getElementById('restoreFile').click()">⬆ Restore</button>
   <input type="file" id="restoreFile" accept="application/json" style="display:none" onchange="restoreBackup(event)">
+  <button class="topbtn" onclick="lockApp()" title="Lock this app">🔒 Lock</button>
 </header>
 
 <nav class="tabs" id="tabs">
@@ -435,6 +466,35 @@
    FARMLIND PRODUCE PORTAL
    100% local. All data is saved in this browser (localStorage).
    ============================================================ */
+
+/* ===== PASSCODE — change the word in quotes to set a new passcode ===== */
+const PASSCODE = "farmlind";
+/* ===================================================================== */
+const AUTH_KEY = "farmlind_auth_v1";
+
+function tryUnlock(){
+  const val=document.getElementById("gateInput").value;
+  if(val===PASSCODE){
+    try{ localStorage.setItem(AUTH_KEY,"1"); }catch(e){}
+    unlockApp();
+  }else{
+    document.getElementById("gateErr").textContent="Incorrect passcode — try again.";
+    const i=document.getElementById("gateInput"); i.value=""; i.focus();
+  }
+}
+function unlockApp(){
+  document.getElementById("gate").style.display="none";
+  document.body.classList.remove("locked");
+}
+function lockApp(){
+  try{ localStorage.removeItem(AUTH_KEY); }catch(e){}
+  location.reload();
+}
+function checkAuth(){
+  let ok=false; try{ ok=localStorage.getItem(AUTH_KEY)==="1"; }catch(e){}
+  if(ok) unlockApp();
+  else setTimeout(()=>{ const i=document.getElementById("gateInput"); if(i) i.focus(); },60);
+}
 
 const DB_KEY = "farmlind_db_v1";
 let db = { products:[], customers:[], sales:[] };
@@ -1141,6 +1201,7 @@ document.querySelectorAll(".modal-bg").forEach(bg=>{
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".modal-bg.open").forEach(m=>m.classList.remove("open")); });
 
 /* ---------- boot ---------- */
+checkAuth();
 load();
 renderDashboard();
 updateBadges();

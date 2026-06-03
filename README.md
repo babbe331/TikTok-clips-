@@ -7,6 +7,36 @@ The whole app is one file: **`index.html`**.
 
 ---
 
+## 🔒 Passcode
+
+The app opens to a passcode screen. The default passcode is:
+
+> **`farmlind`**
+
+To change it: open `index.html`, find the line near the top of the `<script>` that says
+`const PASSCODE = "farmlind";`, and put your own word between the quotes.
+
+Once unlocked on a device, that device stays unlocked until you press **🔒 Lock** in the
+top bar. *(Note: this keeps casual visitors out. Because the app is a public web page,
+the passcode isn't bank-grade security — but it's plenty to stop random people who
+stumble on the link.)*
+
+---
+
+## Getting a clickable link (GitHub Pages)
+
+To turn this into a normal web address you can bookmark:
+
+1. On GitHub, go to the repo → **Settings** → **Pages** (left sidebar).
+2. Under **Build and deployment → Source**, choose **Deploy from a branch**.
+3. Set **Branch** to `claude/farmlind-produce-portal-orooy` and folder **`/ (root)`**, then **Save**.
+4. Wait ~1 minute, then refresh. GitHub shows the live link, like
+   `https://babbe331.github.io/TikTok-clips-/`. Bookmark it — that opens the working app.
+
+*(GitHub Pages is free on public repositories. On a private repo it needs a paid GitHub plan.)*
+
+---
+
 ## How to use it
 
 1. Download **`index.html`** (right-click → Save, or copy it to a USB stick / the
