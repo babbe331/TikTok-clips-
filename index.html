@@ -184,6 +184,38 @@
   #gate button:hover{background:var(--green-dark)}
   #gate .err{color:var(--red);font-size:13px;font-weight:600;min-height:18px;margin-bottom:6px}
   body.locked{overflow:hidden}
+
+  /* ---- Help bot ---- */
+  #helpFab{position:fixed;bottom:22px;right:22px;z-index:300;width:58px;height:58px;border-radius:50%;
+    background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;border:none;font-size:26px;
+    box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center}
+  #helpFab:hover{transform:scale(1.05)}
+  body.locked #helpFab{display:none}
+  #helpPanel{position:fixed;bottom:90px;right:22px;z-index:310;width:360px;max-width:calc(100vw - 28px);
+    height:520px;max-height:calc(100vh - 130px);background:#fff;border-radius:18px;box-shadow:var(--shadow-lg);
+    border:1px solid var(--line);display:none;flex-direction:column;overflow:hidden}
+  #helpPanel.open{display:flex;animation:pop .18s ease}
+  .hp-head{background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;padding:13px 16px;
+    display:flex;align-items:center;justify-content:space-between}
+  .hp-head strong{font-size:15px}
+  .hp-head span{font-size:12px;opacity:.85}
+  .hp-head .xbtn{color:#fff}
+  .hp-body{flex:1;overflow-y:auto;padding:14px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
+  .bub{max-width:85%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5;box-shadow:var(--shadow)}
+  .bub.bot{background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;align-self:flex-start}
+  .bub.me{background:var(--green);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+  .bub.bot strong{color:var(--green-dark)}
+  .bub.bot code{background:#eef2ee;padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .bub.bot a{color:var(--green-dark);font-weight:600}
+  .hp-quick{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;border-top:1px solid var(--line);background:#fff}
+  .hp-quick button{background:var(--green-light);color:var(--green-dark);border:1px solid #cfe6d0;
+    border-radius:16px;padding:6px 11px;font-size:12.5px;font-weight:600}
+  .hp-quick button:hover{background:#d8eeda}
+  .hp-input{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:#fff}
+  .hp-input input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+  .hp-input input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-light)}
+  .hp-input button{background:var(--green);color:#fff;border:none;border-radius:10px;width:42px;font-size:16px}
+  .hp-input button:hover{background:var(--green-dark)}
 </style>
 </head>
 <body class="locked">
@@ -537,6 +569,21 @@
   </div>
 </div>
 
+<!-- ============ HELP BOT ============ -->
+<button id="helpFab" onclick="toggleHelp()" title="Need help?">💬</button>
+<div id="helpPanel">
+  <div class="hp-head">
+    <div><strong>🌱 Sprout</strong> <span>· your help assistant</span></div>
+    <button class="xbtn" onclick="toggleHelp()">×</button>
+  </div>
+  <div class="hp-body" id="hpBody"></div>
+  <div class="hp-quick" id="hpQuick"></div>
+  <div class="hp-input">
+    <input id="hpInput" placeholder="Ask me anything about the app…" onkeydown="if(event.key==='Enter')sendHelp()" autocomplete="off">
+    <button onclick="sendHelp()" title="Send">➤</button>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -744,6 +791,17 @@ function statusPill(o){
 }
 function orderTotal(o){ return o.items.reduce((s,it)=>s+it.qty*it.price,0); }
 
+/* Re-render every section so all tabs stay in sync after any data change.
+   Hidden tabs render too (cheap) so they're correct the moment you switch. */
+function refreshAll(){
+  renderDashboard();
+  renderInventory();
+  renderPricing();
+  renderEarnings();
+  renderOrders();
+  updateBadges();
+}
+
 function updateBadges(){
   const sh=globalShortages().length;
   const ob=document.getElementById("ordersBadge");
@@ -825,14 +883,14 @@ function saveProduct(){
   };
   if(id){ Object.assign(productById(id),data); toast("Product updated"); }
   else{ db.products.push({id:uid(),...data}); toast("Product added"); }
-  save(); closeModal("productModal"); renderInventory();
+  save(); closeModal("productModal"); refreshAll();
 }
 function deleteProduct(){
   const id=document.getElementById("prodId").value;
   const p=productById(id);
   if(!confirm(`Delete "${p.name}"? This can't be undone.`)) return;
   db.products=db.products.filter(x=>x.id!==id);
-  save(); closeModal("productModal"); renderInventory(); toast("Product deleted");
+  save(); closeModal("productModal"); refreshAll(); toast("Product deleted");
 }
 
 /* ---------- CSV import (multiple files + replace/merge) ---------- */
@@ -872,7 +930,7 @@ function runImport(mode){
   if(mode==="replace"){
     if(!confirm(`Replace ALL ${db.products.length} current inventory item(s) with the ${importStaging.length} from your spreadsheet(s)? This can't be undone (use Backup first if unsure).`)) return;
     db.products=importStaging.map(p=>({id:uid(),...p}));
-    save(); closeModal("importModal"); renderInventory(); renderDashboard();
+    save(); closeModal("importModal"); refreshAll();
     toast(`Inventory replaced ✓ ${db.products.length} item(s) loaded`);
   }else{
     let added=0,updated=0;
@@ -881,7 +939,7 @@ function runImport(mode){
       if(existing){ Object.assign(existing,np); updated++; }
       else{ db.products.push({id:uid(),...np}); added++; }
     });
-    save(); closeModal("importModal"); renderInventory(); renderDashboard();
+    save(); closeModal("importModal"); refreshAll();
     toast(`Imported ✓ ${added} added, ${updated} updated`);
   }
   importStaging=[];
@@ -1027,7 +1085,7 @@ function runPriceImport(mode){
       added++;
     }else skipped++;
   });
-  save(); closeModal("priceImportModal"); renderPricing(); renderInventory(); renderDashboard();
+  save(); closeModal("priceImportModal"); refreshAll();
   let msg=`Prices updated ✓ ${updated} updated`;
   if(added) msg+=`, ${added} added`;
   if(skipped) msg+=`, ${skipped} not found (skipped)`;
@@ -1141,14 +1199,14 @@ function saveCustomer(){
     notes:document.getElementById("custNotes").value.trim() };
   if(id){ Object.assign(customerById(id),data); toast("Customer updated"); }
   else{ db.customers.push({id:uid(),...data}); toast("Customer added"); }
-  save(); closeModal("customerModal"); renderCustomers();
+  save(); closeModal("customerModal"); renderCustomers(); renderSale();
 }
 function deleteCustomer(){
   const id=document.getElementById("custId").value;
   const c=customerById(id);
   if(!confirm(`Delete "${c.name}"?`)) return;
   db.customers=db.customers.filter(x=>x.id!==id);
-  save(); closeModal("customerModal"); renderCustomers(); toast("Customer deleted");
+  save(); closeModal("customerModal"); renderCustomers(); renderSale(); toast("Customer deleted");
 }
 
 /* ============================================================
@@ -1285,6 +1343,7 @@ function saveSale(){
   save();
   const sh=globalShortages();
   resetSale(false);
+  refreshAll();
   go("orders");
   if(sh.length>0) toast(`Order saved — ${sh.length} item(s) to buy. Check the shopping list.`,"warn");
   else toast("Order saved ✓");
@@ -1361,14 +1420,14 @@ function fulfillOrder(id){
   if(!confirm(msg)) return;
   o.items.forEach(it=>{ const p=productById(it.productId); if(p) p.qty=+(p.qty-it.qty).toFixed(4); });
   o.status="fulfilled"; o.fulfilledAt=Date.now();
-  save(); closeModal("orderModal"); renderOrders(); renderDashboard(); toast("Delivered ✓ Inventory updated");
+  save(); closeModal("orderModal"); refreshAll(); toast("Delivered ✓ Inventory updated");
 }
 function reopenOrder(id){
   const o=db.sales.find(x=>x.id===id); if(!o) return;
   if(!confirm("Reopen this order and add the quantities back to inventory?")) return;
   o.items.forEach(it=>{ const p=productById(it.productId); if(p) p.qty=+(p.qty+it.qty).toFixed(4); });
   o.status="open"; delete o.fulfilledAt;
-  save(); closeModal("orderModal"); renderOrders(); toast("Order reopened");
+  save(); closeModal("orderModal"); refreshAll(); toast("Order reopened");
 }
 function editOrder(id){
   const o=db.sales.find(x=>x.id===id); if(!o) return;
@@ -1388,7 +1447,7 @@ function deleteOrder(id){
     o.items.forEach(it=>{ const p=productById(it.productId); if(p) p.qty=+(p.qty+it.qty).toFixed(4); });
   }
   db.sales=db.sales.filter(x=>x.id!==id);
-  save(); closeModal("orderModal"); renderOrders(); renderDashboard(); toast("Order deleted");
+  save(); closeModal("orderModal"); refreshAll(); toast("Order deleted");
 }
 
 /* ============================================================
@@ -1426,6 +1485,93 @@ document.querySelectorAll(".modal-bg").forEach(bg=>{
   bg.addEventListener("click",e=>{ if(e.target===bg) bg.classList.remove("open"); });
 });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".modal-bg.open").forEach(m=>m.classList.remove("open")); });
+
+/* ============================================================
+   HELP BOT  ("Sprout") — a built-in guide. Works offline, no
+   internet, nothing leaves the device. Answers come from the
+   knowledge base below by matching keywords in the question.
+   ============================================================ */
+const HELP_KB=[
+  {k:["start","begin","new","first","how do i use","get going","setup","what do i do"],
+   a:"<strong>Welcome! Here's the quick start:</strong><br>1️⃣ <strong>Update inventory</strong> — import your produce spreadsheet (Inventory tab or the Dashboard button).<br>2️⃣ Add the <strong>Customers</strong> you sell to.<br>3️⃣ Go to <strong>New Sale</strong>, pick a customer, add items. If you sell more than you have, I'll tell you exactly how much to buy.<br>Ask me about any of these for more detail!"},
+  {k:["import inventory","update inventory","upload inventory","inventory spreadsheet","load inventory","import my inventory","csv inventory"],
+   a:"<strong>To update your inventory from a spreadsheet:</strong><br>1. Save it as a <code>.csv</code> (Excel/Sheets: File → Download/Save As → CSV).<br>2. Click <strong>⬆ Update inventory</strong> on the Inventory tab (or the Dashboard).<br>3. Pick one or several files, then choose <strong>Replace everything</strong> (use your sheet as the full list) or <strong>Add &amp; update</strong> (keep what's there).<br>Columns it reads: name, quantity, unit, price, cost, category, low stock."},
+  {k:["price list","pricing","import price","update price","change price","cost","margin","sell price","prices"],
+   a:"<strong>Pricing tab:</strong> shows every product's cost, sell price, and margin. Click <strong>⬆ Import price list</strong> to load a price spreadsheet — choose <em>Update matches only</em> or <em>Update &amp; add new</em>. Prices you import here instantly update Inventory, new Sales, and Earnings, because it's all one connected list. You can also click any product to edit its price by hand."},
+  {k:["new sale","make a sale","sell","create order","place order","sell produce","add sale"],
+   a:"<strong>New Sale tab:</strong> pick the customer and delivery date, then add each product and quantity. As you type, each line shows if it's in stock or short, and the panel on the right lists <strong>exactly how much to buy before the sale</strong>. Press <strong>Save Order</strong> when done."},
+  {k:["short","shortage","how much to buy","missing","don't have","not enough","buy before","run out","need to buy"],
+   a:"When you sell more than you have on hand, the app flags it 🛒. On the <strong>New Sale</strong> screen you'll see a <em>“Buy before this sale”</em> list, and the <strong>Dashboard</strong> shows a combined shopping list across all open orders — so you know what to buy before deliveries go out. It even accounts for stock already promised to other open orders."},
+  {k:["order","delivered","fulfill","fulfilled","mark delivered","deduct","ship","complete order","reopen"],
+   a:"<strong>Orders tab</strong> lists every sale and what still needs buying. Open an order and click <strong>“Mark delivered &amp; deduct stock”</strong> to subtract those quantities from inventory. Made a mistake? <strong>Reopen</strong> adds the stock back."},
+  {k:["earnings","profit","made","revenue","how much money","income","before margin","after margin","profit on each"],
+   a:"<strong>Earnings tab</strong> shows each sale's <strong>Sale total (before margin)</strong> next to your <strong>Profit (after cost)</strong>, plus margin %. The top tiles total it all up. Profit uses each product's cost from the Pricing tab — so set costs there for accurate numbers."},
+  {k:["customer","company","client","buyer","add customer","companies"],
+   a:"<strong>Customers tab:</strong> click <strong>＋ Add Customer</strong> to save a company (contact, phone, email, notes). They then show up in the New Sale customer list, and you can see how many orders each one has."},
+  {k:["backup","restore","save data","move","another computer","lose data","transfer","export everything"],
+   a:"Use <strong>⬇ Backup</strong> (top bar) to save a file with everything, and <strong>⬆ Restore</strong> to load it back — handy for moving to another computer or keeping a safety copy. Tip: make a backup before a big <em>Replace</em> import."},
+  {k:["passcode","password","lock","unlock","code","secure","login"],
+   a:"The app opens with a passcode (default <code>farmlind</code>). Once unlocked, the device stays unlocked until you press <strong>🔒 Lock</strong> in the top bar. To change the passcode, the line <code>const PASSCODE = \"farmlind\";</code> near the top of the file can be edited."},
+  {k:["low stock","reorder","running low","alert","out of stock"],
+   a:"Set a <strong>“Low-stock alert at”</strong> number on each product. When it drops to that level it shows a <span style='color:#ef6c00;font-weight:700'>Low</span> tag (or <span style='color:#c62828;font-weight:700'>Out of stock</span>), and the Dashboard counts how many items need attention. Filter the Inventory list by Low or Out of stock too."},
+  {k:["export","download csv","spreadsheet out","get my data"],
+   a:"Most tabs have a <strong>⬇ Export</strong> button: Inventory → product list, Pricing → price list, Earnings → profit per sale. They download as CSV files you can open in Excel or Google Sheets."},
+  {k:["link","website","online","url","share","pages","404","live site"],
+   a:"To get a clickable web link, turn on <strong>GitHub Pages</strong> (repo Settings → Pages → Deploy from a branch). You'll get an address you can bookmark that opens this app. A 404 right after enabling usually just means it's still building — wait a minute and refresh."},
+  {k:["private","data","stored","safe","where","cloud","internet"],
+   a:"Everything is stored <strong>only on this device</strong>, in the browser — no internet, no accounts, no cloud. That keeps it private. The trade-off is it doesn't auto-sync between devices; use <strong>Backup/Restore</strong> to move data."},
+  {k:["edit","change","delete","remove","update product","fix"],
+   a:"Click any row (a product, customer, or order) to open it, then edit or delete it. Changes update everywhere instantly, since all the tabs share the same data."},
+];
+const HELP_QUICK=["How do I start?","Update my inventory","Import a price list","Make a new sale","How much should I buy?","See my profit"];
+let helpGreeted=false;
+
+function toggleHelp(){
+  const p=document.getElementById("helpPanel");
+  const open=p.classList.toggle("open");
+  if(open){
+    if(!helpGreeted){
+      helpGreeted=true;
+      botSay("Hi! I'm <strong>Sprout</strong> 🌱 — your helper for the Farmlind app. Tap a question below, or type your own. (I work fully offline, so nothing you type leaves this device.)");
+    }
+    renderQuick();
+    setTimeout(()=>document.getElementById("hpInput").focus(),60);
+  }
+}
+function renderQuick(){
+  document.getElementById("hpQuick").innerHTML=
+    HELP_QUICK.map(q=>`<button onclick="askBot(${JSON.stringify(q).replace(/"/g,'&quot;')})">${esc(q)}</button>`).join("");
+}
+function bubble(html,who){
+  const b=document.getElementById("hpBody");
+  const d=document.createElement("div");
+  d.className="bub "+who; d.innerHTML=html;
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+}
+function botSay(html){ bubble(html,"bot"); }
+function askBot(text){ document.getElementById("hpInput").value=text; sendHelp(); }
+function sendHelp(){
+  const inp=document.getElementById("hpInput");
+  const q=inp.value.trim(); if(!q) return;
+  bubble(esc(q),"me"); inp.value="";
+  setTimeout(()=>botSay(answerHelp(q)),200);
+}
+function answerHelp(q){
+  const text=q.toLowerCase();
+  const words=text.split(/[^a-z0-9]+/).filter(w=>w.length>2);
+  let best=null,bestScore=0;
+  HELP_KB.forEach(entry=>{
+    let score=0;
+    entry.k.forEach(key=>{
+      if(text.includes(key)) score += key.includes(" ")?3:2;       // phrase / word hit
+      else if(words.includes(key)) score+=2;
+      else if(words.some(w=>key.includes(w))) score+=1;            // partial
+    });
+    if(score>bestScore){ bestScore=score; best=entry; }
+  });
+  if(best && bestScore>=2) return best.a;
+  return "I'm not sure I caught that 🌱. I can help with: <strong>updating inventory</strong>, <strong>importing a price list</strong>, <strong>making a sale</strong>, <strong>how much to buy</strong>, <strong>orders &amp; deliveries</strong>, <strong>earnings/profit</strong>, <strong>customers</strong>, and <strong>backups</strong>. Try one of the buttons below, or rephrase your question.";
+}
 
 /* ---------- boot ---------- */
 checkAuth();
