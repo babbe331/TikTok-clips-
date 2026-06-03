@@ -2,21 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Daily Fit — Workout & Knee Rehab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#ff5d8f" />
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" href="./icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="./icon.svg" />
+<title>Daily Fit — Sueli</title>
 <style>
   :root{
-    --bg:#0f1226;
-    --bg2:#1a1f3d;
-    --card:#1e2545;
-    --card2:#262e57;
-    --accent:#ff7a59;
-    --accent2:#ffb199;
-    --pink:#ff5d8f;
-    --green:#3ddc97;
-    --text:#f3f5ff;
-    --muted:#9aa3c7;
-    --line:rgba(255,255,255,.08);
+    --bg:#0f1226; --bg2:#1a1f3d; --card:#1e2545; --card2:#262e57;
+    --accent:#ff7a59; --accent2:#ffb199; --pink:#ff5d8f; --green:#3ddc97;
+    --text:#f3f5ff; --muted:#9aa3c7; --line:rgba(255,255,255,.08);
     --shadow:0 10px 30px rgba(0,0,0,.35);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -24,595 +20,755 @@
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     background:radial-gradient(1200px 600px at 80% -10%,#2a1c4d 0%,transparent 60%),
-               radial-gradient(900px 500px at -10% 10%,#1c2e4d 0%,transparent 55%),
-               var(--bg);
-    color:var(--text);
-    min-height:100vh;
-    line-height:1.5;
+               radial-gradient(900px 500px at -10% 10%,#1c2e4d 0%,transparent 55%),var(--bg);
+    color:var(--text);min-height:100vh;line-height:1.5;
   }
-  .wrap{max-width:760px;margin:0 auto;padding:18px 16px 90px}
-  header.top{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:12px;margin-bottom:18px;
-  }
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:.3px}
-  .brand .logo{
-    width:34px;height:34px;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent),var(--pink));
-    display:grid;place-items:center;font-size:18px;box-shadow:var(--shadow)
-  }
-  .lang-btn{
-    border:1px solid var(--line);
-    background:linear-gradient(135deg,var(--card2),var(--card));
-    color:var(--text);
-    padding:9px 14px;border-radius:999px;font-weight:700;cursor:pointer;
-    display:flex;align-items:center;gap:8px;font-size:14px;transition:transform .12s ease,border-color .2s;
-  }
-  .lang-btn:hover{transform:translateY(-1px);border-color:var(--accent)}
-  .lang-btn .flag{font-size:16px}
+  .wrap{max-width:740px;margin:0 auto;padding:16px 16px 110px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.3px}
+  .brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--pink));
+    display:grid;place-items:center;font-size:18px;box-shadow:var(--shadow)}
+  .top-actions{display:flex;gap:8px}
+  .icon-btn,.lang-btn{
+    border:1px solid var(--line);background:linear-gradient(135deg,var(--card2),var(--card));
+    color:var(--text);padding:9px 13px;border-radius:999px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;gap:7px;font-size:14px;transition:transform .12s ease,border-color .2s}
+  .icon-btn{padding:9px 12px}
+  .icon-btn.on{border-color:var(--green);color:var(--green)}
+  .lang-btn:hover,.icon-btn:hover{transform:translateY(-1px);border-color:var(--accent)}
+  .flag{font-size:16px}
 
-  .card{
-    background:linear-gradient(180deg,var(--card),var(--bg2));
-    border:1px solid var(--line);
-    border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)
-  }
-  h1{font-size:24px;margin:0 0 6px}
-  h2{font-size:17px;margin:0 0 14px;display:flex;align-items:center;gap:8px}
-  .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+  .card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+    border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+  h1{font-size:23px;margin:0 0 6px}
+  h2{font-size:17px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
   label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px;font-weight:600}
-  input,select,textarea{
-    width:100%;background:#141832;border:1px solid var(--line);color:var(--text);
-    border-radius:12px;padding:12px 14px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s
-  }
-  input:focus,textarea:focus,select:focus{border-color:var(--accent)}
-  textarea{resize:vertical;min-height:90px}
-  .btn{
-    width:100%;border:none;cursor:pointer;color:#1a1030;font-weight:800;font-size:16px;
-    padding:14px;border-radius:14px;margin-top:14px;
-    background:linear-gradient(135deg,var(--accent),var(--pink));
-    box-shadow:0 8px 20px rgba(255,93,143,.35);transition:transform .12s ease,filter .2s
-  }
+  input,select,textarea{width:100%;background:#141832;border:1px solid var(--line);color:var(--text);
+    border-radius:12px;padding:13px 14px;font-size:16px;font-family:inherit;outline:none;transition:border-color .2s}
+  input:focus,textarea:focus{border-color:var(--accent)}
+  textarea{resize:vertical;min-height:96px}
+  .btn{width:100%;border:none;cursor:pointer;color:#1a1030;font-weight:800;font-size:16px;padding:15px;
+    border-radius:14px;margin-top:14px;background:linear-gradient(135deg,var(--accent),var(--pink));
+    box-shadow:0 8px 20px rgba(255,93,143,.35);transition:transform .12s ease,filter .2s}
   .btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
-  .btn.secondary{
-    background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none;font-weight:700
-  }
-  .row{display:flex;gap:12px}
-  .row>*{flex:1}
+  .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none;font-weight:700}
+  .btn.ghostgreen{background:linear-gradient(135deg,var(--green),#7af0c0);color:#0c2a1e;box-shadow:0 8px 20px rgba(61,220,151,.3)}
   .hidden{display:none!important}
 
-  .greet{font-size:14px;color:var(--muted)}
-  .greet b{color:var(--text)}
-  .datechip{
-    display:inline-flex;align-items:center;gap:8px;background:#141832;border:1px solid var(--line);
-    color:var(--accent2);padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:14px
-  }
+  /* Welcome banner */
+  .welcome-banner{display:flex;align-items:center;gap:14px;
+    background:linear-gradient(135deg,rgba(255,122,89,.22),rgba(255,93,143,.16));
+    border:1px solid rgba(255,122,89,.32);border-radius:18px;padding:16px 18px;margin-bottom:14px}
+  .welcome-banner .wave{font-size:40px;line-height:1}
+  .welcome-banner .wtitle{font-size:22px;font-weight:900;margin:0}
+  .welcome-banner .wsub{font-size:13px;color:var(--accent2);margin:2px 0 0;font-weight:600}
+
+  .datechip{display:inline-flex;align-items:center;gap:8px;background:#141832;border:1px solid var(--line);
+    color:var(--accent2);padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:8px}
   .pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
     padding:4px 10px;border-radius:999px;margin-bottom:10px}
   .pill.workout{background:rgba(255,122,89,.15);color:var(--accent2)}
   .pill.rehab{background:rgba(61,220,151,.15);color:var(--green)}
 
-  .ex{
-    background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px
-  }
-  .ex .name{font-weight:800;font-size:16px;display:flex;align-items:center;gap:10px;margin-bottom:4px}
-  .ex .num{
-    width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:13px;
-    background:linear-gradient(135deg,var(--accent),var(--pink));color:#1a1030;flex:none
-  }
-  .ex .meta{color:var(--accent2);font-size:13px;font-weight:700;margin-bottom:6px}
-  .ex .desc{color:var(--muted);font-size:14px}
+  /* exercise card with image */
+  .ex{display:flex;gap:13px;background:var(--card2);border:1px solid var(--line);border-radius:14px;
+    padding:13px;margin-bottom:11px;align-items:flex-start}
+  .exsvg-wrap{flex:none;width:78px;height:78px;border-radius:12px;overflow:hidden}
+  .exsvg{width:78px;height:78px;display:block}
+  .ex-body{flex:1;min-width:0}
+  .ex .name{font-weight:800;font-size:15.5px;display:flex;align-items:center;gap:9px;margin-bottom:3px}
+  .ex .num{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;
+    background:linear-gradient(135deg,var(--accent),var(--pink));color:#1a1030;flex:none}
+  .ex .meta{color:var(--accent2);font-size:13px;font-weight:700;margin-bottom:5px}
+  .ex .desc{color:var(--muted);font-size:13.5px}
   .rehab .ex .num{background:linear-gradient(135deg,var(--green),#7af0c0);color:#0c2a1e}
   .rehab .ex .meta{color:var(--green)}
 
-  .focus-banner{
-    background:linear-gradient(135deg,rgba(255,122,89,.18),rgba(255,93,143,.12));
-    border:1px solid rgba(255,122,89,.3);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px
-  }
+  .focus-banner{background:linear-gradient(135deg,rgba(255,122,89,.18),rgba(255,93,143,.12));
+    border:1px solid rgba(255,122,89,.3);border-radius:14px;padding:11px 15px;margin-bottom:13px;font-size:14px}
   .focus-banner b{color:var(--accent2)}
 
-  .log-item{
-    background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px
-  }
+  .streak{display:flex;gap:10px;margin-bottom:6px}
+  .stat{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:13px 8px;text-align:center}
+  .stat .big{font-size:25px;font-weight:900;color:var(--accent2)}
+  .stat .lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-top:2px}
+
+  .done-badge{display:flex;align-items:center;gap:10px;background:rgba(61,220,151,.12);
+    border:1px solid rgba(61,220,151,.35);border-radius:14px;padding:12px 15px;margin-bottom:14px;color:var(--green);font-weight:700}
+  .feel-opts{display:flex;gap:8px;margin-top:6px}
+  .feel-opts button{flex:1;background:#141832;border:1px solid var(--line);color:var(--text);border-radius:12px;
+    padding:12px;font-size:22px;cursor:pointer;transition:border-color .2s,transform .1s}
+  .feel-opts button.active{border-color:var(--accent);transform:scale(1.06);background:rgba(255,122,89,.12)}
+
+  .log-item{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
   .log-item .d{font-size:12px;color:var(--accent2);font-weight:800;margin-bottom:4px}
   .log-item .t{font-size:14px;white-space:pre-wrap}
-  .log-item .feel{font-size:12px;color:var(--muted);margin-top:6px}
+  .log-item .feel{font-size:13px;color:var(--muted);margin-top:6px}
   .empty{color:var(--muted);font-size:14px;text-align:center;padding:18px 0}
+  .tip{font-size:13px;color:var(--muted);margin-top:10px;padding:11px 13px;background:#141832;border-radius:10px;border-left:3px solid var(--accent)}
+  .tip.green{border-left-color:var(--green)}
+  .footer-note{text-align:center;color:var(--muted);font-size:12px;margin-top:6px;padding:0 6px}
+  .small{font-size:12.5px;color:var(--muted);margin-top:8px}
 
-  .streak{display:flex;gap:12px;margin-bottom:16px}
-  .stat{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
-  .stat .big{font-size:26px;font-weight:900;color:var(--accent2)}
-  .stat .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-top:2px}
+  .tipcard{display:flex;gap:12px;align-items:flex-start;background:var(--card2);border:1px solid var(--line);
+    border-radius:14px;padding:13px 15px;margin-bottom:10px}
+  .tipcard .emoji{font-size:24px;flex:none}
+  .tipcard .tt{font-size:14px}
 
-  .done-badge{
-    display:flex;align-items:center;gap:10px;background:rgba(61,220,151,.12);
-    border:1px solid rgba(61,220,151,.35);border-radius:14px;padding:12px 16px;margin-bottom:14px;color:var(--green);font-weight:700
-  }
-  .feel-opts{display:flex;gap:8px;margin-top:6px}
-  .feel-opts button{
-    flex:1;background:#141832;border:1px solid var(--line);color:var(--text);border-radius:12px;
-    padding:10px;font-size:20px;cursor:pointer;transition:border-color .2s,transform .1s
-  }
-  .feel-opts button.active{border-color:var(--accent);transform:scale(1.05);background:rgba(255,122,89,.12)}
-  .footer-note{text-align:center;color:var(--muted);font-size:12px;margin-top:8px}
-  a.link{color:var(--accent2);cursor:pointer;text-decoration:underline}
-  .toast{
-    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+  /* bottom nav */
+  .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;
+    background:rgba(20,24,50,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));max-width:740px;margin:0 auto}
+  .bottom-nav button{flex:1;background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;
+    cursor:pointer;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:12px;transition:color .2s}
+  .bottom-nav button .ic{font-size:21px}
+  .bottom-nav button.active{color:var(--accent2)}
+  .bottom-nav button.active .ic{transform:translateY(-1px)}
+
+  .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);
     background:var(--green);color:#0c2a1e;font-weight:800;padding:12px 20px;border-radius:999px;
-    box-shadow:var(--shadow);opacity:0;transition:all .3s;z-index:50;pointer-events:none
-  }
+    box-shadow:var(--shadow);opacity:0;transition:all .3s;z-index:60;pointer-events:none;max-width:90%;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  .tip{font-size:13px;color:var(--muted);margin-top:10px;padding:10px 12px;background:#141832;border-radius:10px;border-left:3px solid var(--accent)}
+  .tab{animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="brand"><span class="logo">💪</span><span data-i18n="appName">Daily Fit</span></div>
-    <button class="lang-btn" id="langBtn" title="Switch language">
-      <span class="flag" id="langFlag">🇧🇷</span><span id="langLabel">PT</span>
-    </button>
+    <div class="top-actions">
+      <button class="icon-btn" id="bellBtn" title="Reminders">🔔</button>
+      <button class="lang-btn" id="langBtn" title="Switch language">
+        <span class="flag" id="langFlag">🇧🇷</span><span id="langLabel">PT</span>
+      </button>
+    </div>
   </header>
 
-  <!-- ============ LOGIN SCREEN ============ -->
+  <!-- ============ LOGIN ============ -->
   <section id="loginScreen">
+    <div class="welcome-banner">
+      <span class="wave">👋</span>
+      <div><p class="wtitle" id="loginWelcome">Welcome, Sueli!</p>
+        <p class="wsub" data-i18n="loginWelcomeSub">Let's get moving today.</p></div>
+    </div>
     <div class="card">
-      <h1 data-i18n="welcomeTitle">Welcome back 👋</h1>
+      <h1 data-i18n="signInTitle">Sign in</h1>
       <p class="sub" data-i18n="welcomeSub">Sign in every day to log your workout and get today's plan.</p>
       <div style="margin-bottom:14px">
         <label data-i18n="nameLabel">Your name</label>
-        <input id="nameInput" type="text" data-i18n-ph="namePh" placeholder="e.g. Maria" autocomplete="name" />
+        <input id="nameInput" type="text" value="Sueli" autocomplete="name" />
       </div>
       <div>
         <label data-i18n="pinLabel">4-digit PIN</label>
-        <input id="pinInput" type="password" inputmode="numeric" maxlength="4" data-i18n-ph="pinPh" placeholder="••••" autocomplete="off" />
+        <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off" />
       </div>
       <button class="btn" id="loginBtn" data-i18n="signInBtn">Sign in</button>
-      <p class="footer-note" id="loginHint" data-i18n="loginHintNew">First time? Pick a name and PIN — this becomes your daily login.</p>
+      <p class="footer-note" id="loginHint" data-i18n="loginHintNew">First time? Just pick a 4-digit PIN — it becomes your daily login.</p>
     </div>
   </section>
 
-  <!-- ============ APP SCREEN ============ -->
+  <!-- ============ APP ============ -->
   <section id="appScreen" class="hidden">
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-        <div>
-          <div class="datechip">📅 <span id="todayDate"></span></div>
-          <p class="greet"><span data-i18n="hello">Hello,</span> <b id="userName"></b>! <span id="streakMsg"></span></p>
+
+    <div class="welcome-banner">
+      <span class="wave">🌟</span>
+      <div><p class="wtitle" id="welcomeName">Welcome, Sueli!</p>
+        <p class="wsub"><span id="todayDate"></span></p></div>
+    </div>
+
+    <!-- TAB: TODAY -->
+    <div class="tab" id="tab-today">
+      <div class="card">
+        <div class="streak">
+          <div class="stat"><div class="big" id="streakNum">0</div><div class="lbl" data-i18n="dayStreak">Day streak</div></div>
+          <div class="stat"><div class="big" id="totalNum">0</div><div class="lbl" data-i18n="totalWorkouts">Workouts</div></div>
+          <div class="stat"><div class="big" id="weekNum">0</div><div class="lbl" data-i18n="thisWeek">This week</div></div>
         </div>
-        <button class="lang-btn" id="logoutBtn" style="padding:8px 12px" data-i18n="logoutBtn">Log out</button>
+        <p class="small" id="streakMsg" style="text-align:center;margin-top:10px"></p>
       </div>
-      <div class="streak">
-        <div class="stat"><div class="big" id="streakNum">0</div><div class="lbl" data-i18n="dayStreak">Day streak</div></div>
-        <div class="stat"><div class="big" id="totalNum">0</div><div class="lbl" data-i18n="totalWorkouts">Workouts</div></div>
-        <div class="stat"><div class="big" id="weekNum">0</div><div class="lbl" data-i18n="thisWeek">This week</div></div>
+
+      <div class="card">
+        <span class="pill workout" data-i18n="todaysWorkout">Today's Workout</span>
+        <h2 id="workoutTitle">🔥 Workout</h2>
+        <div class="focus-banner" id="focusBanner"></div>
+        <div id="workoutList"></div>
+        <div class="tip" id="workoutTip"></div>
+      </div>
+
+      <div class="card rehab">
+        <span class="pill rehab" data-i18n="kneeRehab">Knee Rehab</span>
+        <h2 data-i18n="kneeTitle">🦵 3 Knee Rehab Exercises</h2>
+        <p class="sub" data-i18n="kneeSub">Gentle, low-impact moves to strengthen and protect your knees. Do these daily.</p>
+        <div id="rehabList"></div>
+        <div class="tip green" data-i18n="kneeTip">⚠️ Stop if you feel sharp pain. Mild muscle effort is normal — joint pain is not.</div>
       </div>
     </div>
 
-    <!-- Today's recommended workout -->
-    <div class="card">
-      <span class="pill workout" data-i18n="todaysWorkout">Today's Workout</span>
-      <h2 id="workoutTitle">🔥 Workout</h2>
-      <div class="focus-banner" id="focusBanner"></div>
-      <div id="workoutList"></div>
-      <div class="tip" id="workoutTip"></div>
-    </div>
-
-    <!-- Knee rehab -->
-    <div class="card rehab">
-      <span class="pill rehab" data-i18n="kneeRehab">Knee Rehab</span>
-      <h2 data-i18n="kneeTitle">🦵 3 Knee Rehab Exercises</h2>
-      <p class="sub" data-i18n="kneeSub">Gentle, low-impact moves to strengthen and protect your knees. Do these daily.</p>
-      <div id="rehabList"></div>
-      <div class="tip" data-i18n="kneeTip">⚠️ Stop if you feel sharp pain. Mild muscle effort is normal — joint pain is not.</div>
-    </div>
-
-    <!-- Log workout -->
-    <div class="card">
-      <span class="pill workout" data-i18n="logToday">Log Today</span>
-      <div id="loggedBadge" class="done-badge hidden">✅ <span data-i18n="loggedMsg">You logged today's workout. Great job!</span></div>
-      <h2 data-i18n="logTitle">📝 Log your workout</h2>
-      <label data-i18n="whatDidYouDo">What did you do today?</label>
-      <textarea id="logText" data-i18n-ph="logPh" placeholder="e.g. 30-min brisk walk + the 3 knee exercises + 15 min strength"></textarea>
-      <label style="margin-top:14px" data-i18n="howFelt">How did it feel?</label>
-      <div class="feel-opts" id="feelOpts">
-        <button data-feel="tough" title="Tough">😮‍💨</button>
-        <button data-feel="ok" title="OK">🙂</button>
-        <button data-feel="good" title="Good">😀</button>
-        <button data-feel="great" title="Great">🤩</button>
+    <!-- TAB: LOG -->
+    <div class="tab hidden" id="tab-log">
+      <div class="card">
+        <span class="pill workout" data-i18n="logToday">Log Today</span>
+        <div id="loggedBadge" class="done-badge hidden">✅ <span data-i18n="loggedMsg">You logged today's workout. Great job!</span></div>
+        <h2 data-i18n="logTitle">📝 Log your workout</h2>
+        <label data-i18n="whatDidYouDo">What did you do today?</label>
+        <textarea id="logText"></textarea>
+        <label style="margin-top:14px" data-i18n="howFelt">How did it feel?</label>
+        <div class="feel-opts" id="feelOpts">
+          <button data-feel="tough" title="Tough">😮‍💨</button>
+          <button data-feel="ok" title="OK">🙂</button>
+          <button data-feel="good" title="Good">😀</button>
+          <button data-feel="great" title="Great">🤩</button>
+        </div>
+        <button class="btn" id="saveLogBtn" data-i18n="saveBtn">Save today's log</button>
       </div>
-      <button class="btn" id="saveLogBtn" data-i18n="saveBtn">Save today's log</button>
+
+      <div class="card" id="notifCard">
+        <h2 data-i18n="notifCardTitle">🔔 Daily 7 PM reminder</h2>
+        <p class="sub" data-i18n="notifCardSub">If you haven't logged your workout by 7:00 PM, we'll send you a friendly nudge to get moving.</p>
+        <button class="btn ghostgreen" id="notifBtn" data-i18n="notifEnableBtn">Turn on 7 PM reminder</button>
+        <p class="small" id="notifStatus"></p>
+      </div>
     </div>
 
-    <!-- History -->
-    <div class="card">
-      <h2 data-i18n="historyTitle">📚 Your history</h2>
-      <div id="historyList"></div>
+    <!-- TAB: PROGRESS -->
+    <div class="tab hidden" id="tab-progress">
+      <div class="card">
+        <div class="streak">
+          <div class="stat"><div class="big" id="streakNum2">0</div><div class="lbl" data-i18n="dayStreak">Day streak</div></div>
+          <div class="stat"><div class="big" id="totalNum2">0</div><div class="lbl" data-i18n="totalWorkouts">Workouts</div></div>
+          <div class="stat"><div class="big" id="weekNum2">0</div><div class="lbl" data-i18n="thisWeek">This week</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2 data-i18n="historyTitle">📚 Your history</h2>
+        <div id="historyList"></div>
+      </div>
+    </div>
+
+    <!-- TAB: TIPS -->
+    <div class="tab hidden" id="tab-tips">
+      <div class="card">
+        <h2 data-i18n="tipsTitle">💡 Tips for you</h2>
+        <p class="sub" data-i18n="tipsSub">Simple habits for losing weight, toning up, and feeling strong at any age.</p>
+        <div id="tipsList"></div>
+      </div>
+      <div class="card">
+        <button class="btn secondary" id="logoutBtn" data-i18n="logoutBtn">Log out</button>
+      </div>
     </div>
 
     <p class="footer-note" data-i18n="disclaimer">This app gives general fitness guidance, not medical advice. Check with your doctor before starting, especially for knee issues.</p>
   </section>
 </div>
 
+<!-- bottom nav -->
+<nav class="bottom-nav hidden" id="bottomNav">
+  <button data-tab="today" class="active"><span class="ic">🏠</span><span data-i18n="tabToday">Today</span></button>
+  <button data-tab="log"><span class="ic">📝</span><span data-i18n="tabLog">Log</span></button>
+  <button data-tab="progress"><span class="ic">📈</span><span data-i18n="tabProgress">Progress</span></button>
+  <button data-tab="tips"><span class="ic">💡</span><span data-i18n="tabTips">Tips</span></button>
+</nav>
+
 <div class="toast" id="toast"></div>
 
 <script>
 /* =========================================================
-   Daily Fit — single-file workout + knee rehab app
-   Persists per-user in localStorage. EN/PT bilingual.
-   Plans tailored for a 56-year-old woman: weight loss,
-   toning, joint-friendly progression.
+   Daily Fit — workout + knee rehab app for Sueli
+   Single file. Bilingual EN/PT. Local data. Illustrated.
+   7 PM reminders via Notifications (when app installed/open).
    ========================================================= */
 
-/* ---------- i18n strings ---------- */
-const I18N = {
-  en:{
-    appName:"Daily Fit",
-    welcomeTitle:"Welcome 👋",
-    welcomeSub:"Sign in every day to log your workout and get today's plan.",
-    nameLabel:"Your name", namePh:"e.g. Maria",
-    pinLabel:"4-digit PIN", pinPh:"••••",
-    signInBtn:"Sign in",
-    loginHintNew:"First time? Pick a name and PIN — this becomes your daily login.",
-    loginHintReturning:"Welcome back! Enter your PIN to continue.",
-    hello:"Hello,",
-    logoutBtn:"Log out",
-    dayStreak:"Day streak", totalWorkouts:"Workouts", thisWeek:"This week",
-    todaysWorkout:"Today's Workout",
-    kneeRehab:"Knee Rehab",
-    kneeTitle:"🦵 3 Knee Rehab Exercises",
-    kneeSub:"Gentle, low-impact moves to strengthen and protect your knees. Do these daily.",
-    kneeTip:"⚠️ Stop if you feel sharp pain. Mild muscle effort is normal — joint pain is not.",
-    logToday:"Log Today",
-    loggedMsg:"You logged today's workout. Great job!",
-    logTitle:"📝 Log your workout",
-    whatDidYouDo:"What did you do today?",
-    logPh:"e.g. 30-min brisk walk + the 3 knee exercises + 15 min strength",
-    howFelt:"How did it feel?",
-    saveBtn:"Save today's log",
-    historyTitle:"📚 Your history",
-    noHistory:"No workouts logged yet. Your first one starts today! 🌟",
-    disclaimer:"This app gives general fitness guidance, not medical advice. Check with your doctor before starting, especially for knee issues.",
-    savedToast:"Saved! 🎉",
-    streakSingle:"You're on a 1-day streak — keep it going!",
-    streakMulti:"You're on a {n}-day streak — amazing! 🔥",
-    streakNone:"Let's log today and start a streak!",
-    wrongPin:"Wrong PIN for that name. Try again.",
-    needName:"Please enter your name.",
-    needPin:"Please enter a 4-digit PIN.",
-    sets:"sets", reps:"reps", each:"each side", sec:"sec", min:"min", hold:"hold", rounds:"rounds",
-    workoutTip:"💧 Warm up 3–5 min first (march in place / easy walk). Sip water. Move at a pace where you can still talk.",
-    focusToday:"Today's focus:"
-  },
-  pt:{
-    appName:"Daily Fit",
-    welcomeTitle:"Bem-vinda 👋",
-    welcomeSub:"Entre todos os dias para registrar seu treino e receber o plano de hoje.",
-    nameLabel:"Seu nome", namePh:"ex. Maria",
-    pinLabel:"PIN de 4 dígitos", pinPh:"••••",
-    signInBtn:"Entrar",
-    loginHintNew:"Primeira vez? Escolha um nome e PIN — será seu login diário.",
-    loginHintReturning:"Bem-vinda de volta! Digite seu PIN para continuar.",
-    hello:"Olá,",
-    logoutBtn:"Sair",
-    dayStreak:"Dias seguidos", totalWorkouts:"Treinos", thisWeek:"Esta semana",
-    todaysWorkout:"Treino de Hoje",
-    kneeRehab:"Reabilitação do Joelho",
-    kneeTitle:"🦵 3 Exercícios para o Joelho",
-    kneeSub:"Movimentos suaves e de baixo impacto para fortalecer e proteger seus joelhos. Faça todos os dias.",
-    kneeTip:"⚠️ Pare se sentir dor aguda. Esforço muscular leve é normal — dor na articulação não é.",
-    logToday:"Registrar Hoje",
-    loggedMsg:"Você registrou o treino de hoje. Muito bem!",
-    logTitle:"📝 Registre seu treino",
-    whatDidYouDo:"O que você fez hoje?",
-    logPh:"ex. 30 min de caminhada + os 3 exercícios de joelho + 15 min de força",
-    howFelt:"Como você se sentiu?",
-    saveBtn:"Salvar treino de hoje",
-    historyTitle:"📚 Seu histórico",
-    noHistory:"Nenhum treino registrado ainda. O primeiro começa hoje! 🌟",
-    disclaimer:"Este app oferece orientação geral de exercícios, não aconselhamento médico. Consulte seu médico antes de começar, especialmente com problemas no joelho.",
-    savedToast:"Salvo! 🎉",
-    streakSingle:"Você está há 1 dia seguido — continue assim!",
-    streakMulti:"Você está há {n} dias seguidos — incrível! 🔥",
-    streakNone:"Vamos registrar hoje e começar uma sequência!",
-    wrongPin:"PIN incorreto para esse nome. Tente novamente.",
-    needName:"Por favor, digite seu nome.",
-    needPin:"Por favor, digite um PIN de 4 dígitos.",
-    sets:"séries", reps:"reps", each:"cada lado", sec:"seg", min:"min", hold:"segure", rounds:"voltas",
-    workoutTip:"💧 Aqueça 3–5 min antes (marche no lugar / caminhada leve). Beba água. Vá num ritmo em que ainda consiga conversar.",
-    focusToday:"Foco de hoje:"
-  }
+/* ---------------- Inline SVG illustrations ---------------- */
+const SO='<svg viewBox="0 0 100 100" class="exsvg" xmlns="http://www.w3.org/2000/svg">';
+const BG='<rect x="1.5" y="1.5" width="97" height="97" rx="15" fill="#171c3a" stroke="#2a3160" stroke-width="1.5"/>';
+const FL='<line x1="16" y1="84" x2="84" y2="84" stroke="#39407a" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round"/>';
+const P=d=>'<path d="'+d+'" fill="none" stroke="#ff9f85" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>';
+const A=d=>'<path d="'+d+'" fill="none" stroke="#48e0a0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>';
+const AT=p=>'<polygon points="'+p+'" fill="#48e0a0"/>';
+const HD=(x,y)=>'<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="#ffd7c4"/>';
+const WT=(x,y)=>'<rect x="'+x+'" y="'+y+'" width="9" height="7" rx="2" fill="#48e0a0"/>';
+const fig=i=>SO+BG+FL+i+'</svg>';
+
+const IMG={
+  walk:fig(HD(50,24)+P('M50 30 L49 51')+P('M49 51 L41 68 L39 83')+P('M49 51 L58 67 L61 83')
+    +P('M50 35 L41 45')+P('M50 35 L59 44')+A('M68 33 H81')+AT('81,33 75,29 75,37')),
+  bike:fig(HD(36,25)+P('M36 30 L46 50')+P('M39 34 L59 41')
+    +'<circle cx="61" cy="65" r="11" fill="none" stroke="#48e0a0" stroke-width="2.6"/>'
+    +P('M46 50 L61 65')+P('M46 50 L52 62')+'<circle cx="61" cy="65" r="2.4" fill="#48e0a0"/>'),
+  squat:fig(HD(50,28)+P('M50 33 L50 51')+P('M50 51 L40 60 L42 79')+P('M50 51 L60 60 L58 79')
+    +P('M50 39 L40 47')+P('M50 39 L62 45')+A('M75 42 V58')+AT('75,60 71,54 79,54')),
+  wallsit:fig('<line x1="80" y1="18" x2="80" y2="84" stroke="#39407a" stroke-width="3"/>'+HD(70,32)
+    +P('M70 37 L70 56')+P('M70 56 L52 56')+P('M52 56 L52 78')+P('M70 44 L58 48')
+    +A('M44 50 V64')+AT('44,66 40,60 48,60')),
+  bridge:fig(HD(24,66)+P('M30 66 L50 55')+P('M50 55 L62 66 L66 82')+P('M50 55 L60 62')
+    +A('M50 47 V38')+AT('50,36 46,42 54,42')),
+  calf:fig(HD(50,25)+P('M50 30 L50 60')+P('M50 60 L45 76')+P('M50 60 L55 76')
+    +'<line x1="40" y1="79" x2="60" y2="79" stroke="#ff9f85" stroke-width="3" stroke-linecap="round"/>'
+    +A('M30 52 V38')+AT('30,36 26,42 34,42')+A('M70 52 V38')+AT('70,36 66,42 74,42')),
+  sideleg:fig(HD(48,24)+P('M48 29 L48 57')+P('M48 57 L45 82')+P('M48 57 L72 64')
+    +P('M48 36 L39 42')+A('M76 60 L84 52')+AT('85,51 78,51 83,58')),
+  legraise:fig(HD(22,68)+P('M28 68 L52 68')+P('M52 68 L62 68 L62 78')+P('M52 68 L75 55')
+    +A('M70 47 L78 41')+AT('79,40 73,40 78,46')),
+  kneeext:fig('<path d="M28 56 H49 V80" fill="none" stroke="#39407a" stroke-width="3"/>'+HD(28,38)
+    +P('M28 43 L28 56')+P('M28 56 L49 56')+P('M49 56 L70 50')+P('M30 46 L42 52')
+    +A('M56 64 L72 53')+AT('74,52 67,52 71,59')),
+  heelslide:fig(HD(22,70)+P('M28 70 L50 70')+P('M50 70 L60 60 L53 72')+P('M50 70 L58 78')
+    +A('M70 74 H56')+AT('54,74 60,70 60,78')),
+  hamcurl:fig(HD(50,24)+P('M50 29 L50 58')+P('M50 58 L47 82')+P('M50 58 L58 70 L50 63')
+    +P('M50 36 L41 42')+A('M64 78 Q67 64 55 61')+AT('54,60 61,60 57,66')),
+  stepup:fig('<rect x="55" y="62" width="24" height="20" fill="none" stroke="#39407a" stroke-width="3"/>'
+    +HD(38,28)+P('M38 33 L42 55')+P('M42 55 L39 81')+P('M42 55 L58 61')+P('M40 38 L32 46')
+    +A('M48 40 L60 31')+AT('62,30 55,30 59,37')),
+  clamshell:fig(HD(22,56)+P('M28 56 L46 60')+P('M46 60 L56 58 L52 70')+P('M46 60 L60 53 L55 64')
+    +A('M64 48 A9 9 0 0 1 67 60')+AT('68,60 63,62 64,55')),
+  quadset:fig(HD(22,66)+P('M28 66 L72 66')+P('M64 66 L64 76')
+    +A('M50 56 V48')+AT('50,46 46,52 54,52')+'<line x1="44" y1="58" x2="60" y2="58" stroke="#48e0a0" stroke-width="2.4" stroke-dasharray="3 3"/>'),
+  anklepump:fig(HD(22,64)+P('M28 64 L62 64')+P('M62 64 L74 56')+P('M62 64 L74 72')
+    +A('M80 50 V44')+AT('80,42 76,48 84,48')+A('M80 78 V84')+AT('80,86 76,80 84,80')),
+  marchsit:fig('<path d="M28 56 H49 V80" fill="none" stroke="#39407a" stroke-width="3"/>'+HD(28,38)
+    +P('M28 43 L28 56')+P('M28 56 L49 56')+P('M49 56 L60 44')+P('M49 56 L52 78')
+    +A('M66 40 V30')+AT('66,28 62,34 70,34')),
+  pushup:fig('<line x1="82" y1="18" x2="82" y2="84" stroke="#39407a" stroke-width="3"/>'+HD(34,40)
+    +P('M34 45 L50 64')+P('M50 64 L54 82')+P('M37 44 L80 42')
+    +A('M62 30 H78')+AT('80,30 73,26 73,34')),
+  curl:fig(HD(50,24)+P('M50 29 L50 62')+P('M50 62 L44 82')+P('M50 62 L56 82')
+    +P('M50 38 L50 52')+P('M50 52 L63 44')+WT(61,40)+A('M72 56 Q74 46 66 42')+AT('65,41 71,41 67,47')),
+  press:fig(HD(50,32)+P('M50 37 L50 64')+P('M50 64 L44 82')+P('M50 64 L56 82')
+    +P('M50 42 L38 30')+P('M50 42 L62 30')+WT(33,22)+WT(58,22)
+    +A('M38 18 V11')+AT('38,9 34,15 42,15')+A('M62 18 V11')+AT('62,9 58,15 66,15')),
+  twist:fig(HD(50,24)+P('M50 29 L50 56')+P('M50 56 L44 82')+P('M50 56 L62 64 L57 56')
+    +P('M50 36 L60 46')+P('M50 36 L40 44')+A('M64 30 A14 14 0 0 0 47 22')+AT('46,22 52,19 50,26')),
+  plank:fig(HD(24,56)+P('M30 56 L68 70')+P('M30 56 L30 72')+P('M30 72 L42 72')+P('M68 70 L77 78')
+    +'<line x1="33" y1="50" x2="66" y2="63" stroke="#48e0a0" stroke-width="2.2" stroke-dasharray="4 3"/>'),
+  row:fig(HD(34,34)+P('M34 39 L56 52')+P('M56 52 L54 80')+P('M56 52 L66 78')
+    +P('M40 42 L40 58')+WT(35,58)+A('M40 52 V40')+AT('40,38 36,44 44,44')),
+  stretch:fig(HD(40,32)+P('M40 37 L52 56')+P('M52 56 L50 82')+P('M44 40 L54 60')
+    +A('M66 40 V58')+AT('66,60 62,54 70,54')),
+  catcow:fig(HD(24,52)+P('M30 52 Q50 40 70 52')+P('M34 52 L34 74')+P('M64 52 L64 74')
+    +A('M50 38 V30')+AT('50,28 46,34 54,34')),
+  balance:fig(HD(50,24)+P('M50 29 L50 58')+P('M50 58 L48 82')+P('M50 58 L63 70')
+    +P('M50 38 L37 40')+P('M50 38 L63 40')
+    +'<path d="M40 84 Q50 80 60 84" fill="none" stroke="#48e0a0" stroke-width="2.2" stroke-dasharray="3 3"/>'),
+  generic:fig(HD(50,28)+P('M50 33 L50 60')+P('M50 60 L44 82')+P('M50 60 L56 82')+P('M50 40 L40 50')+P('M50 40 L60 50'))
 };
 
-/* ---------- Knee rehab exercise pool (low-impact, joint-friendly) ---------- */
-const REHAB = [
-  {en:{n:"Seated knee extensions",m:"3 × 12 reps each leg",d:"Sit tall, slowly straighten one knee, hold 2 sec at the top, lower with control."},
-   pt:{n:"Extensão de joelho sentada",m:"3 × 12 reps cada perna",d:"Sente-se ereta, estenda lentamente um joelho, segure 2 seg no topo, desça com controle."}},
-  {en:{n:"Straight-leg raises",m:"3 × 10 reps each leg",d:"Lie down, one knee bent. Keep the other leg straight and lift it to the bent-knee height. Lower slowly."},
-   pt:{n:"Elevação de perna reta",m:"3 × 10 reps cada perna",d:"Deite-se, um joelho dobrado. Mantenha a outra perna reta e levante até a altura do joelho dobrado. Desça devagar."}},
-  {en:{n:"Heel slides",m:"2 × 15 reps each leg",d:"Lie on your back, slowly slide your heel toward your bottom, bending the knee, then slide back out."},
-   pt:{n:"Deslize do calcanhar",m:"2 × 15 reps cada perna",d:"Deitada de costas, deslize o calcanhar em direção ao bumbum, dobrando o joelho, e volte."}},
-  {en:{n:"Wall sit (partial)",m:"3 × hold 15–20 sec",d:"Back against a wall, slide down to a shallow squat (small bend), hold, then stand. Don't go past pain."},
-   pt:{n:"Cadeira na parede (parcial)",m:"3 × segure 15–20 seg",d:"Costas na parede, desça num agachamento raso (dobra pequena), segure e levante. Não passe da dor."}},
-  {en:{n:"Standing hamstring curls",m:"3 × 12 reps each leg",d:"Hold a chair, bend one knee bringing heel toward your bottom, lower slowly. Keep thighs aligned."},
-   pt:{n:"Flexão de perna em pé",m:"3 × 12 reps cada perna",d:"Segure uma cadeira, dobre um joelho levando o calcanhar ao bumbum, desça devagar. Mantenha as coxas alinhadas."}},
-  {en:{n:"Calf raises",m:"3 × 15 reps",d:"Hold a counter, rise onto your toes, hold 1 sec, lower slowly. Strengthens the calves that support the knee."},
-   pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Apoie-se numa bancada, suba na ponta dos pés, segure 1 seg, desça devagar. Fortalece a panturrilha que apoia o joelho."}},
-  {en:{n:"Step-ups (low step)",m:"3 × 8 reps each leg",d:"Step up onto a low, stable step leading with one leg, step down with control. Use a low height."},
-   pt:{n:"Subida no degrau (baixo)",m:"3 × 8 reps cada perna",d:"Suba num degrau baixo e firme com uma perna, desça com controle. Use uma altura baixa."}},
-  {en:{n:"Glute bridges",m:"3 × 12 reps",d:"Lie down, knees bent, lift hips squeezing your glutes, hold 2 sec, lower. Takes load off the knees."},
-   pt:{n:"Ponte de glúteo",m:"3 × 12 reps",d:"Deite-se, joelhos dobrados, eleve o quadril apertando os glúteos, segure 2 seg, desça. Alivia a carga dos joelhos."}},
-  {en:{n:"Clamshells",m:"3 × 15 reps each side",d:"Lie on your side, knees bent and stacked, open the top knee like a clam, lower slowly. Builds hip stability."},
-   pt:{n:"Concha (clamshell)",m:"3 × 15 reps cada lado",d:"Deite-se de lado, joelhos dobrados e alinhados, abra o joelho de cima como uma concha, desça devagar. Dá estabilidade ao quadril."}},
-  {en:{n:"Quad sets",m:"3 × hold 5 sec ×10",d:"Sit with leg straight, tighten your thigh muscle pressing the back of the knee down, hold 5 sec, relax."},
-   pt:{n:"Contração do quadríceps",m:"3 × segure 5 seg ×10",d:"Sente com a perna reta, contraia a coxa pressionando a parte de trás do joelho para baixo, segure 5 seg, relaxe."}},
-  {en:{n:"Side-lying leg raises",m:"3 × 12 reps each side",d:"Lie on your side, lift the top leg straight up, lower slowly. Strengthens hips that stabilize knees."},
-   pt:{n:"Elevação lateral de perna",m:"3 × 12 reps cada lado",d:"Deite-se de lado, eleve a perna de cima reta, desça devagar. Fortalece o quadril que estabiliza o joelho."}},
-  {en:{n:"Mini squats (chair)",m:"3 × 10 reps",d:"Stand in front of a chair, lower hips slightly as if to sit, tap and stand. Small range, no pain."},
-   pt:{n:"Mini agachamento (cadeira)",m:"3 × 10 reps",d:"Fique em frente a uma cadeira, baixe o quadril como se fosse sentar, toque e levante. Amplitude pequena, sem dor."}}
+/* ---------------- i18n ---------------- */
+const I18N={
+ en:{
+  appName:"Daily Fit", signInTitle:"Sign in",
+  loginWelcomeSub:"Let's get moving today.",
+  welcomeSub:"Sign in every day to log your workout and get today's plan.",
+  nameLabel:"Your name", pinLabel:"4-digit PIN",
+  signInBtn:"Sign in",
+  loginHintNew:"First time? Just pick a 4-digit PIN — it becomes your daily login.",
+  loginHintReturning:"Welcome back! Enter your PIN to continue.",
+  greetingWelcome:"Welcome",
+  logoutBtn:"Log out",
+  dayStreak:"Day streak", totalWorkouts:"Workouts", thisWeek:"This week",
+  todaysWorkout:"Today's Workout", kneeRehab:"Knee Rehab",
+  kneeTitle:"🦵 3 Knee Rehab Exercises",
+  kneeSub:"Gentle, low-impact moves to strengthen and protect your knees. Do these daily.",
+  kneeTip:"⚠️ Stop if you feel sharp pain. Mild muscle effort is normal — joint pain is not.",
+  logToday:"Log Today", loggedMsg:"You logged today's workout. Great job!",
+  logTitle:"📝 Log your workout", whatDidYouDo:"What did you do today?",
+  logPh:"e.g. 30-min brisk walk + the 3 knee exercises + 15 min strength",
+  howFelt:"How did it feel?", saveBtn:"Save today's log",
+  historyTitle:"📚 Your history",
+  noHistory:"No workouts logged yet. Your first one starts today! 🌟",
+  disclaimer:"This app gives general fitness guidance, not medical advice. Check with your doctor before starting, especially for knee issues.",
+  savedToast:"Saved! 🎉",
+  streakSingle:"You're on a 1-day streak — keep it going!",
+  streakMulti:"You're on a {n}-day streak — amazing! 🔥",
+  streakNone:"Let's log today and start a streak!",
+  wrongPin:"Wrong PIN. Try again.", needPin:"Please enter a 4-digit PIN.",
+  workoutTip:"💧 Warm up 3–5 min first (march in place / easy walk). Sip water. Move at a pace where you can still talk.",
+  focusToday:"Today's focus:",
+  tabToday:"Today", tabLog:"Log", tabProgress:"Progress", tabTips:"Tips",
+  notifCardTitle:"🔔 Daily 7 PM reminder",
+  notifCardSub:"If you haven't logged your workout by 7:00 PM, we'll send you a friendly nudge to get moving.",
+  notifEnableBtn:"Turn on 7 PM reminder",
+  notifOnStatus:"✅ Reminder is ON. We'll nudge you at 7 PM on days you haven't logged. Keep the app added to your home screen so it can reach you.",
+  notifOffStatus:"Reminder is off. Tap the button to turn it on.",
+  notifBlockedStatus:"Notifications are blocked in your browser settings. Please allow notifications for this site, then try again.",
+  notifUnsupported:"Your browser doesn't support notifications. You'll still see a reminder when you open the app.",
+  notifGrantedToast:"7 PM reminder is on! 🔔", notifDeniedToast:"Notifications were not allowed.",
+  notifPushTitle:"Time to move, Sueli! 💪",
+  notifPushBody:"You haven't logged your workout today. Let's do it — your knees and body will thank you!",
+  reminderInApp:"⏰ You haven't logged today's workout yet. Tap Log when you're done!",
+  tipsTitle:"💡 Tips for you", tipsSub:"Simple habits for losing weight, toning up, and feeling strong at any age.",
+  disabledToast:"Already on for today.",
+  feel_tough:"Tough", feel_ok:"OK", feel_good:"Good", feel_great:"Great",
+  tips:[
+   ["🚶‍♀️","Aim for a walk most days. Even 20–30 minutes burns fat and is easy on the knees."],
+   ["🥗","Fill half your plate with vegetables and add protein at every meal — it keeps you full and tones muscle."],
+   ["💧","Drink water before meals. Often 'hunger' is really thirst."],
+   ["🏋️‍♀️","Strength training 3x a week is the secret to a toned, firm body after 50."],
+   ["😴","Sleep 7–8 hours. Good sleep controls hunger hormones and helps weight loss."],
+   ["🐢","Go slow and steady. Losing 0.5 kg a week is healthy and lasts."],
+   ["🦵","Strong legs protect your knees. Never skip the rehab exercises."],
+   ["🎉","Log every day — small wins add up. Be proud of showing up!"]
+  ]
+ },
+ pt:{
+  appName:"Daily Fit", signInTitle:"Entrar",
+  loginWelcomeSub:"Vamos nos mexer hoje.",
+  welcomeSub:"Entre todos os dias para registrar seu treino e receber o plano de hoje.",
+  nameLabel:"Seu nome", pinLabel:"PIN de 4 dígitos",
+  signInBtn:"Entrar",
+  loginHintNew:"Primeira vez? Escolha um PIN de 4 dígitos — será seu login diário.",
+  loginHintReturning:"Bem-vinda de volta! Digite seu PIN para continuar.",
+  greetingWelcome:"Bem-vinda",
+  logoutBtn:"Sair",
+  dayStreak:"Dias seguidos", totalWorkouts:"Treinos", thisWeek:"Esta semana",
+  todaysWorkout:"Treino de Hoje", kneeRehab:"Joelho",
+  kneeTitle:"🦵 3 Exercícios para o Joelho",
+  kneeSub:"Movimentos suaves e de baixo impacto para fortalecer e proteger seus joelhos. Faça todos os dias.",
+  kneeTip:"⚠️ Pare se sentir dor aguda. Esforço muscular leve é normal — dor na articulação não é.",
+  logToday:"Registrar", loggedMsg:"Você registrou o treino de hoje. Muito bem!",
+  logTitle:"📝 Registre seu treino", whatDidYouDo:"O que você fez hoje?",
+  logPh:"ex. 30 min de caminhada + os 3 exercícios de joelho + 15 min de força",
+  howFelt:"Como você se sentiu?", saveBtn:"Salvar treino de hoje",
+  historyTitle:"📚 Seu histórico",
+  noHistory:"Nenhum treino registrado ainda. O primeiro começa hoje! 🌟",
+  disclaimer:"Este app oferece orientação geral de exercícios, não aconselhamento médico. Consulte seu médico antes de começar, especialmente com problemas no joelho.",
+  savedToast:"Salvo! 🎉",
+  streakSingle:"Você está há 1 dia seguido — continue assim!",
+  streakMulti:"Você está há {n} dias seguidos — incrível! 🔥",
+  streakNone:"Vamos registrar hoje e começar uma sequência!",
+  wrongPin:"PIN incorreto. Tente novamente.", needPin:"Por favor, digite um PIN de 4 dígitos.",
+  workoutTip:"💧 Aqueça 3–5 min antes (marche no lugar / caminhada leve). Beba água. Vá num ritmo em que ainda consiga conversar.",
+  focusToday:"Foco de hoje:",
+  tabToday:"Hoje", tabLog:"Registrar", tabProgress:"Progresso", tabTips:"Dicas",
+  notifCardTitle:"🔔 Lembrete diário às 19h",
+  notifCardSub:"Se você não registrar seu treino até as 19h, enviaremos um lembrete carinhoso para se mexer.",
+  notifEnableBtn:"Ativar lembrete das 19h",
+  notifOnStatus:"✅ Lembrete ATIVADO. Vamos te avisar às 19h nos dias sem registro. Mantenha o app na tela inicial para receber.",
+  notifOffStatus:"Lembrete desativado. Toque no botão para ativar.",
+  notifBlockedStatus:"As notificações estão bloqueadas no navegador. Permita as notificações para este site e tente novamente.",
+  notifUnsupported:"Seu navegador não suporta notificações. Você ainda verá um lembrete ao abrir o app.",
+  notifGrantedToast:"Lembrete das 19h ativado! 🔔", notifDeniedToast:"As notificações não foram permitidas.",
+  notifPushTitle:"Hora de se mexer, Sueli! 💪",
+  notifPushBody:"Você ainda não registrou seu treino hoje. Bora — seus joelhos e seu corpo vão agradecer!",
+  reminderInApp:"⏰ Você ainda não registrou o treino de hoje. Toque em Registrar quando terminar!",
+  tipsTitle:"💡 Dicas para você", tipsSub:"Hábitos simples para perder peso, tonificar e se sentir forte em qualquer idade.",
+  disabledToast:"Já está ativo para hoje.",
+  feel_tough:"Difícil", feel_ok:"OK", feel_good:"Bom", feel_great:"Ótimo",
+  tips:[
+   ["🚶‍♀️","Caminhe quase todos os dias. Mesmo 20–30 minutos queimam gordura e são suaves para os joelhos."],
+   ["🥗","Encha metade do prato com vegetais e inclua proteína em cada refeição — sacia e tonifica os músculos."],
+   ["💧","Beba água antes das refeições. Muitas vezes a 'fome' é sede."],
+   ["🏋️‍♀️","Musculação 3x por semana é o segredo de um corpo firme e definido depois dos 50."],
+   ["😴","Durma 7–8 horas. Um bom sono controla a fome e ajuda a emagrecer."],
+   ["🐢","Vá devagar e com constância. Perder 0,5 kg por semana é saudável e dura."],
+   ["🦵","Pernas fortes protegem os joelhos. Nunca pule os exercícios de reabilitação."],
+   ["🎉","Registre todos os dias — pequenas vitórias somam. Tenha orgulho de aparecer!"]
+  ]
+ }
+};
+
+/* ---------------- Knee rehab pool (expanded variety) ---------------- */
+const REHAB=[
+ {img:"kneeext",en:{n:"Seated knee extensions",m:"3 × 12 each leg",d:"Sit tall, slowly straighten one knee, hold 2 sec at the top, lower with control."},pt:{n:"Extensão de joelho sentada",m:"3 × 12 cada perna",d:"Sente-se ereta, estenda lentamente um joelho, segure 2 seg no topo, desça com controle."}},
+ {img:"legraise",en:{n:"Straight-leg raises",m:"3 × 10 each leg",d:"Lie down, one knee bent. Keep the other leg straight and lift to the bent-knee height. Lower slowly."},pt:{n:"Elevação de perna reta",m:"3 × 10 cada perna",d:"Deite-se, um joelho dobrado. Mantenha a outra perna reta e levante até a altura do joelho dobrado. Desça devagar."}},
+ {img:"heelslide",en:{n:"Heel slides",m:"2 × 15 each leg",d:"Lie on your back, slowly slide your heel toward your bottom bending the knee, then slide back out."},pt:{n:"Deslize do calcanhar",m:"2 × 15 cada perna",d:"Deitada de costas, deslize o calcanhar em direção ao bumbum dobrando o joelho, e volte."}},
+ {img:"wallsit",en:{n:"Wall sit (partial)",m:"3 × hold 15–20 sec",d:"Back against a wall, slide down to a shallow squat, hold, then stand. Don't push into pain."},pt:{n:"Cadeira na parede (parcial)",m:"3 × segure 15–20 seg",d:"Costas na parede, desça num agachamento raso, segure e levante. Não force até a dor."}},
+ {img:"hamcurl",en:{n:"Standing hamstring curls",m:"3 × 12 each leg",d:"Hold a chair, bend one knee bringing heel toward your bottom, lower slowly."},pt:{n:"Flexão de perna em pé",m:"3 × 12 cada perna",d:"Segure uma cadeira, dobre um joelho levando o calcanhar ao bumbum, desça devagar."}},
+ {img:"calf",en:{n:"Calf raises",m:"3 × 15 reps",d:"Hold a counter, rise onto your toes, hold 1 sec, lower slowly. Strengthens the calves that support the knee."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Apoie-se numa bancada, suba na ponta dos pés, segure 1 seg, desça devagar. Fortalece a panturrilha que apoia o joelho."}},
+ {img:"stepup",en:{n:"Step-ups (low step)",m:"3 × 8 each leg",d:"Step up onto a low, stable step leading with one leg, step down with control."},pt:{n:"Subida no degrau (baixo)",m:"3 × 8 cada perna",d:"Suba num degrau baixo e firme com uma perna, desça com controle."}},
+ {img:"bridge",en:{n:"Glute bridges",m:"3 × 12 reps",d:"Lie down, knees bent, lift hips squeezing your glutes, hold 2 sec, lower. Takes load off the knees."},pt:{n:"Ponte de glúteo",m:"3 × 12 reps",d:"Deite-se, joelhos dobrados, eleve o quadril apertando os glúteos, segure 2 seg, desça. Alivia a carga dos joelhos."}},
+ {img:"clamshell",en:{n:"Clamshells",m:"3 × 15 each side",d:"Lie on your side, knees bent and stacked, open the top knee like a clam, lower slowly."},pt:{n:"Concha (clamshell)",m:"3 × 15 cada lado",d:"Deite-se de lado, joelhos dobrados e alinhados, abra o joelho de cima como uma concha, desça devagar."}},
+ {img:"quadset",en:{n:"Quad sets",m:"3 × hold 5 sec ×10",d:"Sit with leg straight, tighten your thigh pressing the back of the knee down, hold 5 sec, relax."},pt:{n:"Contração do quadríceps",m:"3 × segure 5 seg ×10",d:"Sente com a perna reta, contraia a coxa pressionando a parte de trás do joelho para baixo, segure 5 seg, relaxe."}},
+ {img:"sideleg",en:{n:"Side-lying leg raises",m:"3 × 12 each side",d:"Lie on your side, lift the top leg straight up, lower slowly. Strengthens hips that stabilize knees."},pt:{n:"Elevação lateral de perna",m:"3 × 12 cada lado",d:"Deite-se de lado, eleve a perna de cima reta, desça devagar. Fortalece o quadril que estabiliza o joelho."}},
+ {img:"squat",en:{n:"Mini squats (chair)",m:"3 × 10 reps",d:"Stand in front of a chair, lower hips slightly as if to sit, tap and stand. Small range, no pain."},pt:{n:"Mini agachamento (cadeira)",m:"3 × 10 reps",d:"Fique em frente a uma cadeira, baixe o quadril como se fosse sentar, toque e levante. Amplitude pequena, sem dor."}},
+ {img:"anklepump",en:{n:"Ankle pumps",m:"2 × 20 each foot",d:"Sit or lie, point and flex your foot up and down. Boosts circulation and warms up the joint."},pt:{n:"Bombeamento de tornozelo",m:"2 × 20 cada pé",d:"Sentada ou deitada, aponte e flexione o pé para cima e para baixo. Melhora a circulação e aquece a articulação."}},
+ {img:"marchsit",en:{n:"Seated marching",m:"2 × 15 each leg",d:"Sit tall and lift one knee at a time, like marching. Gentle warm-up for hips and knees."},pt:{n:"Marcha sentada",m:"2 × 15 cada perna",d:"Sente-se ereta e levante um joelho de cada vez, como marchando. Aquecimento suave para quadris e joelhos."}},
+ {img:"sideleg",en:{n:"Standing hip abduction",m:"3 × 12 each side",d:"Hold a chair, lift one leg straight out to the side, lower slowly. Strengthens outer hip and knee support."},pt:{n:"Abdução de quadril em pé",m:"3 × 12 cada lado",d:"Segure uma cadeira, eleve uma perna reta para o lado, desça devagar. Fortalece o quadril externo e o apoio do joelho."}},
+ {img:"stretch",en:{n:"Gentle hamstring stretch",m:"3 × hold 20 sec each",d:"Sit with one leg straight, reach gently toward your toes until you feel a light stretch. Don't bounce."},pt:{n:"Alongamento suave de isquiotibiais",m:"3 × segure 20 seg cada",d:"Sente com uma perna reta, alcance suavemente os dedos do pé até sentir um leve alongamento. Não balance."}},
+ {img:"kneeext",en:{n:"Terminal knee extension",m:"3 × 12 each leg",d:"Stand with a slight knee bend, straighten the knee fully squeezing the thigh, then bend again slowly."},pt:{n:"Extensão terminal do joelho",m:"3 × 12 cada perna",d:"Em pé com leve flexão do joelho, estenda totalmente apertando a coxa, depois dobre devagar de novo."}},
+ {img:"balance",en:{n:"Single-leg balance",m:"3 × hold 15 sec each",d:"Hold a chair, stand on one leg, balance. Improves knee stability and prevents falls."},pt:{n:"Equilíbrio em uma perna",m:"3 × segure 15 seg cada",d:"Segure uma cadeira, fique em uma perna, equilibre. Melhora a estabilidade do joelho e previne quedas."}}
 ];
 
-/* ---------- Workout split: 3 strength/toning days + cardio + mobility, rotating ---------- */
-const WORKOUTS = [
-  { focus:{en:"Lower body & glutes (toning) + cardio",pt:"Pernas e glúteos (tonificação) + cardio"},
-    items:[
-      {en:{n:"Brisk walk or stationary bike",m:"20–25 min, steady pace",d:"Warm up the whole body and burn fat at a talkable pace."},
-       pt:{n:"Caminhada rápida ou bike",m:"20–25 min, ritmo constante",d:"Aqueça o corpo e queime gordura num ritmo em que dá pra conversar."}},
-      {en:{n:"Sit-to-stand squats (use a chair)",m:"3 × 12 reps",d:"Stand up from a chair without using hands, sit down slowly. Tones thighs & glutes, knee-safe."},
-       pt:{n:"Levantar da cadeira (agachamento)",m:"3 × 12 reps",d:"Levante da cadeira sem usar as mãos, sente-se devagar. Tonifica coxas e glúteos, seguro pro joelho."}},
-      {en:{n:"Glute bridges",m:"3 × 15 reps",d:"Lift hips and squeeze glutes at the top — great for shaping the bottom."},
-       pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Eleve o quadril e aperte os glúteos no topo — ótimo pra modelar o bumbum."}},
-      {en:{n:"Standing side leg lifts",m:"3 × 12 each side",d:"Tones outer thighs and hips. Hold a chair for balance."},
-       pt:{n:"Elevação lateral de perna em pé",m:"3 × 12 cada lado",d:"Tonifica a parte externa das coxas e quadris. Apoie-se numa cadeira."}},
-      {en:{n:"Calf raises",m:"3 × 15 reps",d:"Shapes the lower legs and supports the knees."},
-       pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Modela as panturrilhas e apoia os joelhos."}}
-    ]},
-  { focus:{en:"Upper body & arms (toning) + core",pt:"Parte superior e braços (tonificação) + core"},
-    items:[
-      {en:{n:"March in place / light cardio",m:"10 min warm-up",d:"Get the heart rate up gently before strength work."},
-       pt:{n:"Marcha no lugar / cardio leve",m:"10 min de aquecimento",d:"Eleve a frequência cardíaca suavemente antes da força."}},
-      {en:{n:"Wall or knee push-ups",m:"3 × 10 reps",d:"Tones chest, shoulders and arms. Use a wall if needed — keep it doable."},
-       pt:{n:"Flexão na parede ou de joelhos",m:"3 × 10 reps",d:"Tonifica peito, ombros e braços. Use a parede se precisar — mantenha viável."}},
-      {en:{n:"Dumbbell / water-bottle bicep curls",m:"3 × 12 reps",d:"Use light weights or water bottles. Tones the arms."},
-       pt:{n:"Rosca bíceps (haltere/garrafa)",m:"3 × 12 reps",d:"Use pesos leves ou garrafas de água. Tonifica os braços."}},
-      {en:{n:"Overhead shoulder press",m:"3 × 12 reps",d:"Press light weights overhead — shapes shoulders, no need to go heavy."},
-       pt:{n:"Desenvolvimento de ombro",m:"3 × 12 reps",d:"Eleve pesos leves acima da cabeça — modela os ombros, sem precisar de carga pesada."}},
-      {en:{n:"Standing core twists",m:"3 × 20 reps",d:"Gently twist side to side to engage the waist. Slow and controlled."},
-       pt:{n:"Rotação de tronco em pé",m:"3 × 20 reps",d:"Gire suavemente de um lado ao outro pra trabalhar a cintura. Devagar e controlado."}},
-      {en:{n:"Modified plank (knees)",m:"3 × hold 20 sec",d:"Strengthens the whole core without straining the back."},
-       pt:{n:"Prancha modificada (joelhos)",m:"3 × segure 20 seg",d:"Fortalece todo o core sem forçar as costas."}}
-    ]},
-  { focus:{en:"Full-body fat-burn circuit (low impact)",pt:"Circuito de queima de gordura (baixo impacto)"},
-    items:[
-      {en:{n:"Low-impact cardio circuit",m:"3 rounds, 30 sec each",d:"March, step-touch, gentle knee lifts — no jumping. Keep moving for 30 sec, rest 30 sec."},
-       pt:{n:"Circuito de cardio leve",m:"3 voltas, 30 seg cada",d:"Marcha, toque lateral, elevação suave de joelho — sem pular. Mova-se 30 seg, descanse 30 seg."}},
-      {en:{n:"Sit-to-stand squats",m:"3 × 12 reps",d:"Burns calories and tones the legs."},
-       pt:{n:"Levantar da cadeira (agachamento)",m:"3 × 12 reps",d:"Queima calorias e tonifica as pernas."}},
-      {en:{n:"Standing knee-to-elbow",m:"3 × 12 each side",d:"Bring knee up to opposite elbow — light cardio + core, gentle on joints."},
-       pt:{n:"Joelho ao cotovelo em pé",m:"3 × 12 cada lado",d:"Leve o joelho ao cotovelo oposto — cardio leve + core, suave nas articulações."}},
-      {en:{n:"Bent-over rows (bottles/weights)",m:"3 × 12 reps",d:"Tones the back and improves posture."},
-       pt:{n:"Remada curvada (garrafas/pesos)",m:"3 × 12 reps",d:"Tonifica as costas e melhora a postura."}},
-      {en:{n:"Glute bridges",m:"3 × 15 reps",d:"Finishes the circuit shaping the glutes and core."},
-       pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Finaliza o circuito modelando glúteos e core."}}
-    ]},
-  { focus:{en:"Active recovery: walking & full-body mobility",pt:"Recuperação ativa: caminhada e mobilidade"},
-    items:[
-      {en:{n:"Easy walk (outdoors or treadmill)",m:"30–40 min, relaxed",d:"Active recovery that still burns fat and protects the joints."},
-       pt:{n:"Caminhada leve (rua ou esteira)",m:"30–40 min, relaxada",d:"Recuperação ativa que ainda queima gordura e protege as articulações."}},
-      {en:{n:"Full-body gentle stretching",m:"10 min",d:"Stretch calves, thighs, hips, back and shoulders. Hold each 20–30 sec."},
-       pt:{n:"Alongamento suave do corpo",m:"10 min",d:"Alongue panturrilhas, coxas, quadris, costas e ombros. Segure cada um 20–30 seg."}},
-      {en:{n:"Cat-cow / spine mobility",m:"2 × 10 reps",d:"On hands and knees, arch and round the spine slowly. Great for the back."},
-       pt:{n:"Gato-vaca / mobilidade da coluna",m:"2 × 10 reps",d:"De quatro, arqueie e arredonde a coluna devagar. Ótimo pras costas."}},
-      {en:{n:"Deep breathing + balance holds",m:"5 min",d:"Stand on one leg (hold a chair), breathe deeply. Improves balance and calm."},
-       pt:{n:"Respiração + equilíbrio",m:"5 min",d:"Fique num pé só (apoie numa cadeira), respire fundo. Melhora equilíbrio e calma."}}
-    ]}
+/* ---------------- Workout day-types (expanded variety) ---------------- */
+const WORKOUTS=[
+ {focus:{en:"Lower body & glutes (toning) + cardio",pt:"Pernas e glúteos (tonificação) + cardio"},items:[
+   {img:"walk",en:{n:"Brisk walk or stationary bike",m:"20–25 min steady",d:"Warm up the whole body and burn fat at a pace where you can still talk."},pt:{n:"Caminhada rápida ou bike",m:"20–25 min constante",d:"Aqueça o corpo e queime gordura num ritmo em que dá pra conversar."}},
+   {img:"squat",en:{n:"Sit-to-stand squats (chair)",m:"3 × 12 reps",d:"Stand from a chair without using hands, sit down slowly. Tones thighs & glutes, knee-safe."},pt:{n:"Levantar da cadeira",m:"3 × 12 reps",d:"Levante da cadeira sem usar as mãos, sente-se devagar. Tonifica coxas e glúteos, seguro pro joelho."}},
+   {img:"bridge",en:{n:"Glute bridges",m:"3 × 15 reps",d:"Lift hips and squeeze glutes at the top — great for shaping the bottom."},pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Eleve o quadril e aperte os glúteos no topo — ótimo pra modelar o bumbum."}},
+   {img:"sideleg",en:{n:"Standing side leg lifts",m:"3 × 12 each side",d:"Tones outer thighs and hips. Hold a chair for balance."},pt:{n:"Elevação lateral de perna",m:"3 × 12 cada lado",d:"Tonifica a parte externa das coxas e quadris. Apoie-se numa cadeira."}},
+   {img:"calf",en:{n:"Calf raises",m:"3 × 15 reps",d:"Shapes the lower legs and supports the knees."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Modela as panturrilhas e apoia os joelhos."}}
+ ]},
+ {focus:{en:"Upper body & arms (toning) + core",pt:"Parte superior e braços + core"},items:[
+   {img:"marchsit",en:{n:"March in place / light cardio",m:"10 min warm-up",d:"Get the heart rate up gently before strength work."},pt:{n:"Marcha no lugar / cardio leve",m:"10 min aquecimento",d:"Eleve a frequência cardíaca suavemente antes da força."}},
+   {img:"pushup",en:{n:"Wall or knee push-ups",m:"3 × 10 reps",d:"Tones chest, shoulders and arms. Use a wall if needed — keep it doable."},pt:{n:"Flexão na parede ou de joelhos",m:"3 × 10 reps",d:"Tonifica peito, ombros e braços. Use a parede se precisar — mantenha viável."}},
+   {img:"curl",en:{n:"Bicep curls (light weights/bottles)",m:"3 × 12 reps",d:"Use light weights or water bottles. Tones the arms."},pt:{n:"Rosca bíceps (pesos/garrafas)",m:"3 × 12 reps",d:"Use pesos leves ou garrafas de água. Tonifica os braços."}},
+   {img:"press",en:{n:"Overhead shoulder press",m:"3 × 12 reps",d:"Press light weights overhead — shapes shoulders, no need to go heavy."},pt:{n:"Desenvolvimento de ombro",m:"3 × 12 reps",d:"Eleve pesos leves acima da cabeça — modela os ombros, sem carga pesada."}},
+   {img:"twist",en:{n:"Standing core twists",m:"3 × 20 reps",d:"Gently twist side to side to work the waist. Slow and controlled."},pt:{n:"Rotação de tronco em pé",m:"3 × 20 reps",d:"Gire suavemente de um lado ao outro pra trabalhar a cintura. Devagar e controlado."}},
+   {img:"plank",en:{n:"Modified plank (on knees)",m:"3 × hold 20 sec",d:"Strengthens the whole core without straining the back."},pt:{n:"Prancha modificada (joelhos)",m:"3 × segure 20 seg",d:"Fortalece todo o core sem forçar as costas."}}
+ ]},
+ {focus:{en:"Full-body fat-burn circuit (low impact)",pt:"Circuito de queima de gordura (baixo impacto)"},items:[
+   {img:"walk",en:{n:"Low-impact cardio circuit",m:"3 rounds × 30 sec",d:"March, step-touch, gentle knee lifts — no jumping. Move 30 sec, rest 30 sec."},pt:{n:"Circuito de cardio leve",m:"3 voltas × 30 seg",d:"Marcha, toque lateral, elevação suave de joelho — sem pular. Mexa-se 30 seg, descanse 30 seg."}},
+   {img:"squat",en:{n:"Sit-to-stand squats",m:"3 × 12 reps",d:"Burns calories and tones the legs."},pt:{n:"Levantar da cadeira",m:"3 × 12 reps",d:"Queima calorias e tonifica as pernas."}},
+   {img:"twist",en:{n:"Standing knee-to-elbow",m:"3 × 12 each side",d:"Bring knee up to opposite elbow — light cardio + core, gentle on joints."},pt:{n:"Joelho ao cotovelo em pé",m:"3 × 12 cada lado",d:"Leve o joelho ao cotovelo oposto — cardio leve + core, suave nas articulações."}},
+   {img:"row",en:{n:"Bent-over rows (bottles/weights)",m:"3 × 12 reps",d:"Tones the back and improves posture."},pt:{n:"Remada curvada (garrafas/pesos)",m:"3 × 12 reps",d:"Tonifica as costas e melhora a postura."}},
+   {img:"bridge",en:{n:"Glute bridges",m:"3 × 15 reps",d:"Finishes the circuit shaping the glutes and core."},pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Finaliza o circuito modelando glúteos e core."}}
+ ]},
+ {focus:{en:"Core & posture + waist toning",pt:"Core e postura + cintura"},items:[
+   {img:"marchsit",en:{n:"Marching warm-up",m:"8 min",d:"Loosen the hips and get the blood flowing."},pt:{n:"Aquecimento marchando",m:"8 min",d:"Solte os quadris e ative a circulação."}},
+   {img:"plank",en:{n:"Modified plank holds",m:"3 × 20–30 sec",d:"Builds a strong, flat tummy. Keep the body in a straight line."},pt:{n:"Prancha modificada",m:"3 × 20–30 seg",d:"Fortalece a barriga. Mantenha o corpo numa linha reta."}},
+   {img:"twist",en:{n:"Seated or standing twists",m:"3 × 20 reps",d:"Trims and tones the waistline."},pt:{n:"Rotações sentada ou em pé",m:"3 × 20 reps",d:"Afina e tonifica a cintura."}},
+   {img:"bridge",en:{n:"Glute bridge with hold",m:"3 × 12 reps",d:"Strengthens core, glutes and lower back together."},pt:{n:"Ponte de glúteo com pausa",m:"3 × 12 reps",d:"Fortalece core, glúteos e lombar juntos."}},
+   {img:"legraise",en:{n:"Lying leg lifts",m:"3 × 10 each leg",d:"Tones the lower belly. Move slowly and keep the back flat."},pt:{n:"Elevação de perna deitada",m:"3 × 10 cada perna",d:"Tonifica a parte baixa da barriga. Mova devagar e mantenha as costas no chão."}},
+   {img:"catcow",en:{n:"Cat-cow finish",m:"2 × 10 reps",d:"Relax and mobilize the spine to cool down."},pt:{n:"Gato-vaca final",m:"2 × 10 reps",d:"Relaxe e mobilize a coluna para finalizar."}}
+ ]},
+ {focus:{en:"Strength & tone: full body with light weights",pt:"Força e tônus: corpo todo com pesos leves"},items:[
+   {img:"walk",en:{n:"Brisk walk warm-up",m:"10 min",d:"Raise your heart rate and warm the muscles."},pt:{n:"Caminhada de aquecimento",m:"10 min",d:"Eleve a frequência cardíaca e aqueça os músculos."}},
+   {img:"squat",en:{n:"Chair squats",m:"3 × 12 reps",d:"The #1 move for toned legs and glutes."},pt:{n:"Agachamento na cadeira",m:"3 × 12 reps",d:"O melhor exercício para pernas e glúteos definidos."}},
+   {img:"press",en:{n:"Shoulder press (light)",m:"3 × 12 reps",d:"Shapes shoulders and arms."},pt:{n:"Desenvolvimento de ombro (leve)",m:"3 × 12 reps",d:"Modela ombros e braços."}},
+   {img:"row",en:{n:"Bent-over rows",m:"3 × 12 reps",d:"Strong back, better posture."},pt:{n:"Remada curvada",m:"3 × 12 reps",d:"Costas fortes, melhor postura."}},
+   {img:"curl",en:{n:"Bicep curls",m:"3 × 12 reps",d:"Firms and tones the arms."},pt:{n:"Rosca bíceps",m:"3 × 12 reps",d:"Firma e tonifica os braços."}},
+   {img:"calf",en:{n:"Calf raises",m:"3 × 15 reps",d:"Sculpts the lower legs."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Esculpe as panturrilhas."}}
+ ]},
+ {focus:{en:"Active recovery: walking & full-body mobility",pt:"Recuperação ativa: caminhada e mobilidade"},items:[
+   {img:"walk",en:{n:"Easy walk (outdoors or treadmill)",m:"30–40 min relaxed",d:"Active recovery that still burns fat and protects the joints."},pt:{n:"Caminhada leve",m:"30–40 min relaxada",d:"Recuperação ativa que ainda queima gordura e protege as articulações."}},
+   {img:"stretch",en:{n:"Full-body gentle stretching",m:"10 min",d:"Stretch calves, thighs, hips, back and shoulders. Hold each 20–30 sec."},pt:{n:"Alongamento suave do corpo",m:"10 min",d:"Alongue panturrilhas, coxas, quadris, costas e ombros. Segure cada um 20–30 seg."}},
+   {img:"catcow",en:{n:"Cat-cow / spine mobility",m:"2 × 10 reps",d:"On hands and knees, arch and round the spine slowly. Great for the back."},pt:{n:"Gato-vaca / mobilidade da coluna",m:"2 × 10 reps",d:"De quatro, arqueie e arredonde a coluna devagar. Ótimo pras costas."}},
+   {img:"balance",en:{n:"Balance holds + deep breathing",m:"5 min",d:"Stand on one leg (hold a chair), breathe deeply. Improves balance and calm."},pt:{n:"Equilíbrio + respiração",m:"5 min",d:"Fique num pé só (apoie numa cadeira), respire fundo. Melhora equilíbrio e calma."}}
+ ]}
 ];
 
-/* ---------- helpers ---------- */
-const $ = id => document.getElementById(id);
-let lang = localStorage.getItem("df_lang") || "en";
-let currentUser = null;
-let pendingFeel = null;
+/* ---------------- helpers ---------------- */
+const $=id=>document.getElementById(id);
+let lang=localStorage.getItem("df_lang")||"en";
+let currentUser=null, pendingFeel=null, reminderTimer=null;
 
-function t(k){ return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
-function todayKey(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
-function dayIndex(){ // days since epoch — used to deterministically rotate plans each day
-  return Math.floor(Date.now()/86400000);
-}
-function userKey(name){ return "df_user_"+name.trim().toLowerCase(); }
-function getUser(name){ try{return JSON.parse(localStorage.getItem(userKey(name)));}catch(e){return null;} }
-function saveUser(u){ localStorage.setItem(userKey(u.name), JSON.stringify(u)); }
+function t(k){return (I18N[lang]&&I18N[lang][k]!==undefined)?I18N[lang][k]:(I18N.en[k]!==undefined?I18N.en[k]:k);}
+function todayKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function dayIndex(){return Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/86400000);}
+function userKey(n){return "df_user_"+n.trim().toLowerCase();}
+function getUser(n){try{return JSON.parse(localStorage.getItem(userKey(n)));}catch(e){return null;}}
+function saveUser(u){localStorage.setItem(userKey(u.name),JSON.stringify(u));}
+function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2400);}
 
-function toast(msg){
-  const el=$("toast"); el.textContent=msg; el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"),2200);
-}
-
-/* ---------- language ---------- */
+/* ---------------- language ---------------- */
 function applyLang(){
-  document.documentElement.lang = lang;
-  document.querySelectorAll("[data-i18n]").forEach(el=>{
-    const k=el.getAttribute("data-i18n"); el.textContent=t(k);
-  });
-  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{
-    const k=el.getAttribute("data-i18n-ph"); el.setAttribute("placeholder",t(k));
-  });
-  // toggle button shows the language you'll switch TO
-  if(lang==="en"){ $("langFlag").textContent="🇧🇷"; $("langLabel").textContent="PT"; }
-  else { $("langFlag").textContent="🇬🇧"; $("langLabel").textContent="EN"; }
-  // re-render dynamic content
-  if(currentUser){ renderAll(); }
-  else { updateLoginHint(); }
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=t(el.getAttribute("data-i18n"));});
+  $("logText").setAttribute("placeholder",t("logPh"));
+  if(lang==="en"){$("langFlag").textContent="🇧🇷";$("langLabel").textContent="PT";}
+  else{$("langFlag").textContent="🇬🇧";$("langLabel").textContent="EN";}
+  // feel button tooltips
+  document.querySelectorAll("#feelOpts button").forEach(b=>b.title=t("feel_"+b.dataset.feel));
+  if(currentUser){renderAll();}else{updateLoginHint();updateLoginWelcome();}
 }
-function toggleLang(){
-  lang = (lang==="en")?"pt":"en";
-  localStorage.setItem("df_lang",lang);
-  applyLang();
+function toggleLang(){lang=(lang==="en")?"pt":"en";localStorage.setItem("df_lang",lang);applyLang();}
+function updateLoginWelcome(){
+  const name=($("nameInput").value.trim())||"Sueli";
+  $("loginWelcome").textContent=t("greetingWelcome")+", "+name+"!";
 }
 function updateLoginHint(){
   const name=$("nameInput").value.trim();
-  $("loginHint").textContent = (name && getUser(name)) ? t("loginHintReturning") : t("loginHintNew");
+  $("loginHint").textContent=(name&&getUser(name))?t("loginHintReturning"):t("loginHintNew");
 }
 
-/* ---------- date formatting ---------- */
-function prettyDate(){
-  const locale = lang==="pt" ? "pt-BR" : "en-US";
-  return new Date().toLocaleDateString(locale,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
-}
+/* ---------------- date ---------------- */
+function prettyDate(){const l=lang==="pt"?"pt-BR":"en-US";return new Date().toLocaleDateString(l,{weekday:"long",month:"long",day:"numeric"});}
 
-/* ---------- plan generation (deterministic per day) ---------- */
-function todaysWorkout(){ return WORKOUTS[ dayIndex() % WORKOUTS.length ]; }
-function todaysRehab(){
-  // pick 3 distinct exercises that rotate every day
-  const base = dayIndex()*3;
-  const a = base % REHAB.length;
-  const b = (base+1) % REHAB.length;
-  const c = (base+2) % REHAB.length;
-  return [REHAB[a],REHAB[b],REHAB[c]];
+/* ---------------- plan ---------------- */
+function todaysWorkout(){return WORKOUTS[dayIndex()%WORKOUTS.length];}
+function todaysRehab(){const b=dayIndex()*3;return [REHAB[b%REHAB.length],REHAB[(b+1)%REHAB.length],REHAB[(b+2)%REHAB.length]];}
+function exHtml(ex,num){
+  const e=ex[lang];const img=IMG[ex.img]||IMG.generic;
+  return '<div class="ex"><div class="exsvg-wrap">'+img+'</div><div class="ex-body">'+
+    '<div class="name"><span class="num">'+num+'</span>'+e.n+'</div>'+
+    '<div class="meta">'+e.m+'</div><div class="desc">'+e.d+'</div></div></div>';
 }
-
-/* ---------- render ---------- */
 function renderPlan(){
-  const w = todaysWorkout();
-  $("focusBanner").innerHTML = "<b>"+t("focusToday")+"</b> "+w.focus[lang];
-  $("workoutTip").textContent = t("workoutTip");
-  $("workoutTitle").textContent = "🔥 " + t("todaysWorkout");
-  $("workoutList").innerHTML = w.items.map((ex,i)=>exHtml(ex[lang],i+1)).join("");
-  $("rehabList").innerHTML = todaysRehab().map((ex,i)=>exHtml(ex[lang],i+1)).join("");
-}
-function exHtml(e,num){
-  return `<div class="ex"><div class="name"><span class="num">${num}</span>${e.n}</div>`+
-         `<div class="meta">${e.m}</div><div class="desc">${e.d}</div></div>`;
+  const w=todaysWorkout();
+  $("focusBanner").innerHTML="<b>"+t("focusToday")+"</b> "+w.focus[lang];
+  $("workoutTip").textContent=t("workoutTip");
+  $("workoutTitle").textContent="🔥 "+t("todaysWorkout");
+  $("workoutList").innerHTML=w.items.map((ex,i)=>exHtml(ex,i+1)).join("");
+  $("rehabList").innerHTML=todaysRehab().map((ex,i)=>exHtml(ex,i+1)).join("");
 }
 
-function renderStats(){
-  const logs = currentUser.logs || {};
-  const dates = Object.keys(logs).sort();
-  $("totalNum").textContent = dates.length;
-  // streak: consecutive days ending today or yesterday
-  let streak=0; let d=new Date();
-  while(true){
-    const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    if(logs[k]){ streak++; d.setDate(d.getDate()-1); }
-    else break;
-  }
-  $("streakNum").textContent = streak;
-  // this week (last 7 days)
-  let week=0; for(let i=0;i<7;i++){ const dd=new Date(); dd.setDate(dd.getDate()-i);
+/* ---------------- stats ---------------- */
+function computeStats(){
+  const logs=currentUser.logs||{};
+  const total=Object.keys(logs).length;
+  let streak=0,d=new Date();
+  while(true){const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    if(logs[k]){streak++;d.setDate(d.getDate()-1);}else break;}
+  let week=0;for(let i=0;i<7;i++){const dd=new Date();dd.setDate(dd.getDate()-i);
     const k=dd.getFullYear()+"-"+String(dd.getMonth()+1).padStart(2,"0")+"-"+String(dd.getDate()).padStart(2,"0");
-    if(logs[k]) week++; }
-  $("weekNum").textContent = week;
-  // streak message
-  let msg = t("streakNone");
-  if(streak===1) msg=t("streakSingle");
-  else if(streak>1) msg=t("streakMulti").replace("{n}",streak);
-  $("streakMsg").textContent = msg;
+    if(logs[k])week++;}
+  return {total,streak,week};
+}
+function renderStats(){
+  const s=computeStats();
+  ["streakNum","streakNum2"].forEach(id=>$(id).textContent=s.streak);
+  ["totalNum","totalNum2"].forEach(id=>$(id).textContent=s.total);
+  ["weekNum","weekNum2"].forEach(id=>$(id).textContent=s.week);
+  let msg=t("streakNone");
+  if(s.streak===1)msg=t("streakSingle");else if(s.streak>1)msg=t("streakMulti").replace("{n}",s.streak);
+  $("streakMsg").textContent=msg;
 }
 
+/* ---------------- history ---------------- */
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
 function renderHistory(){
-  const logs = currentUser.logs || {};
-  const dates = Object.keys(logs).sort().reverse();
-  const feelEmoji={tough:"😮‍💨",ok:"🙂",good:"😀",great:"🤩"};
-  if(dates.length===0){ $("historyList").innerHTML = `<div class="empty">${t("noHistory")}</div>`; return; }
-  const locale = lang==="pt"?"pt-BR":"en-US";
-  $("historyList").innerHTML = dates.map(k=>{
-    const log=logs[k];
-    const [y,m,da]=k.split("-");
-    const dStr=new Date(y,m-1,da).toLocaleDateString(locale,{weekday:"short",month:"short",day:"numeric"});
-    const feel = log.feel ? `<div class="feel">${feelEmoji[log.feel]||""}</div>` : "";
-    return `<div class="log-item"><div class="d">${dStr}</div><div class="t">${escapeHtml(log.text||"")}</div>${feel}</div>`;
+  const logs=currentUser.logs||{};const dates=Object.keys(logs).sort().reverse();
+  const fe={tough:"😮‍💨",ok:"🙂",good:"😀",great:"🤩"};
+  if(!dates.length){$("historyList").innerHTML='<div class="empty">'+t("noHistory")+'</div>';return;}
+  const l=lang==="pt"?"pt-BR":"en-US";
+  $("historyList").innerHTML=dates.map(k=>{
+    const log=logs[k];const[y,m,da]=k.split("-");
+    const ds=new Date(y,m-1,da).toLocaleDateString(l,{weekday:"short",month:"short",day:"numeric"});
+    const feel=log.feel?'<div class="feel">'+(fe[log.feel]||"")+" "+t("feel_"+log.feel)+'</div>':"";
+    return '<div class="log-item"><div class="d">'+ds+'</div><div class="t">'+escapeHtml(log.text||"")+'</div>'+feel+'</div>';
   }).join("");
 }
-function escapeHtml(s){ return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
 
+/* ---------------- tips ---------------- */
+function renderTips(){
+  $("tipsList").innerHTML=t("tips").map(p=>'<div class="tipcard"><span class="emoji">'+p[0]+'</span><div class="tt">'+p[1]+'</div></div>').join("");
+}
+
+/* ---------------- log state ---------------- */
+function loggedToday(){return currentUser&&currentUser.logs&&currentUser.logs[todayKey()];}
 function renderLogState(){
-  const logs = currentUser.logs || {};
-  const today = logs[todayKey()];
-  if(today){
-    $("loggedBadge").classList.remove("hidden");
-    $("logText").value = today.text||"";
-    pendingFeel = today.feel||null;
-    $("saveLogBtn").textContent = t("saveBtn");
-  } else {
-    $("loggedBadge").classList.add("hidden");
-  }
-  // highlight feel
-  document.querySelectorAll("#feelOpts button").forEach(b=>{
-    b.classList.toggle("active", b.dataset.feel===pendingFeel);
-  });
+  const today=loggedToday();
+  if(today){$("loggedBadge").classList.remove("hidden");$("logText").value=today.text||"";pendingFeel=today.feel||null;}
+  else{$("loggedBadge").classList.add("hidden");}
+  document.querySelectorAll("#feelOpts button").forEach(b=>b.classList.toggle("active",b.dataset.feel===pendingFeel));
 }
 
 function renderAll(){
-  $("todayDate").textContent = prettyDate();
-  $("userName").textContent = currentUser.name;
-  renderPlan();
-  renderStats();
-  renderHistory();
-  renderLogState();
+  $("welcomeName").textContent=t("greetingWelcome")+", "+currentUser.name+"!";
+  $("todayDate").textContent=prettyDate();
+  renderPlan();renderStats();renderHistory();renderTips();renderLogState();updateNotifUI();
 }
 
-/* ---------- auth ---------- */
+/* ---------------- tabs ---------------- */
+function showTab(name){
+  ["today","log","progress","tips"].forEach(n=>$("tab-"+n).classList.toggle("hidden",n!==name));
+  document.querySelectorAll("#bottomNav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ---------------- auth ---------------- */
 function doLogin(){
-  const name=$("nameInput").value.trim();
+  const name=($("nameInput").value.trim())||"Sueli";
   const pin=$("pinInput").value.trim();
-  if(!name){ toast(t("needName")); return; }
-  if(!/^\d{4}$/.test(pin)){ toast(t("needPin")); return; }
+  if(!/^\d{4}$/.test(pin)){toast(t("needPin"));return;}
   let u=getUser(name);
-  if(u){
-    if(u.pin!==pin){ toast(t("wrongPin")); return; }
-  } else {
-    u={name:name, pin:pin, logs:{}, created:todayKey()};
-    saveUser(u);
-  }
-  currentUser=u;
-  localStorage.setItem("df_last_user", name);
-  $("pinInput").value="";
+  if(u){if(u.pin!==pin){toast(t("wrongPin"));return;}}
+  else{u={name:name,pin:pin,logs:{},created:todayKey()};saveUser(u);}
+  currentUser=u;localStorage.setItem("df_last_user",name);$("pinInput").value="";
   showApp();
 }
 function logout(){
-  currentUser=null; pendingFeel=null;
-  localStorage.removeItem("df_last_user");
-  $("appScreen").classList.add("hidden");
+  currentUser=null;pendingFeel=null;clearTimeout(reminderTimer);
+  $("appScreen").classList.add("hidden");$("bottomNav").classList.add("hidden");
   $("loginScreen").classList.remove("hidden");
-  updateLoginHint();
+  updateLoginHint();updateLoginWelcome();
 }
 function showApp(){
   $("loginScreen").classList.add("hidden");
   $("appScreen").classList.remove("hidden");
-  renderAll();
+  $("bottomNav").classList.remove("hidden");
+  showTab("today");renderAll();
+  setupReminder();checkOverdue();
 }
 
-/* ---------- save log ---------- */
+/* ---------------- save log ---------------- */
 function saveLog(){
   const text=$("logText").value.trim();
-  if(!text && !pendingFeel){ return; }
-  currentUser.logs = currentUser.logs || {};
-  currentUser.logs[todayKey()] = {text:text, feel:pendingFeel, ts:Date.now()};
+  if(!text&&!pendingFeel)return;
+  currentUser.logs=currentUser.logs||{};
+  currentUser.logs[todayKey()]={text:text,feel:pendingFeel,ts:Date.now()};
   saveUser(currentUser);
-  toast(t("savedToast"));
-  renderAll();
+  toast(t("savedToast"));renderAll();
 }
 
-/* ---------- events ---------- */
-$("langBtn").addEventListener("click", toggleLang);
-$("loginBtn").addEventListener("click", doLogin);
-$("logoutBtn").addEventListener("click", logout);
-$("saveLogBtn").addEventListener("click", saveLog);
-$("nameInput").addEventListener("input", updateLoginHint);
-$("pinInput").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
-document.querySelectorAll("#feelOpts button").forEach(b=>{
-  b.addEventListener("click",()=>{
-    pendingFeel = (pendingFeel===b.dataset.feel)?null:b.dataset.feel;
-    document.querySelectorAll("#feelOpts button").forEach(x=>x.classList.toggle("active",x.dataset.feel===pendingFeel));
-  });
-});
+/* ---------------- notifications / 7pm reminder ---------------- */
+function notifEnabled(){return localStorage.getItem("df_notif")==="1";}
+function updateNotifUI(){
+  const supported=("Notification" in window);
+  const st=$("notifStatus");const btn=$("notifBtn");const bell=$("bellBtn");
+  if(!supported){st.textContent=t("notifUnsupported");bell.classList.remove("on");return;}
+  if(Notification.permission==="granted"&&notifEnabled()){
+    st.textContent=t("notifOnStatus");btn.textContent="✅ "+t("notifEnableBtn");bell.classList.add("on");
+  }else if(Notification.permission==="denied"){
+    st.textContent=t("notifBlockedStatus");btn.textContent=t("notifEnableBtn");bell.classList.remove("on");
+  }else{
+    st.textContent=t("notifOffStatus");btn.textContent=t("notifEnableBtn");bell.classList.remove("on");
+  }
+}
+async function enableNotifs(){
+  if(!("Notification" in window)){toast(t("notifUnsupported"));return;}
+  if(Notification.permission==="granted"){localStorage.setItem("df_notif","1");setupReminder();updateNotifUI();toast(t("notifGrantedToast"));return;}
+  try{
+    const p=await Notification.requestPermission();
+    if(p==="granted"){localStorage.setItem("df_notif","1");setupReminder();updateNotifUI();toast(t("notifGrantedToast"));}
+    else{updateNotifUI();toast(t("notifDeniedToast"));}
+  }catch(e){updateNotifUI();}
+}
+function msUntilHour(h){const now=new Date();const tgt=new Date();tgt.setHours(h,0,0,0);if(tgt<=now)tgt.setDate(tgt.getDate()+1);return tgt-now;}
+function setupReminder(){
+  clearTimeout(reminderTimer);
+  if(!("Notification" in window)||Notification.permission!=="granted"||!notifEnabled())return;
+  reminderTimer=setTimeout(function fire(){
+    if(currentUser&&!loggedToday())showNotif(t("notifPushTitle"),t("notifPushBody"));
+    reminderTimer=setTimeout(fire,msUntilHour(19));
+  },msUntilHour(19));
+}
+function showNotif(title,body){
+  try{
+    const opts={body:body,icon:"./icon.svg",badge:"./icon.svg",tag:"dailyfit-reminder"};
+    if(navigator.serviceWorker&&navigator.serviceWorker.ready){
+      navigator.serviceWorker.ready.then(r=>r.showNotification(title,opts)).catch(()=>new Notification(title,opts));
+    }else{new Notification(title,opts);}
+  }catch(e){try{new Notification(title,{body:body});}catch(_){}}
+}
+function checkOverdue(){
+  // If she opens the app after 7pm and hasn't logged, gently remind in-app (+ notification if enabled)
+  if(!currentUser||loggedToday())return;
+  if(new Date().getHours()>=19){
+    toast(t("reminderInApp"));
+    if(("Notification" in window)&&Notification.permission==="granted"&&notifEnabled())
+      showNotif(t("notifPushTitle"),t("notifPushBody"));
+  }
+}
 
-/* ---------- boot ---------- */
+/* ---------------- events ---------------- */
+$("langBtn").addEventListener("click",toggleLang);
+$("loginBtn").addEventListener("click",doLogin);
+$("logoutBtn").addEventListener("click",logout);
+$("saveLogBtn").addEventListener("click",saveLog);
+$("notifBtn").addEventListener("click",enableNotifs);
+$("bellBtn").addEventListener("click",()=>{if(currentUser){showTab("log");}else{toast(t("notifOffStatus"));}});
+$("nameInput").addEventListener("input",()=>{updateLoginHint();updateLoginWelcome();});
+$("pinInput").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+document.querySelectorAll("#feelOpts button").forEach(b=>b.addEventListener("click",()=>{
+  pendingFeel=(pendingFeel===b.dataset.feel)?null:b.dataset.feel;
+  document.querySelectorAll("#feelOpts button").forEach(x=>x.classList.toggle("active",x.dataset.feel===pendingFeel));
+}));
+document.querySelectorAll("#bottomNav button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentUser){renderLogState();checkOverdue();setupReminder();}});
+
+/* ---------------- service worker (PWA / notifications when hosted) ---------------- */
+if("serviceWorker" in navigator && location.protocol!=="file:"){
+  navigator.serviceWorker.register("./sw.js").catch(()=>{});
+}
+
+/* ---------------- boot ---------------- */
 (function init(){
   applyLang();
-  // auto-fill last user name (still requires PIN each day = "sign in every day")
-  const last = localStorage.getItem("df_last_user");
-  if(last){ $("nameInput").value = last; }
-  updateLoginHint();
+  const last=localStorage.getItem("df_last_user");
+  if(last){$("nameInput").value=last;}
+  updateLoginHint();updateLoginWelcome();
 })();
 </script>
 </body>

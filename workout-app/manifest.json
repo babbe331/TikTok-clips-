@@ -1,0 +1,14 @@
+{
+  "name": "Daily Fit — Workout & Knee Rehab",
+  "short_name": "Daily Fit",
+  "description": "Daily workout logger with knee rehab exercises, bilingual EN/PT.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1226",
+  "theme_color": "#ff5d8f",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
