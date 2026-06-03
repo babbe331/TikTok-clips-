@@ -141,9 +141,13 @@ def pick_window(words, title, dur, target_secs):
         If clip under {target_secs+2}s: start=0, end={max_end:.0f}.
         Transcript: {chr(10).join(lines)}
     """)
-    data = json.loads(gemini(prompt))
-    print(f"    Window: {data['start']:.1f}s→{data['end']:.1f}s | {data['reason'][:70]}")
-    return float(data["start"]), float(data["end"])
+    try:
+        data = json.loads(gemini(prompt))
+        print(f"    Window: {data['start']:.1f}s→{data['end']:.1f}s | {data['reason'][:70]}")
+        return float(data["start"]), float(data["end"])
+    except Exception as e:
+        print(f"    Gemini unavailable ({e}), using start→{target_secs}s")
+        return 0.0, min(float(target_secs), dur)
 
 def should_pair(title_a, title_b):
     """Ask Gemini if these two clips would make a viral TikTok together."""
@@ -158,9 +162,13 @@ def should_pair(title_a, title_b):
 
         Reply ONLY with JSON: {{"pair": true/false, "reason": "one line"}}
     """)
-    data = json.loads(gemini(prompt))
-    print(f"    Pair? {data['pair']} — {data['reason'][:70]}")
-    return data["pair"]
+    try:
+        data = json.loads(gemini(prompt))
+        print(f"    Pair? {data['pair']} — {data['reason'][:70]}")
+        return data["pair"]
+    except Exception as e:
+        print(f"    Gemini unavailable ({e}), defaulting to pair=True")
+        return True
 
 
 # ── FFmpeg helpers ─────────────────────────────────────────────────────────────
@@ -234,8 +242,6 @@ def make_solo_clip(clip_info, out_path):
     if not crop_and_encode(src, s, e - s, tmp):
         return False
 
-    srt = burn_captions(words, s, e, 0.0, out_path.replace(".mp4","_cap.srt").replace("_cap.srt",".srt"))
-    # rebuild srt with correct offset
     clip_words = [w for w in words if w["start"] >= s and w["end"] <= e + 0.5]
     chunks = [clip_words[i:i+3] for i in range(0, len(clip_words), 3)]
     srt_path = out_path.replace(".mp4", ".srt")
