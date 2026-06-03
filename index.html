@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Farmlind Produce — Sales &amp; Inventory</title>
+<style>
+  :root{
+    --green:#2e7d32; --green-dark:#1b5e20; --green-light:#e8f5e9;
+    --amber:#ef6c00; --amber-light:#fff3e0; --red:#c62828; --red-light:#ffebee;
+    --ink:#1c2421; --muted:#647067; --line:#e2e8e3; --bg:#f5f8f5; --card:#ffffff;
+    --blue:#1565c0;
+    --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+    --shadow-lg:0 10px 30px rgba(0,0,0,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit;font-size:15px}
+
+  /* ---- Top bar ---- */
+  header.topbar{background:linear-gradient(120deg,var(--green-dark),var(--green));
+    color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);
+    position:sticky;top:0;z-index:50}
+  .logo{font-size:26px}
+  header .title{font-size:20px;font-weight:700;letter-spacing:.2px}
+  header .sub{font-size:12px;opacity:.85;font-weight:500}
+  header .spacer{flex:1}
+  .topbtn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);
+    padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600}
+  .topbtn:hover{background:rgba(255,255,255,.28)}
+
+  /* ---- Tabs ---- */
+  nav.tabs{display:flex;gap:4px;background:var(--card);padding:0 16px;border-bottom:1px solid var(--line);
+    position:sticky;top:62px;z-index:40;overflow-x:auto}
+  nav.tabs button{background:none;border:none;padding:15px 18px;font-size:15px;font-weight:600;
+    color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+  nav.tabs button:hover{color:var(--ink)}
+  nav.tabs button.active{color:var(--green);border-bottom-color:var(--green)}
+  nav.tabs .badge{display:inline-block;background:var(--amber);color:#fff;font-size:11px;
+    font-weight:700;border-radius:10px;padding:1px 7px;margin-left:6px;vertical-align:middle}
+
+  main{max-width:1180px;margin:0 auto;padding:24px 16px 80px}
+  .page{display:none}
+  .page.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h2.pagehead{font-size:22px;margin-bottom:4px}
+  .pagehead-row{display:flex;align-items:flex-end;justify-content:space-between;
+    flex-wrap:wrap;gap:12px;margin-bottom:18px}
+  .pagehead-row p{color:var(--muted);font-size:14px}
+
+  /* ---- Buttons ---- */
+  .btn{background:var(--green);color:#fff;border:none;padding:10px 18px;border-radius:9px;
+    font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px;box-shadow:var(--shadow)}
+  .btn:hover{background:var(--green-dark)}
+  .btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.secondary:hover{background:#f0f4f0}
+  .btn.danger{background:var(--red)}
+  .btn.danger:hover{background:#a01b1b}
+  .btn.small{padding:6px 12px;font-size:13px}
+  .btn.ghost{background:none;border:none;color:var(--green);box-shadow:none;padding:6px 8px}
+  .btn.ghost:hover{background:var(--green-light)}
+
+  /* ---- Cards / stat tiles ---- */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px}
+  .stat{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);
+    border:1px solid var(--line)}
+  .stat .label{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .stat .value{font-size:28px;font-weight:800;margin-top:6px}
+  .stat .value.warn{color:var(--amber)}
+  .stat .value.bad{color:var(--red)}
+  .stat .value.good{color:var(--green)}
+  .stat .foot{font-size:12px;color:var(--muted);margin-top:2px}
+
+  .card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--line);
+    padding:20px;margin-bottom:18px}
+  .card h3{font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+  /* ---- Tables ---- */
+  .table-wrap{background:var(--card);border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--line);
+    overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;
+    padding:12px 14px;border-bottom:2px solid var(--line);background:#fafcfa;font-weight:700;white-space:nowrap}
+  td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:14.5px;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr.clickable:hover{background:#f7faf7;cursor:pointer}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+  .pill.ok{background:var(--green-light);color:var(--green-dark)}
+  .pill.low{background:var(--amber-light);color:var(--amber)}
+  .pill.out{background:var(--red-light);color:var(--red)}
+  .pill.blue{background:#e3f2fd;color:var(--blue)}
+  .pill.gray{background:#eceeec;color:var(--muted)}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .search{flex:1;min-width:200px;position:relative}
+  .search input{width:100%;padding:10px 12px 10px 36px;border:1px solid var(--line);border-radius:9px}
+  .search::before{content:"🔍";position:absolute;left:11px;top:9px;font-size:14px;opacity:.6}
+
+  .empty{text-align:center;padding:50px 20px;color:var(--muted)}
+  .empty .ic{font-size:46px;display:block;margin-bottom:8px}
+
+  /* ---- Forms / fields ---- */
+  label.field{display:block;margin-bottom:14px}
+  label.field .lab{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--ink)}
+  label.field input,label.field select,label.field textarea{width:100%;padding:10px 12px;
+    border:1px solid var(--line);border-radius:9px;background:#fff}
+  label.field input:focus,label.field select:focus,label.field textarea:focus{
+    outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-light)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+  @media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}}
+
+  /* ---- Modal ---- */
+  .modal-bg{position:fixed;inset:0;background:rgba(20,30,24,.5);display:none;align-items:flex-start;
+    justify-content:center;z-index:100;padding:30px 14px;overflow-y:auto}
+  .modal-bg.open{display:flex}
+  .modal{background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);width:100%;max-width:560px;
+    animation:pop .2s ease}
+  .modal.wide{max-width:860px}
+  @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+  .modal .mhead{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;
+    justify-content:space-between}
+  .modal .mhead h3{font-size:18px}
+  .modal .mbody{padding:22px}
+  .modal .mfoot{padding:16px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+  .xbtn{background:none;border:none;font-size:24px;color:var(--muted);line-height:1;padding:0 4px}
+  .xbtn:hover{color:var(--ink)}
+
+  /* ---- Sale builder ---- */
+  .sale-layout{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+  @media(max-width:880px){.sale-layout{grid-template-columns:1fr}}
+  .lineitem{display:grid;grid-template-columns:1fr 90px 110px 36px;gap:8px;align-items:end;margin-bottom:10px}
+  .lineitem .lab{font-size:11px}
+  @media(max-width:520px){.lineitem{grid-template-columns:1fr 1fr;}.lineitem .rm{grid-column:2}}
+  .summary{position:sticky;top:120px}
+  .shortage-box{border-radius:12px;padding:16px;margin-bottom:14px}
+  .shortage-box.none{background:var(--green-light);border:1px solid #c8e6c9}
+  .shortage-box.has{background:var(--amber-light);border:1px solid #ffe0b2}
+  .shortage-box h4{font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .shortage-line{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;
+    border-bottom:1px dashed rgba(0,0,0,.08)}
+  .shortage-line:last-child{border:none}
+  .shortage-line .qty{font-weight:800;color:var(--amber)}
+
+  .row-flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .muted{color:var(--muted)}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .right{text-align:right}
+  .tag-cat{font-size:11px;color:var(--muted)}
+  .totals-row{display:flex;justify-content:space-between;padding:7px 0;font-size:14px}
+  .totals-row.big{font-size:18px;font-weight:800;border-top:2px solid var(--line);margin-top:6px;padding-top:12px}
+
+  /* toast */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);
+    background:var(--ink);color:#fff;padding:13px 22px;border-radius:10px;font-weight:600;font-size:14px;
+    box-shadow:var(--shadow-lg);z-index:200;transition:transform .3s ease;max-width:90vw}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+  #toast.warn{background:var(--amber)}
+  #toast.bad{background:var(--red)}
+
+  .inline-actions{display:flex;gap:4px;justify-content:flex-end}
+  details.help{margin-top:10px}
+  details.help summary{cursor:pointer;color:var(--green);font-weight:600;font-size:13px}
+  details.help div{font-size:13px;color:var(--muted);padding:8px 0;line-height:1.6}
+  code.k{background:#eef2ee;padding:1px 6px;border-radius:5px;font-size:12.5px}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="logo">🥬</span>
+  <div>
+    <div class="title">Farmlind Produce</div>
+    <div class="sub">Sales &amp; Inventory Portal</div>
+  </div>
+  <div class="spacer"></div>
+  <button class="topbtn" onclick="exportBackup()">⬇ Backup</button>
+  <button class="topbtn" onclick="document.getElementById('restoreFile').click()">⬆ Restore</button>
+  <input type="file" id="restoreFile" accept="application/json" style="display:none" onchange="restoreBackup(event)">
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="dashboard" class="active">📊 Dashboard</button>
+  <button data-tab="newsale">🧾 New Sale</button>
+  <button data-tab="orders">📦 Orders <span class="badge" id="ordersBadge" style="display:none"></span></button>
+  <button data-tab="inventory">🥕 Inventory <span class="badge" id="invBadge" style="display:none"></span></button>
+  <button data-tab="customers">🏢 Customers</button>
+</nav>
+
+<main>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section class="page active" id="page-dashboard">
+    <div class="pagehead-row">
+      <div><h2 class="pagehead">Welcome back 👋</h2><p>Here's everything at a glance.</p></div>
+      <button class="btn" onclick="go('newsale')">＋ Start a New Sale</button>
+    </div>
+
+    <div class="stats" id="dashStats"></div>
+
+    <div class="card">
+      <h3>🛒 Shopping list — produce you need to buy</h3>
+      <p class="muted" style="margin-bottom:12px;font-size:13.5px">
+        These shortages come from open orders where you sold more than you have in stock.
+        Buy these amounts before the deliveries go out.</p>
+      <div id="dashShortages"></div>
+    </div>
+
+    <div class="card">
+      <h3>⏱ Recent orders</h3>
+      <div id="dashRecent"></div>
+    </div>
+  </section>
+
+  <!-- ============ NEW SALE ============ -->
+  <section class="page" id="page-newsale">
+    <div class="pagehead-row">
+      <div><h2 class="pagehead" id="saleHeading">New Sale</h2>
+      <p>Pick the customer, add what they're buying. We'll flag anything you're short on.</p></div>
+    </div>
+
+    <div class="sale-layout">
+      <div>
+        <div class="card">
+          <div class="grid2">
+            <label class="field">
+              <span class="lab">Customer</span>
+              <select id="saleCustomer"></select>
+            </label>
+            <label class="field">
+              <span class="lab">Needed by (delivery date)</span>
+              <input type="date" id="saleDate">
+            </label>
+          </div>
+          <label class="field" style="margin-bottom:0">
+            <span class="lab">Order notes (optional)</span>
+            <input type="text" id="saleNotes" placeholder="PO #, delivery instructions, etc.">
+          </label>
+        </div>
+
+        <div class="card">
+          <h3>What are they buying?</h3>
+          <div id="lineItems"></div>
+          <button class="btn secondary small" onclick="addLineItem()">＋ Add another item</button>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="card" style="margin-bottom:14px">
+          <h3 style="margin-bottom:10px">Order summary</h3>
+          <div class="totals-row"><span>Items</span><span id="sumItems">0</span></div>
+          <div class="totals-row"><span>Total units</span><span id="sumUnits">0</span></div>
+          <div class="totals-row big"><span>Total</span><span id="sumTotal">$0.00</span></div>
+        </div>
+
+        <div id="shortagePanel"></div>
+
+        <button class="btn" style="width:100%;justify-content:center;margin-bottom:8px" onclick="saveSale()">
+          ✔ Save Order</button>
+        <button class="btn secondary" style="width:100%;justify-content:center" onclick="resetSale(true)">
+          Clear</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ORDERS ============ -->
+  <section class="page" id="page-orders">
+    <div class="pagehead-row">
+      <div><h2 class="pagehead">Orders</h2><p>Everything you've sold, and what still needs buying.</p></div>
+      <button class="btn" onclick="go('newsale')">＋ New Sale</button>
+    </div>
+    <div class="toolbar">
+      <div class="search"><input id="orderSearch" placeholder="Search orders…" oninput="renderOrders()"></div>
+      <select id="orderFilter" onchange="renderOrders()" style="padding:10px 12px;border:1px solid var(--line);border-radius:9px">
+        <option value="all">All orders</option>
+        <option value="open">Open only</option>
+        <option value="short">Needs buying</option>
+        <option value="fulfilled">Fulfilled</option>
+      </select>
+    </div>
+    <div id="ordersList"></div>
+  </section>
+
+  <!-- ============ INVENTORY ============ -->
+  <section class="page" id="page-inventory">
+    <div class="pagehead-row">
+      <div><h2 class="pagehead">Inventory</h2><p>Everything you have on hand right now.</p></div>
+      <div class="row-flex">
+        <button class="btn secondary" onclick="document.getElementById('csvFile').click()">⬆ Import spreadsheet(s)</button>
+        <input type="file" id="csvFile" accept=".csv,text/csv" multiple style="display:none" onchange="importCSV(event)">
+        <button class="btn secondary" onclick="exportInventoryCSV()">⬇ Export CSV</button>
+        <button class="btn" onclick="openProductModal()">＋ Add Product</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="search"><input id="invSearch" placeholder="Search produce…" oninput="renderInventory()"></div>
+      <select id="invFilter" onchange="renderInventory()" style="padding:10px 12px;border:1px solid var(--line);border-radius:9px">
+        <option value="all">All items</option>
+        <option value="low">Low stock</option>
+        <option value="out">Out of stock</option>
+      </select>
+    </div>
+    <div class="table-wrap" id="invTableWrap"></div>
+    <details class="help">
+      <summary>How do I import my spreadsheets?</summary>
+      <div>
+        Save each spreadsheet as a <code class="k">.csv</code> file (in Excel or Google Sheets: <em>File → Download/Save As → CSV</em>),
+        then click <strong>Import spreadsheet(s)</strong>. You can pick <strong>several files at once</strong> — hold
+        <code class="k">Ctrl</code>/<code class="k">⌘</code> while selecting. We'll look for columns named
+        <code class="k">name</code>, <code class="k">quantity</code> (or <code class="k">qty</code>/<code class="k">on hand</code>),
+        <code class="k">unit</code>, <code class="k">price</code>, <code class="k">cost</code>, <code class="k">category</code>,
+        and <code class="k">low stock</code>. Column order and capitalization don't matter.<br><br>
+        After reading the files you'll choose what to do:
+        <strong>Replace</strong> wipes the current inventory and loads only what's in your spreadsheets, or
+        <strong>Add &amp; update</strong> keeps what's there and updates matching items by name.
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ CUSTOMERS ============ -->
+  <section class="page" id="page-customers">
+    <div class="pagehead-row">
+      <div><h2 class="pagehead">Customers</h2><p>The companies you sell to.</p></div>
+      <button class="btn" onclick="openCustomerModal()">＋ Add Customer</button>
+    </div>
+    <div class="toolbar">
+      <div class="search"><input id="custSearch" placeholder="Search customers…" oninput="renderCustomers()"></div>
+    </div>
+    <div class="table-wrap" id="custTableWrap"></div>
+  </section>
+
+</main>
+
+<!-- ============ PRODUCT MODAL ============ -->
+<div class="modal-bg" id="productModal">
+  <div class="modal">
+    <div class="mhead"><h3 id="productModalTitle">Add Product</h3><button class="xbtn" onclick="closeModal('productModal')">×</button></div>
+    <div class="mbody">
+      <input type="hidden" id="prodId">
+      <label class="field"><span class="lab">Product name *</span>
+        <input id="prodName" placeholder="e.g. Romaine Lettuce"></label>
+      <div class="grid2">
+        <label class="field"><span class="lab">Category</span>
+          <input id="prodCat" placeholder="e.g. Lettuce" list="catList"></label>
+        <label class="field"><span class="lab">Unit</span>
+          <input id="prodUnit" placeholder="e.g. case, box, lb" list="unitList"></label>
+      </div>
+      <div class="grid3">
+        <label class="field"><span class="lab">Quantity on hand</span>
+          <input id="prodQty" type="number" min="0" step="any" value="0"></label>
+        <label class="field"><span class="lab">Low-stock alert at</span>
+          <input id="prodLow" type="number" min="0" step="any" value="0"></label>
+        <label class="field"><span class="lab">Your cost / unit</span>
+          <input id="prodCost" type="number" min="0" step="any" placeholder="0.00"></label>
+      </div>
+      <label class="field" style="margin-bottom:0"><span class="lab">Sell price / unit</span>
+        <input id="prodPrice" type="number" min="0" step="any" placeholder="0.00"></label>
+      <datalist id="catList"></datalist>
+      <datalist id="unitList"></datalist>
+    </div>
+    <div class="mfoot">
+      <button class="btn danger small" id="prodDeleteBtn" style="margin-right:auto;display:none" onclick="deleteProduct()">Delete</button>
+      <button class="btn secondary" onclick="closeModal('productModal')">Cancel</button>
+      <button class="btn" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CUSTOMER MODAL ============ -->
+<div class="modal-bg" id="customerModal">
+  <div class="modal">
+    <div class="mhead"><h3 id="customerModalTitle">Add Customer</h3><button class="xbtn" onclick="closeModal('customerModal')">×</button></div>
+    <div class="mbody">
+      <input type="hidden" id="custId">
+      <label class="field"><span class="lab">Company name *</span>
+        <input id="custName" placeholder="e.g. Sysco Foods"></label>
+      <div class="grid2">
+        <label class="field"><span class="lab">Contact person</span><input id="custContact"></label>
+        <label class="field"><span class="lab">Phone</span><input id="custPhone"></label>
+      </div>
+      <label class="field"><span class="lab">Email</span><input id="custEmail" type="email"></label>
+      <label class="field" style="margin-bottom:0"><span class="lab">Notes</span>
+        <textarea id="custNotes" rows="2"></textarea></label>
+    </div>
+    <div class="mfoot">
+      <button class="btn danger small" id="custDeleteBtn" style="margin-right:auto;display:none" onclick="deleteCustomer()">Delete</button>
+      <button class="btn secondary" onclick="closeModal('customerModal')">Cancel</button>
+      <button class="btn" onclick="saveCustomer()">Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ORDER DETAIL MODAL ============ -->
+<div class="modal-bg" id="orderModal">
+  <div class="modal wide">
+    <div class="mhead"><h3 id="orderModalTitle">Order</h3><button class="xbtn" onclick="closeModal('orderModal')">×</button></div>
+    <div class="mbody" id="orderModalBody"></div>
+    <div class="mfoot" id="orderModalFoot"></div>
+  </div>
+</div>
+
+<!-- ============ IMPORT OPTIONS MODAL ============ -->
+<div class="modal-bg" id="importModal">
+  <div class="modal">
+    <div class="mhead"><h3>Import inventory</h3><button class="xbtn" onclick="cancelImport()">×</button></div>
+    <div class="mbody">
+      <p id="importSummary" style="margin-bottom:16px"></p>
+      <div class="shortage-box none" style="margin-bottom:6px">
+        <h4>🔄 Replace everything</h4>
+        <p class="muted" style="font-size:13.5px">Delete the current inventory and load <strong>only</strong> what's in these
+        spreadsheet(s). Use this when your spreadsheet is the full, up-to-date list. <em>(Your customers and orders are not touched.)</em></p>
+      </div>
+      <div class="shortage-box has" style="margin-bottom:0">
+        <h4>➕ Add &amp; update</h4>
+        <p class="muted" style="font-size:13.5px">Keep what's already here. Items with a matching name get updated;
+        anything new gets added.</p>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn secondary" onclick="cancelImport()">Cancel</button>
+      <button class="btn secondary" onclick="runImport('merge')">➕ Add &amp; update</button>
+      <button class="btn danger" onclick="runImport('replace')">🔄 Replace everything</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   FARMLIND PRODUCE PORTAL
+   100% local. All data is saved in this browser (localStorage).
+   ============================================================ */
+
+const DB_KEY = "farmlind_db_v1";
+let db = { products:[], customers:[], sales:[] };
+let saleLines = [];          // working line items for New Sale
+let editingSaleId = null;    // if editing an existing order
+
+/* ---------- storage ---------- */
+function load(){
+  try{ const raw = localStorage.getItem(DB_KEY); if(raw) db = JSON.parse(raw); }catch(e){}
+  if(!db.products) db.products=[]; if(!db.customers) db.customers=[]; if(!db.sales) db.sales=[];
+  if(db.products.length===0 && db.customers.length===0 && db.sales.length===0) seedSample();
+}
+function save(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+/* ---------- sample data so it's not empty on first open ---------- */
+function seedSample(){
+  db.products = [
+    p("Romaine Lettuce","Lettuce","case",40,15,18,26),
+    p("Roma Tomatoes","Tomatoes","box",12,10,14,22),
+    p("Hass Avocados","Avocados","case",6,12,32,55),
+    p("Yellow Onions","Onions","50 lb bag",80,20,11,17),
+    p("Strawberries","Berries","flat",0,10,16,28),
+    p("Broccoli Crowns","Brassica","case",25,12,15,24),
+  ];
+  db.customers = [
+    c("Sysco Foods","Maria Lopez","555-0142","orders@sysco-example.com"),
+    c("Green Leaf Restaurant","Tony Hale","555-0177","tony@greenleaf-example.com"),
+    c("Fresh Market Co.","","555-0190",""),
+  ];
+  save();
+}
+function p(name,cat,unit,qty,low,cost,price){
+  return {id:uid(),name,category:cat,unit,qty:+qty,low:+low,cost:+cost,price:+price};
+}
+function c(name,contact,phone,email){
+  return {id:uid(),name,contact,phone,email,notes:""};
+}
+
+/* ---------- helpers ---------- */
+const money = n => "$"+(Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const num = n => (Number(n)||0).toLocaleString(undefined,{maximumFractionDigits:2});
+function esc(s){ return String(s??"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function productById(id){ return db.products.find(x=>x.id===id); }
+function customerById(id){ return db.customers.find(x=>x.id===id); }
+function customerName(id){ const c=customerById(id); return c?c.name:"—"; }
+
+function toast(msg,type=""){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.className=""; if(type) t.classList.add(type);
+  void t.offsetWidth; t.classList.add("show");
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2800);
+}
+
+/* Stock status of a product */
+function stockStatus(prod){
+  if(prod.qty<=0) return {cls:"out",txt:"Out of stock"};
+  if(prod.low>0 && prod.qty<=prod.low) return {cls:"low",txt:"Low"};
+  return {cls:"ok",txt:"In stock"};
+}
+
+/* Shortage for ONE open order = how much more you must buy.
+   We also account for stock already promised to OTHER open orders. */
+function shortagesForOrder(sale){
+  const out=[];
+  sale.items.forEach(it=>{
+    const prod=productById(it.productId);
+    if(!prod) return;
+    const have = Math.max(0, prod.qty);
+    const need = it.qty;
+    const short = Math.max(0, need - have);
+    if(short>0) out.push({name:it.name||prod.name, unit:prod.unit, short});
+  });
+  return out;
+}
+
+/* Combined shopping list across ALL open orders.
+   Demand from open orders minus current stock, per product. */
+function globalShortages(){
+  const demand={}; // productId -> qty needed
+  db.sales.filter(s=>s.status==="open").forEach(s=>{
+    s.items.forEach(it=>{ demand[it.productId]=(demand[it.productId]||0)+it.qty; });
+  });
+  const list=[];
+  Object.keys(demand).forEach(pid=>{
+    const prod=productById(pid); if(!prod) return;
+    const short=Math.max(0, demand[pid]-Math.max(0,prod.qty));
+    if(short>0) list.push({name:prod.name,unit:prod.unit,short,have:Math.max(0,prod.qty),need:demand[pid]});
+  });
+  return list.sort((a,b)=>b.short-a.short);
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function go(tab){
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+tab));
+  if(tab==="dashboard") renderDashboard();
+  if(tab==="inventory") renderInventory();
+  if(tab==="customers") renderCustomers();
+  if(tab==="orders") renderOrders();
+  if(tab==="newsale") renderSale();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.getElementById("tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-tab]"); if(b) go(b.dataset.tab);
+});
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard(){
+  const invValue = db.products.reduce((s,p)=>s+Math.max(0,p.qty)*p.cost,0);
+  const lowCount = db.products.filter(p=>p.qty<=0 || (p.low>0&&p.qty<=p.low)).length;
+  const openOrders = db.sales.filter(s=>s.status==="open").length;
+  const shortages = globalShortages();
+  const openRevenue = db.sales.filter(s=>s.status==="open")
+    .reduce((s,o)=>s+orderTotal(o),0);
+
+  document.getElementById("dashStats").innerHTML = `
+    ${stat("Products",db.products.length,"in your catalog")}
+    ${stat("Inventory value",money(invValue),"at your cost",invValue>0?"good":"")}
+    ${stat("Open orders",openOrders,money(openRevenue)+" in sales","")}
+    ${stat("Low / out of stock",lowCount,"need attention",lowCount>0?"warn":"good")}
+    ${stat("Items to buy",shortages.length,shortages.length?"see shopping list ↓":"all covered ✓",shortages.length?"bad":"good")}
+  `;
+
+  // shopping list
+  const sc=document.getElementById("dashShortages");
+  if(shortages.length===0){
+    sc.innerHTML=`<div class="shortage-box none"><h4>✅ You're fully covered</h4>
+      <p class="muted" style="font-size:13.5px">Every open order can be filled from current stock. Nothing to buy right now.</p></div>`;
+  }else{
+    sc.innerHTML = shortages.map(s=>`
+      <div class="shortage-line">
+        <span><strong>${esc(s.name)}</strong> <span class="muted">— have ${num(s.have)}, need ${num(s.need)} ${esc(s.unit||"")}</span></span>
+        <span class="qty">buy ${num(s.short)} ${esc(s.unit||"")}</span>
+      </div>`).join("");
+  }
+
+  // recent
+  const recent=[...db.sales].sort((a,b)=>b.created-a.created).slice(0,6);
+  const rc=document.getElementById("dashRecent");
+  if(recent.length===0){ rc.innerHTML=emptyState("📦","No orders yet","Create your first sale to get started."); return; }
+  rc.innerHTML = `<div class="table-wrap"><table><thead><tr>
+      <th>Date</th><th>Customer</th><th class="num">Total</th><th>Status</th><th></th></tr></thead><tbody>
+      ${recent.map(o=>`<tr class="clickable" onclick="openOrder('${o.id}')">
+        <td>${esc(o.date||"—")}</td><td>${esc(customerName(o.customerId))}</td>
+        <td class="num">${money(orderTotal(o))}</td><td>${statusPill(o)}</td>
+        <td class="right"><button class="btn ghost small">View →</button></td></tr>`).join("")}
+    </tbody></table></div>`;
+  updateBadges();
+}
+function stat(label,value,foot,cls=""){
+  return `<div class="stat"><div class="label">${label}</div>
+    <div class="value ${cls}">${value}</div><div class="foot">${foot}</div></div>`;
+}
+function emptyState(ic,title,sub){
+  return `<div class="empty"><span class="ic">${ic}</span><strong>${esc(title)}</strong><br><span>${esc(sub)}</span></div>`;
+}
+function statusPill(o){
+  if(o.status==="fulfilled") return `<span class="pill ok">Fulfilled</span>`;
+  const sh=shortagesForOrder(o);
+  if(sh.length>0) return `<span class="pill low">Needs buying</span>`;
+  return `<span class="pill blue">Open</span>`;
+}
+function orderTotal(o){ return o.items.reduce((s,it)=>s+it.qty*it.price,0); }
+
+function updateBadges(){
+  const sh=globalShortages().length;
+  const ob=document.getElementById("ordersBadge");
+  if(sh>0){ ob.textContent=sh; ob.style.display="inline-block"; } else ob.style.display="none";
+  const low=db.products.filter(p=>p.qty<=0||(p.low>0&&p.qty<=p.low)).length;
+  const ib=document.getElementById("invBadge");
+  if(low>0){ ib.textContent=low; ib.style.display="inline-block"; } else ib.style.display="none";
+}
+
+/* ============================================================
+   INVENTORY
+   ============================================================ */
+function renderInventory(){
+  refreshDatalists();
+  const q=(document.getElementById("invSearch").value||"").toLowerCase();
+  const f=document.getElementById("invFilter").value;
+  let items=db.products.filter(p=>p.name.toLowerCase().includes(q)||(p.category||"").toLowerCase().includes(q));
+  if(f==="low") items=items.filter(p=>p.qty>0&&p.low>0&&p.qty<=p.low);
+  if(f==="out") items=items.filter(p=>p.qty<=0);
+  items.sort((a,b)=>a.name.localeCompare(b.name));
+
+  const wrap=document.getElementById("invTableWrap");
+  if(items.length===0){ wrap.innerHTML=emptyState("🥕","No products","Add a product or import your spreadsheet."); updateBadges(); return; }
+  wrap.innerHTML=`<table><thead><tr>
+    <th>Product</th><th>Category</th><th class="num">On hand</th><th>Unit</th>
+    <th class="num">Cost</th><th class="num">Sell</th><th>Status</th><th></th></tr></thead><tbody>
+    ${items.map(p=>{ const st=stockStatus(p); return `<tr class="clickable" onclick="openProductModal('${p.id}')">
+      <td><strong>${esc(p.name)}</strong></td>
+      <td><span class="tag-cat">${esc(p.category||"—")}</span></td>
+      <td class="num">${num(p.qty)}</td><td>${esc(p.unit||"")}</td>
+      <td class="num">${p.cost?money(p.cost):"—"}</td><td class="num">${p.price?money(p.price):"—"}</td>
+      <td><span class="pill ${st.cls}">${st.txt}</span></td>
+      <td class="right"><button class="btn ghost small">Edit</button></td></tr>`; }).join("")}
+    </tbody></table>`;
+  updateBadges();
+}
+function refreshDatalists(){
+  const cats=[...new Set(db.products.map(p=>p.category).filter(Boolean))].sort();
+  const units=[...new Set(db.products.map(p=>p.unit).filter(Boolean))].sort();
+  document.getElementById("catList").innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join("");
+  document.getElementById("unitList").innerHTML=units.map(u=>`<option value="${esc(u)}">`).join("");
+}
+function openProductModal(id){
+  const m=document.getElementById("productModal");
+  const del=document.getElementById("prodDeleteBtn");
+  refreshDatalists();
+  if(id){
+    const p=productById(id);
+    document.getElementById("productModalTitle").textContent="Edit Product";
+    document.getElementById("prodId").value=p.id;
+    document.getElementById("prodName").value=p.name;
+    document.getElementById("prodCat").value=p.category||"";
+    document.getElementById("prodUnit").value=p.unit||"";
+    document.getElementById("prodQty").value=p.qty;
+    document.getElementById("prodLow").value=p.low;
+    document.getElementById("prodCost").value=p.cost||"";
+    document.getElementById("prodPrice").value=p.price||"";
+    del.style.display="inline-flex";
+  }else{
+    document.getElementById("productModalTitle").textContent="Add Product";
+    ["prodId","prodName","prodCat","prodUnit","prodCost","prodPrice"].forEach(i=>document.getElementById(i).value="");
+    document.getElementById("prodQty").value=0; document.getElementById("prodLow").value=0;
+    del.style.display="none";
+  }
+  m.classList.add("open");
+  setTimeout(()=>document.getElementById("prodName").focus(),50);
+}
+function saveProduct(){
+  const name=document.getElementById("prodName").value.trim();
+  if(!name){ toast("Please enter a product name","warn"); return; }
+  const id=document.getElementById("prodId").value;
+  const data={
+    name, category:document.getElementById("prodCat").value.trim(),
+    unit:document.getElementById("prodUnit").value.trim(),
+    qty:+document.getElementById("prodQty").value||0,
+    low:+document.getElementById("prodLow").value||0,
+    cost:+document.getElementById("prodCost").value||0,
+    price:+document.getElementById("prodPrice").value||0,
+  };
+  if(id){ Object.assign(productById(id),data); toast("Product updated"); }
+  else{ db.products.push({id:uid(),...data}); toast("Product added"); }
+  save(); closeModal("productModal"); renderInventory();
+}
+function deleteProduct(){
+  const id=document.getElementById("prodId").value;
+  const p=productById(id);
+  if(!confirm(`Delete "${p.name}"? This can't be undone.`)) return;
+  db.products=db.products.filter(x=>x.id!==id);
+  save(); closeModal("productModal"); renderInventory(); toast("Product deleted");
+}
+
+/* ---------- CSV import (multiple files + replace/merge) ---------- */
+let importStaging=[];   // parsed product objects waiting for replace/merge choice
+function importCSV(ev){
+  const files=Array.from(ev.target.files||[]); if(!files.length) return;
+  importStaging=[];
+  let pending=files.length, hadError=false;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      try{ importStaging.push(...rowsFromCSV(e.target.result)); }
+      catch(err){ hadError=true; console.error(err); }
+      if(--pending===0) finishReading(files.length,hadError);
+    };
+    reader.onerror=()=>{ hadError=true; if(--pending===0) finishReading(files.length,hadError); };
+    reader.readAsText(file);
+  });
+  ev.target.value="";
+}
+function finishReading(fileCount,hadError){
+  // de-dupe by name across all files: last one wins
+  const byName={};
+  importStaging.forEach(p=>{ byName[p.name.toLowerCase()]=p; });
+  importStaging=Object.values(byName);
+  if(importStaging.length===0){
+    toast(hadError?"Couldn't read those files":"No products found in those files","bad"); return;
+  }
+  document.getElementById("importSummary").innerHTML=
+    `Found <strong>${importStaging.length}</strong> product(s) across <strong>${fileCount}</strong> file(s)`+
+    (hadError?` <span style="color:var(--red)">(some files couldn't be read)</span>`:"")+
+    `. How should we bring them in?`;
+  document.getElementById("importModal").classList.add("open");
+}
+function cancelImport(){ importStaging=[]; closeModal("importModal"); }
+function runImport(mode){
+  if(mode==="replace"){
+    if(!confirm(`Replace ALL ${db.products.length} current inventory item(s) with the ${importStaging.length} from your spreadsheet(s)? This can't be undone (use Backup first if unsure).`)) return;
+    db.products=importStaging.map(p=>({id:uid(),...p}));
+    save(); closeModal("importModal"); renderInventory();
+    toast(`Inventory replaced ✓ ${db.products.length} item(s) loaded`);
+  }else{
+    let added=0,updated=0;
+    importStaging.forEach(np=>{
+      const existing=db.products.find(p=>p.name.toLowerCase()===np.name.toLowerCase());
+      if(existing){ Object.assign(existing,np); updated++; }
+      else{ db.products.push({id:uid(),...np}); added++; }
+    });
+    save(); closeModal("importModal"); renderInventory();
+    toast(`Imported ✓ ${added} added, ${updated} updated`);
+  }
+  importStaging=[];
+}
+function parseCSV(text){
+  const rows=[]; let row=[],cur="",q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){
+      if(ch==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; }
+      else cur+=ch;
+    }else{
+      if(ch==='"') q=true;
+      else if(ch===','){ row.push(cur); cur=""; }
+      else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n')i++; row.push(cur); rows.push(row); row=[]; cur=""; }
+      else cur+=ch;
+    }
+  }
+  if(cur!==""||row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(r=>r.some(c=>String(c).trim()!==""));
+}
+/* Parse one CSV file's text into clean product objects.
+   Only includes fields actually present in the file (so Add&update won't wipe
+   columns the spreadsheet omits). Always sets name + numeric defaults for replace. */
+function rowsFromCSV(text){
+  const rows=parseCSV(text);
+  if(rows.length<2) return [];
+  const headers=rows[0].map(h=>h.trim().toLowerCase());
+  const find=(...names)=>{ for(const n of names){ const i=headers.indexOf(n); if(i>=0) return i; }
+    for(const n of names){ const i=headers.findIndex(h=>h.includes(n)); if(i>=0) return i; } return -1; };
+  const ci={
+    name:find("name","product","item","produce"),
+    qty:find("quantity","qty","on hand","onhand","stock","count","amount"),
+    unit:find("unit","uom","units","measure"),
+    price:find("price","sell","sale price","selling"),
+    cost:find("cost","buy","wholesale"),
+    cat:find("category","type","group"),
+    low:find("low stock","low","reorder","min","minimum"),
+  };
+  if(ci.name<0) throw new Error("No name column");
+  const out=[];
+  for(let r=1;r<rows.length;r++){
+    const cells=rows[r];
+    const name=(cells[ci.name]||"").trim(); if(!name) continue;
+    const numv=i=>{ if(i<0)return undefined; const v=parseFloat(String(cells[i]||"").replace(/[$,]/g,"")); return isNaN(v)?undefined:v; };
+    const strv=i=> i<0?undefined:(cells[i]||"").trim();
+    const obj={name, qty:numv(ci.qty)??0, low:numv(ci.low)??0, cost:numv(ci.cost)??0, price:numv(ci.price)??0,
+               category:strv(ci.cat)??"", unit:strv(ci.unit)??""};
+    out.push(obj);
+  }
+  return out;
+}
+function exportInventoryCSV(){
+  const head=["name","category","unit","quantity","low_stock","cost","price"];
+  const lines=[head.join(",")];
+  db.products.forEach(p=>{
+    lines.push([p.name,p.category,p.unit,p.qty,p.low,p.cost,p.price]
+      .map(v=>{ const s=String(v??""); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }).join(","));
+  });
+  downloadFile("farmlind_inventory.csv",lines.join("\n"),"text/csv");
+  toast("Inventory exported");
+}
+
+/* ============================================================
+   CUSTOMERS
+   ============================================================ */
+function renderCustomers(){
+  const q=(document.getElementById("custSearch").value||"").toLowerCase();
+  let items=db.customers.filter(c=>c.name.toLowerCase().includes(q)||(c.contact||"").toLowerCase().includes(q));
+  items.sort((a,b)=>a.name.localeCompare(b.name));
+  const wrap=document.getElementById("custTableWrap");
+  if(items.length===0){ wrap.innerHTML=emptyState("🏢","No customers","Add the companies you sell to."); return; }
+  wrap.innerHTML=`<table><thead><tr>
+    <th>Company</th><th>Contact</th><th>Phone</th><th>Email</th><th class="num">Orders</th><th></th></tr></thead><tbody>
+    ${items.map(c=>{ const cnt=db.sales.filter(s=>s.customerId===c.id).length; return `<tr class="clickable" onclick="openCustomerModal('${c.id}')">
+      <td><strong>${esc(c.name)}</strong></td><td>${esc(c.contact||"—")}</td>
+      <td>${esc(c.phone||"—")}</td><td>${esc(c.email||"—")}</td>
+      <td class="num">${cnt}</td>
+      <td class="right"><button class="btn ghost small">Edit</button></td></tr>`; }).join("")}
+    </tbody></table>`;
+}
+function openCustomerModal(id){
+  const del=document.getElementById("custDeleteBtn");
+  if(id){
+    const c=customerById(id);
+    document.getElementById("customerModalTitle").textContent="Edit Customer";
+    document.getElementById("custId").value=c.id;
+    document.getElementById("custName").value=c.name;
+    document.getElementById("custContact").value=c.contact||"";
+    document.getElementById("custPhone").value=c.phone||"";
+    document.getElementById("custEmail").value=c.email||"";
+    document.getElementById("custNotes").value=c.notes||"";
+    del.style.display="inline-flex";
+  }else{
+    document.getElementById("customerModalTitle").textContent="Add Customer";
+    ["custId","custName","custContact","custPhone","custEmail","custNotes"].forEach(i=>document.getElementById(i).value="");
+    del.style.display="none";
+  }
+  document.getElementById("customerModal").classList.add("open");
+  setTimeout(()=>document.getElementById("custName").focus(),50);
+}
+function saveCustomer(){
+  const name=document.getElementById("custName").value.trim();
+  if(!name){ toast("Please enter a company name","warn"); return; }
+  const id=document.getElementById("custId").value;
+  const data={ name,
+    contact:document.getElementById("custContact").value.trim(),
+    phone:document.getElementById("custPhone").value.trim(),
+    email:document.getElementById("custEmail").value.trim(),
+    notes:document.getElementById("custNotes").value.trim() };
+  if(id){ Object.assign(customerById(id),data); toast("Customer updated"); }
+  else{ db.customers.push({id:uid(),...data}); toast("Customer added"); }
+  save(); closeModal("customerModal"); renderCustomers();
+}
+function deleteCustomer(){
+  const id=document.getElementById("custId").value;
+  const c=customerById(id);
+  if(!confirm(`Delete "${c.name}"?`)) return;
+  db.customers=db.customers.filter(x=>x.id!==id);
+  save(); closeModal("customerModal"); renderCustomers(); toast("Customer deleted");
+}
+
+/* ============================================================
+   NEW SALE  (the core feature)
+   ============================================================ */
+function renderSale(){
+  // customer dropdown
+  const sel=document.getElementById("saleCustomer");
+  const cur=sel.value;
+  sel.innerHTML=`<option value="">— Select customer —</option>`+
+    db.customers.slice().sort((a,b)=>a.name.localeCompare(b.name))
+      .map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("");
+  if(cur) sel.value=cur;
+  if(saleLines.length===0) addLineItem(true);
+  else renderLineItems();
+  if(!document.getElementById("saleDate").value){
+    document.getElementById("saleDate").value=new Date().toISOString().slice(0,10);
+  }
+}
+function addLineItem(skipRender){
+  saleLines.push({productId:"",qty:1,price:0});
+  if(!skipRender) renderLineItems();
+  recalcSale();
+}
+function removeLineItem(i){ saleLines.splice(i,1); if(saleLines.length===0) addLineItem(true); renderLineItems(); }
+function renderLineItems(){
+  const opts=db.products.slice().sort((a,b)=>a.name.localeCompare(b.name))
+    .map(p=>`<option value="${p.id}">${esc(p.name)} (${num(p.qty)} ${esc(p.unit||"")} on hand)</option>`).join("");
+  const wrap=document.getElementById("lineItems");
+  wrap.innerHTML=saleLines.map((ln,i)=>`
+    <div class="lineitem">
+      <label class="field" style="margin-bottom:0"><span class="lab">Product</span>
+        <select onchange="lineProductChange(${i},this.value)">
+          <option value="">— choose —</option>${opts}
+        </select></label>
+      <label class="field" style="margin-bottom:0"><span class="lab">Qty</span>
+        <input type="number" min="0" step="any" value="${ln.qty}" oninput="lineQty(${i},this.value)"></label>
+      <label class="field" style="margin-bottom:0"><span class="lab">Price/unit</span>
+        <input type="number" min="0" step="any" value="${ln.price}" oninput="linePrice(${i},this.value)"></label>
+      <button class="btn ghost rm" title="Remove" onclick="removeLineItem(${i})" style="margin-bottom:2px">✕</button>
+    </div>
+    <div class="hint" id="lineHint${i}" style="margin-top:-4px;margin-bottom:12px"></div>
+  `).join("");
+  // set selected products
+  saleLines.forEach((ln,i)=>{ const sel=wrap.querySelectorAll("select")[i]; if(sel) sel.value=ln.productId; });
+  saleLines.forEach((_,i)=>updateLineHint(i));
+}
+function lineProductChange(i,pid){
+  saleLines[i].productId=pid;
+  const p=productById(pid);
+  if(p && !saleLines[i].priceEdited){ saleLines[i].price=p.price||0; }
+  renderLineItems(); recalcSale();
+}
+function lineQty(i,v){ saleLines[i].qty=+v||0; updateLineHint(i); recalcSale(); }
+function linePrice(i,v){ saleLines[i].price=+v||0; saleLines[i].priceEdited=true; recalcSale(); }
+function updateLineHint(i){
+  const ln=saleLines[i]; const hint=document.getElementById("lineHint"+i); if(!hint) return;
+  const p=productById(ln.productId);
+  if(!p){ hint.innerHTML=""; return; }
+  const have=Math.max(0,p.qty); const short=Math.max(0,ln.qty-have);
+  if(short>0){
+    hint.innerHTML=`<span style="color:var(--amber);font-weight:700">⚠ Short ${num(short)} ${esc(p.unit||"")}</span>
+      <span class="muted">— ${num(have)} on hand, need to buy ${num(short)} more</span>`;
+  }else{
+    hint.innerHTML=`<span style="color:var(--green);font-weight:600">✓ In stock</span>
+      <span class="muted">— ${num(have)} ${esc(p.unit||"")} on hand</span>`;
+  }
+}
+function recalcSale(){
+  let items=0,units=0,total=0;
+  saleLines.forEach(ln=>{ if(ln.productId&&ln.qty>0){ items++; units+=ln.qty; total+=ln.qty*ln.price; } });
+  document.getElementById("sumItems").textContent=items;
+  document.getElementById("sumUnits").textContent=num(units);
+  document.getElementById("sumTotal").textContent=money(total);
+
+  // shortage panel — accounts for stock already committed to OTHER open orders
+  const committed={};
+  db.sales.filter(s=>s.status==="open"&&s.id!==editingSaleId).forEach(s=>{
+    s.items.forEach(it=>committed[it.productId]=(committed[it.productId]||0)+it.qty);
+  });
+  const shortMap={};
+  saleLines.forEach(ln=>{
+    if(!ln.productId||ln.qty<=0) return;
+    const p=productById(ln.productId); if(!p) return;
+    const avail=Math.max(0, Math.max(0,p.qty)-(committed[ln.productId]||0));
+    const short=Math.max(0, ln.qty - avail);
+    if(short>0){
+      if(!shortMap[ln.productId]) shortMap[ln.productId]={name:p.name,unit:p.unit,short:0};
+      shortMap[ln.productId].short+=short;
+    }
+  });
+  const list=Object.values(shortMap);
+  const panel=document.getElementById("shortagePanel");
+  if(list.length===0){
+    panel.innerHTML=`<div class="shortage-box none"><h4>✅ Fully in stock</h4>
+      <p class="muted" style="font-size:13px">You have enough on hand to fill this whole order.</p></div>`;
+  }else{
+    const anyCommitted=Object.keys(committed).length>0;
+    panel.innerHTML=`<div class="shortage-box has">
+      <h4>🛒 Buy before this sale</h4>
+      ${list.map(s=>`<div class="shortage-line"><span>${esc(s.name)}</span>
+        <span class="qty">${num(s.short)} ${esc(s.unit||"")}</span></div>`).join("")}
+      ${anyCommitted?`<p class="hint" style="margin-top:8px">Includes stock already promised to other open orders.</p>`:""}
+    </div>`;
+  }
+}
+function resetSale(ask){
+  if(ask && saleLines.some(l=>l.productId) && !confirm("Clear this order?")) return;
+  saleLines=[]; editingSaleId=null;
+  document.getElementById("saleHeading").textContent="New Sale";
+  document.getElementById("saleCustomer").value="";
+  document.getElementById("saleNotes").value="";
+  document.getElementById("saleDate").value=new Date().toISOString().slice(0,10);
+  addLineItem(true); renderLineItems(); recalcSale();
+}
+function saveSale(){
+  const customerId=document.getElementById("saleCustomer").value;
+  if(!customerId){ toast("Please pick a customer","warn"); return; }
+  const items=saleLines.filter(l=>l.productId&&l.qty>0)
+    .map(l=>{ const p=productById(l.productId); return {productId:l.productId,name:p?p.name:"",qty:l.qty,price:l.price}; });
+  if(items.length===0){ toast("Add at least one product","warn"); return; }
+
+  if(editingSaleId){
+    const s=db.sales.find(x=>x.id===editingSaleId);
+    s.customerId=customerId; s.date=document.getElementById("saleDate").value;
+    s.notes=document.getElementById("saleNotes").value.trim(); s.items=items;
+    toast("Order updated");
+  }else{
+    db.sales.push({ id:uid(),created:Date.now(),customerId,
+      date:document.getElementById("saleDate").value,
+      notes:document.getElementById("saleNotes").value.trim(),
+      status:"open",items });
+  }
+  save();
+  const sh=globalShortages();
+  resetSale(false);
+  go("orders");
+  if(sh.length>0) toast(`Order saved — ${sh.length} item(s) to buy. Check the shopping list.`,"warn");
+  else toast("Order saved ✓");
+}
+
+/* ============================================================
+   ORDERS
+   ============================================================ */
+function renderOrders(){
+  const q=(document.getElementById("orderSearch").value||"").toLowerCase();
+  const f=document.getElementById("orderFilter").value;
+  let list=[...db.sales].sort((a,b)=>b.created-a.created);
+  if(f==="open") list=list.filter(s=>s.status==="open");
+  if(f==="fulfilled") list=list.filter(s=>s.status==="fulfilled");
+  if(f==="short") list=list.filter(s=>s.status==="open"&&shortagesForOrder(s).length>0);
+  if(q) list=list.filter(s=>customerName(s.customerId).toLowerCase().includes(q)
+     || (s.notes||"").toLowerCase().includes(q)
+     || s.items.some(it=>(it.name||"").toLowerCase().includes(q)));
+
+  const wrap=document.getElementById("ordersList");
+  if(list.length===0){ wrap.innerHTML=emptyState("📦","No orders found","Try a different filter, or create a new sale."); updateBadges(); return; }
+  wrap.innerHTML=`<div class="table-wrap"><table><thead><tr>
+    <th>Delivery</th><th>Customer</th><th>Items</th><th class="num">Total</th><th>Status</th><th>To buy</th><th></th></tr></thead><tbody>
+    ${list.map(o=>{ const sh=shortagesForOrder(o);
+      const shTxt = o.status==="fulfilled" ? '<span class="muted">—</span>'
+        : sh.length? sh.map(s=>`${num(s.short)} ${esc(s.unit||"")} ${esc(s.name)}`).join("<br>") : '<span class="pill ok">none</span>';
+      return `<tr class="clickable" onclick="openOrder('${o.id}')">
+        <td>${esc(o.date||"—")}</td><td><strong>${esc(customerName(o.customerId))}</strong></td>
+        <td>${o.items.length}</td><td class="num">${money(orderTotal(o))}</td>
+        <td>${statusPill(o)}</td><td style="font-size:13px">${shTxt}</td>
+        <td class="right"><button class="btn ghost small">View →</button></td></tr>`; }).join("")}
+    </tbody></table></div>`;
+  updateBadges();
+}
+function openOrder(id){
+  const o=db.sales.find(x=>x.id===id); if(!o) return;
+  document.getElementById("orderModalTitle").innerHTML=`Order — ${esc(customerName(o.customerId))} ${statusPill(o)}`;
+  const sh=shortagesForOrder(o);
+  const body=document.getElementById("orderModalBody");
+  body.innerHTML=`
+    <div class="row-flex" style="justify-content:space-between;margin-bottom:14px">
+      <div><div class="muted" style="font-size:12px">DELIVERY DATE</div><strong>${esc(o.date||"—")}</strong></div>
+      <div><div class="muted" style="font-size:12px">TOTAL</div><strong style="font-size:18px">${money(orderTotal(o))}</strong></div>
+    </div>
+    ${o.notes?`<p class="muted" style="margin-bottom:14px">📝 ${esc(o.notes)}</p>`:""}
+    <div class="table-wrap" style="margin-bottom:14px"><table><thead><tr>
+      <th>Product</th><th class="num">Qty</th><th class="num">On hand</th><th class="num">Short</th><th class="num">Price</th><th class="num">Line</th>
+      </tr></thead><tbody>
+      ${o.items.map(it=>{ const p=productById(it.productId); const have=p?Math.max(0,p.qty):0;
+        const short=o.status==="fulfilled"?0:Math.max(0,it.qty-have);
+        return `<tr><td>${esc(it.name)}</td><td class="num">${num(it.qty)}</td>
+          <td class="num">${num(have)}</td>
+          <td class="num">${short>0?`<span style="color:var(--amber);font-weight:700">${num(short)}</span>`:"—"}</td>
+          <td class="num">${money(it.price)}</td><td class="num">${money(it.qty*it.price)}</td></tr>`; }).join("")}
+    </tbody></table></div>
+    ${ o.status!=="fulfilled" && sh.length? `<div class="shortage-box has"><h4>🛒 Buy before delivery</h4>
+        ${sh.map(s=>`<div class="shortage-line"><span>${esc(s.name)}</span><span class="qty">${num(s.short)} ${esc(s.unit||"")}</span></div>`).join("")}
+       </div>` : o.status!=="fulfilled" ? `<div class="shortage-box none"><h4>✅ Fully in stock</h4></div>`:"" }
+  `;
+  const foot=document.getElementById("orderModalFoot");
+  foot.innerHTML=`
+    <button class="btn danger small" style="margin-right:auto" onclick="deleteOrder('${o.id}')">Delete</button>
+    ${o.status==="open"?`<button class="btn secondary" onclick="editOrder('${o.id}')">Edit</button>
+      <button class="btn" onclick="fulfillOrder('${o.id}')">✔ Mark delivered &amp; deduct stock</button>`
+      :`<button class="btn secondary" onclick="reopenOrder('${o.id}')">Reopen</button>`}
+  `;
+  document.getElementById("orderModal").classList.add("open");
+}
+function fulfillOrder(id){
+  const o=db.sales.find(x=>x.id===id); if(!o) return;
+  const sh=shortagesForOrder(o);
+  let msg="Mark this order delivered and subtract these quantities from inventory?";
+  if(sh.length>0) msg="⚠ You're still short on some items. Mark delivered anyway and subtract what you can (stock may go negative)?";
+  if(!confirm(msg)) return;
+  o.items.forEach(it=>{ const p=productById(it.productId); if(p) p.qty=+(p.qty-it.qty).toFixed(4); });
+  o.status="fulfilled"; o.fulfilledAt=Date.now();
+  save(); closeModal("orderModal"); renderOrders(); renderDashboard(); toast("Delivered ✓ Inventory updated");
+}
+function reopenOrder(id){
+  const o=db.sales.find(x=>x.id===id); if(!o) return;
+  if(!confirm("Reopen this order and add the quantities back to inventory?")) return;
+  o.items.forEach(it=>{ const p=productById(it.productId); if(p) p.qty=+(p.qty+it.qty).toFixed(4); });
+  o.status="open"; delete o.fulfilledAt;
+  save(); closeModal("orderModal"); renderOrders(); toast("Order reopened");
+}
+function editOrder(id){
+  const o=db.sales.find(x=>x.id===id); if(!o) return;
+  editingSaleId=id;
+  saleLines=o.items.map(it=>({productId:it.productId,qty:it.qty,price:it.price,priceEdited:true}));
+  closeModal("orderModal"); go("newsale");
+  document.getElementById("saleHeading").textContent="Edit Order";
+  document.getElementById("saleCustomer").value=o.customerId;
+  document.getElementById("saleDate").value=o.date||"";
+  document.getElementById("saleNotes").value=o.notes||"";
+  renderLineItems(); recalcSale();
+}
+function deleteOrder(id){
+  if(!confirm("Delete this order permanently?")) return;
+  const o=db.sales.find(x=>x.id===id);
+  if(o&&o.status==="fulfilled"&&confirm("Add its quantities back to inventory?")){
+    o.items.forEach(it=>{ const p=productById(it.productId); if(p) p.qty=+(p.qty+it.qty).toFixed(4); });
+  }
+  db.sales=db.sales.filter(x=>x.id!==id);
+  save(); closeModal("orderModal"); renderOrders(); renderDashboard(); toast("Order deleted");
+}
+
+/* ============================================================
+   BACKUP / RESTORE  (so data isn't trapped in one browser)
+   ============================================================ */
+function exportBackup(){
+  downloadFile("farmlind_backup_"+new Date().toISOString().slice(0,10)+".json",
+    JSON.stringify(db,null,2),"application/json");
+  toast("Backup downloaded");
+}
+function restoreBackup(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.products||!data.customers||!data.sales) throw new Error("bad file");
+      if(!confirm("Restore this backup? It will replace all current data.")) return;
+      db=data; save(); go("dashboard"); toast("Backup restored ✓");
+    }catch(err){ toast("That's not a valid backup file","bad"); }
+  };
+  reader.readAsText(file);
+  ev.target.value="";
+}
+function downloadFile(name,content,type){
+  const blob=new Blob([content],{type});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---------- modal utils ---------- */
+function closeModal(id){ document.getElementById(id).classList.remove("open"); }
+document.querySelectorAll(".modal-bg").forEach(bg=>{
+  bg.addEventListener("click",e=>{ if(e.target===bg) bg.classList.remove("open"); });
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".modal-bg.open").forEach(m=>m.classList.remove("open")); });
+
+/* ---------- boot ---------- */
+load();
+renderDashboard();
+updateBadges();
+</script>
+</body>
+</html>
