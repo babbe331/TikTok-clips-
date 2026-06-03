@@ -219,6 +219,8 @@
   <button data-tab="newsale">🧾 New Sale</button>
   <button data-tab="orders">📦 Orders <span class="badge" id="ordersBadge" style="display:none"></span></button>
   <button data-tab="inventory">🥕 Inventory <span class="badge" id="invBadge" style="display:none"></span></button>
+  <button data-tab="pricing">💲 Pricing</button>
+  <button data-tab="earnings">💰 Earnings</button>
   <button data-tab="customers">🏢 Customers</button>
 </nav>
 
@@ -229,7 +231,7 @@
     <div class="pagehead-row">
       <div><h2 class="pagehead">Welcome back 👋</h2><p>Here's everything at a glance.</p></div>
       <div class="row-flex">
-        <button class="btn secondary" onclick="document.getElementById('csvFile').click()">⬆ Import inventory</button>
+        <button class="btn secondary" onclick="document.getElementById('csvFile').click()">⬆ Update inventory</button>
         <button class="btn" onclick="go('newsale')">＋ Start a New Sale</button>
       </div>
     </div>
@@ -324,7 +326,7 @@
     <div class="pagehead-row">
       <div><h2 class="pagehead">Inventory</h2><p>Everything you have on hand right now.</p></div>
       <div class="row-flex">
-        <button class="btn secondary" onclick="document.getElementById('csvFile').click()">⬆ Import spreadsheet(s)</button>
+        <button class="btn secondary" onclick="document.getElementById('csvFile').click()">⬆ Update inventory</button>
         <input type="file" id="csvFile" accept=".csv,text/csv" multiple style="display:none" onchange="importCSV(event)">
         <button class="btn secondary" onclick="exportInventoryCSV()">⬇ Export CSV</button>
         <button class="btn" onclick="openProductModal()">＋ Add Product</button>
@@ -340,10 +342,10 @@
     </div>
     <div class="table-wrap" id="invTableWrap"></div>
     <details class="help">
-      <summary>How do I import my spreadsheets?</summary>
+      <summary>How do I update my inventory from a spreadsheet?</summary>
       <div>
         Save each spreadsheet as a <code class="k">.csv</code> file (in Excel or Google Sheets: <em>File → Download/Save As → CSV</em>),
-        then click <strong>Import spreadsheet(s)</strong>. You can pick <strong>several files at once</strong> — hold
+        then click <strong>Update inventory</strong>. You can pick <strong>several files at once</strong> — hold
         <code class="k">Ctrl</code>/<code class="k">⌘</code> while selecting. We'll look for columns named
         <code class="k">name</code>, <code class="k">quantity</code> (or <code class="k">qty</code>/<code class="k">on hand</code>),
         <code class="k">unit</code>, <code class="k">price</code>, <code class="k">cost</code>, <code class="k">category</code>,
@@ -353,6 +355,54 @@
         <strong>Add &amp; update</strong> keeps what's there and updates matching items by name.
       </div>
     </details>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section class="page" id="page-pricing">
+    <div class="pagehead-row">
+      <div><h2 class="pagehead">Pricing</h2><p>Your costs and sell prices. Import a price list to update them.</p></div>
+      <div class="row-flex">
+        <button class="btn" onclick="document.getElementById('priceFile').click()">⬆ Import price list</button>
+        <input type="file" id="priceFile" accept=".csv,text/csv" multiple style="display:none" onchange="importPriceCSV(event)">
+        <button class="btn secondary" onclick="exportPricingCSV()">⬇ Export price list</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="search"><input id="priceSearch" placeholder="Search products…" oninput="renderPricing()"></div>
+    </div>
+    <div class="table-wrap" id="priceTableWrap"></div>
+    <details class="help">
+      <summary>How do I import a price list?</summary>
+      <div>
+        Save your price sheet as a <code class="k">.csv</code> file, then click <strong>Import price list</strong>
+        (you can pick <strong>several files at once</strong>). We match rows to your products by
+        <code class="k">name</code> and update their <code class="k">price</code> (sell price) and <code class="k">cost</code>.
+        You'll choose whether to <strong>only update products you already have</strong>, or to
+        <strong>also add any new products</strong> found in the price list.<br><br>
+        Recognized columns (any order, capitalization doesn't matter):
+        <code class="k">name</code>, <code class="k">price</code> (or <code class="k">sell</code>),
+        <code class="k">cost</code>, and optionally <code class="k">category</code> / <code class="k">unit</code>.
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ EARNINGS ============ -->
+  <section class="page" id="page-earnings">
+    <div class="pagehead-row">
+      <div><h2 class="pagehead">Earnings</h2><p>What each sale brings in — before your margin (the sale total) and after (your profit).</p></div>
+      <div class="row-flex">
+        <select id="earnFilter" onchange="renderEarnings()" style="padding:10px 12px;border:1px solid var(--line);border-radius:9px">
+          <option value="all">All orders</option>
+          <option value="fulfilled">Delivered only</option>
+          <option value="open">Open only</option>
+        </select>
+        <button class="btn secondary" onclick="exportEarningsCSV()">⬇ Export</button>
+      </div>
+    </div>
+    <div class="stats" id="earnStats"></div>
+    <div class="table-wrap" id="earnTableWrap"></div>
+    <p class="hint" style="margin-top:10px">Profit is the sale total minus your cost per unit (from the Pricing tab).
+      Set a cost on each product to see accurate profit.</p>
   </section>
 
   <!-- ============ CUSTOMERS ============ -->
@@ -458,6 +508,31 @@
       <button class="btn secondary" onclick="cancelImport()">Cancel</button>
       <button class="btn secondary" onclick="runImport('merge')">➕ Add &amp; update</button>
       <button class="btn danger" onclick="runImport('replace')">🔄 Replace everything</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PRICE IMPORT MODAL ============ -->
+<div class="modal-bg" id="priceImportModal">
+  <div class="modal">
+    <div class="mhead"><h3>Import price list</h3><button class="xbtn" onclick="cancelPriceImport()">×</button></div>
+    <div class="mbody">
+      <p id="priceImportSummary" style="margin-bottom:16px"></p>
+      <div class="shortage-box none" style="margin-bottom:6px">
+        <h4>💲 Update matching products only</h4>
+        <p class="muted" style="font-size:13.5px">Change the cost and sell price on products you already have
+        (matched by name). Nothing is added or removed. <em>Quantities on hand are left untouched.</em></p>
+      </div>
+      <div class="shortage-box has" style="margin-bottom:0">
+        <h4>➕ Update &amp; add new products</h4>
+        <p class="muted" style="font-size:13.5px">Same as above, plus any product in the price list you don't
+        have yet gets added (with 0 on hand) so you can sell it right away.</p>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn secondary" onclick="cancelPriceImport()">Cancel</button>
+      <button class="btn secondary" onclick="runPriceImport('add')">➕ Update &amp; add new</button>
+      <button class="btn" onclick="runPriceImport('update')">💲 Update matches only</button>
     </div>
   </div>
 </div>
@@ -601,6 +676,8 @@ function go(tab){
   if(tab==="customers") renderCustomers();
   if(tab==="orders") renderOrders();
   if(tab==="newsale") renderSale();
+  if(tab==="pricing") renderPricing();
+  if(tab==="earnings") renderEarnings();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 document.getElementById("tabs").addEventListener("click",e=>{
@@ -866,6 +943,153 @@ function exportInventoryCSV(){
   });
   downloadFile("farmlind_inventory.csv",lines.join("\n"),"text/csv");
   toast("Inventory exported");
+}
+
+/* ============================================================
+   PRICING  (costs & sell prices; imports price-list spreadsheets)
+   ============================================================ */
+function renderPricing(){
+  const q=(document.getElementById("priceSearch").value||"").toLowerCase();
+  let items=db.products.filter(p=>p.name.toLowerCase().includes(q)||(p.category||"").toLowerCase().includes(q));
+  items.sort((a,b)=>a.name.localeCompare(b.name));
+  const wrap=document.getElementById("priceTableWrap");
+  if(items.length===0){ wrap.innerHTML=emptyState("💲","No products yet","Import a price list, or add products in Inventory first."); return; }
+  wrap.innerHTML=`<table><thead><tr>
+    <th>Product</th><th>Category</th><th>Unit</th>
+    <th class="num">Your cost</th><th class="num">Sell price</th><th class="num">Margin</th><th class="num">Margin %</th><th></th></tr></thead><tbody>
+    ${items.map(p=>{
+      const margin=(p.price||0)-(p.cost||0);
+      const pct = p.price>0 ? (margin/p.price*100) : null;
+      const mcls = margin<0?'style="color:var(--red);font-weight:700"':(margin>0?'style="color:var(--green-dark);font-weight:700"':'');
+      return `<tr class="clickable" onclick="openProductModal('${p.id}')">
+        <td><strong>${esc(p.name)}</strong></td>
+        <td><span class="tag-cat">${esc(p.category||"—")}</span></td>
+        <td>${esc(p.unit||"")}</td>
+        <td class="num">${p.cost?money(p.cost):"—"}</td>
+        <td class="num">${p.price?money(p.price):"—"}</td>
+        <td class="num" ${mcls}>${(p.price||p.cost)?money(margin):"—"}</td>
+        <td class="num">${pct===null?"—":pct.toFixed(0)+"%"}</td>
+        <td class="right"><button class="btn ghost small">Edit</button></td></tr>`; }).join("")}
+    </tbody></table>`;
+}
+function exportPricingCSV(){
+  const head=["name","category","unit","cost","price"];
+  const lines=[head.join(",")];
+  db.products.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(p=>{
+    lines.push([p.name,p.category,p.unit,p.cost,p.price]
+      .map(v=>{ const s=String(v??""); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }).join(","));
+  });
+  downloadFile("farmlind_price_list.csv",lines.join("\n"),"text/csv");
+  toast("Price list exported");
+}
+
+/* ---------- price-list import ---------- */
+let priceStaging=[];
+function importPriceCSV(ev){
+  const files=Array.from(ev.target.files||[]); if(!files.length) return;
+  priceStaging=[];
+  let pending=files.length, hadError=false;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      try{ priceStaging.push(...rowsFromCSV(e.target.result)); }
+      catch(err){ hadError=true; console.error(err); }
+      if(--pending===0) finishPriceReading(files.length,hadError);
+    };
+    reader.onerror=()=>{ hadError=true; if(--pending===0) finishPriceReading(files.length,hadError); };
+    reader.readAsText(file);
+  });
+  ev.target.value="";
+}
+function finishPriceReading(fileCount,hadError){
+  const byName={}; priceStaging.forEach(p=>{ byName[p.name.toLowerCase()]=p; });
+  priceStaging=Object.values(byName);
+  if(priceStaging.length===0){ toast(hadError?"Couldn't read those files":"No products found in those files","bad"); return; }
+  document.getElementById("priceImportSummary").innerHTML=
+    `Found <strong>${priceStaging.length}</strong> product(s) across <strong>${fileCount}</strong> file(s)`+
+    (hadError?` <span style="color:var(--red)">(some files couldn't be read)</span>`:"")+
+    `. How should we apply the prices?`;
+  document.getElementById("priceImportModal").classList.add("open");
+}
+function cancelPriceImport(){ priceStaging=[]; closeModal("priceImportModal"); }
+function runPriceImport(mode){
+  let updated=0,added=0,skipped=0;
+  priceStaging.forEach(np=>{
+    const existing=db.products.find(p=>p.name.toLowerCase()===np.name.toLowerCase());
+    if(existing){
+      existing.price=np.price; existing.cost=np.cost;
+      if(np.category) existing.category=np.category;
+      if(np.unit) existing.unit=np.unit;
+      updated++;
+    }else if(mode==="add"){
+      db.products.push({id:uid(),name:np.name,category:np.category||"",unit:np.unit||"",
+        qty:0,low:0,cost:np.cost||0,price:np.price||0});
+      added++;
+    }else skipped++;
+  });
+  save(); closeModal("priceImportModal"); renderPricing(); renderInventory(); renderDashboard();
+  let msg=`Prices updated ✓ ${updated} updated`;
+  if(added) msg+=`, ${added} added`;
+  if(skipped) msg+=`, ${skipped} not found (skipped)`;
+  toast(msg);
+  priceStaging=[];
+}
+
+/* ============================================================
+   EARNINGS  (revenue before margin, and profit after cost)
+   ============================================================ */
+function saleCost(o){
+  return o.items.reduce((s,it)=>{ const p=productById(it.productId); return s + it.qty*((p&&p.cost)||0); },0);
+}
+function earningsList(){
+  const f=document.getElementById("earnFilter").value;
+  let list=[...db.sales];
+  if(f==="fulfilled") list=list.filter(s=>s.status==="fulfilled");
+  if(f==="open") list=list.filter(s=>s.status==="open");
+  return list.sort((a,b)=>b.created-a.created);
+}
+function renderEarnings(){
+  const list=earningsList();
+  let totRev=0,totCost=0;
+  list.forEach(o=>{ totRev+=orderTotal(o); totCost+=saleCost(o); });
+  const totProfit=totRev-totCost;
+  const pct = totRev>0 ? (totProfit/totRev*100) : null;
+  document.getElementById("earnStats").innerHTML=`
+    ${stat("Sales total (before)",money(totRev),list.length+" order(s)","")}
+    ${stat("Your cost",money(totCost),"what the goods cost you","")}
+    ${stat("Profit (after)",money(totProfit),"what you keep",totProfit>=0?"good":"bad")}
+    ${stat("Avg margin",pct===null?"—":pct.toFixed(0)+"%","profit ÷ sales",pct!==null&&pct<0?"bad":"")}
+  `;
+  const wrap=document.getElementById("earnTableWrap");
+  if(list.length===0){ wrap.innerHTML=emptyState("💰","No sales yet","Create a sale and your earnings show up here."); return; }
+  wrap.innerHTML=`<table><thead><tr>
+    <th>Date</th><th>Customer</th><th>Status</th>
+    <th class="num">Sale total<br><span style="font-weight:500;text-transform:none">(before margin)</span></th>
+    <th class="num">Cost</th>
+    <th class="num">Profit<br><span style="font-weight:500;text-transform:none">(after margin)</span></th>
+    <th class="num">Margin %</th></tr></thead><tbody>
+    ${list.map(o=>{ const rev=orderTotal(o), cost=saleCost(o), profit=rev-cost;
+      const pc = rev>0 ? (profit/rev*100) : null;
+      const pcls = profit<0?'style="color:var(--red);font-weight:700"':'style="color:var(--green-dark);font-weight:700"';
+      return `<tr class="clickable" onclick="openOrder('${o.id}')">
+        <td>${esc(o.date||"—")}</td><td><strong>${esc(customerName(o.customerId))}</strong></td>
+        <td>${statusPill(o)}</td>
+        <td class="num">${money(rev)}</td>
+        <td class="num">${cost?money(cost):'<span class="muted">—</span>'}</td>
+        <td class="num" ${pcls}>${money(profit)}</td>
+        <td class="num">${pc===null?"—":pc.toFixed(0)+"%"}</td></tr>`; }).join("")}
+    </tbody></table>`;
+}
+function exportEarningsCSV(){
+  const head=["date","customer","status","sale_total_before","cost","profit_after","margin_pct"];
+  const lines=[head.join(",")];
+  earningsList().forEach(o=>{ const rev=orderTotal(o),cost=saleCost(o),profit=rev-cost;
+    const pc = rev>0 ? (profit/rev*100).toFixed(1) : "";
+    lines.push([o.date||"",customerName(o.customerId),o.status,rev.toFixed(2),cost.toFixed(2),profit.toFixed(2),pc]
+      .map(v=>{ const s=String(v??""); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }).join(","));
+  });
+  downloadFile("farmlind_earnings.csv",lines.join("\n"),"text/csv");
+  toast("Earnings exported");
 }
 
 /* ============================================================
