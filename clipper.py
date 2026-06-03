@@ -309,7 +309,7 @@ if __name__ == "__main__":
     token = helix_token()
     print("Token OK\n")
 
-    for login in ["valkyrae", "ludwig", "ninja"]:
+    for login in CREATORS:
         try:
             process_creator(login, token)
         except Exception as e:
