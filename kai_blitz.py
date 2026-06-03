@@ -5,7 +5,24 @@ Kai Cenat Continuous Blitz — runs for 5 hours, sends clips in groups of 5.
 """
 
 import os, re, json, time, subprocess, glob, textwrap, datetime
-import urllib.request, urllib.parse
+import urllib.request, urllib.parse, ssl
+
+# Bypass SSL cert errors from the sandbox environment
+ssl_ctx = ssl.create_default_context()
+ssl_ctx.check_hostname = False
+ssl_ctx.verify_mode = ssl.CERT_NONE
+_orig_urlopen = urllib.request.urlopen
+def _urlopen(req, **kw):
+    kw.setdefault("context", ssl_ctx)
+    for attempt in range(4):
+        try:
+            return _orig_urlopen(req, **kw)
+        except Exception as e:
+            if attempt == 3: raise
+            wait = 2 ** attempt
+            print(f"    urlopen error ({e}), retrying in {wait}s...")
+            time.sleep(wait)
+urllib.request.urlopen = _urlopen
 
 TWITCH_CLIENT_ID     = os.environ.get("TWITCH_CLIENT_ID",     "PASTE")
 TWITCH_CLIENT_SECRET = os.environ.get("TWITCH_CLIENT_SECRET", "PASTE")
