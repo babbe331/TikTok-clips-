@@ -41,10 +41,10 @@
   .card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
     border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
   h1{font-size:23px;margin:0 0 6px}
-  h2{font-size:17px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  h2{font-size:17px;margin:0 0 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
   label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px;font-weight:600}
-  input,select,textarea{width:100%;background:#141832;border:1px solid var(--line);color:var(--text);
+  input,textarea{width:100%;background:#141832;border:1px solid var(--line);color:var(--text);
     border-radius:12px;padding:13px 14px;font-size:16px;font-family:inherit;outline:none;transition:border-color .2s}
   input:focus,textarea:focus{border-color:var(--accent)}
   textarea{resize:vertical;min-height:96px}
@@ -56,7 +56,6 @@
   .btn.ghostgreen{background:linear-gradient(135deg,var(--green),#7af0c0);color:#0c2a1e;box-shadow:0 8px 20px rgba(61,220,151,.3)}
   .hidden{display:none!important}
 
-  /* Welcome banner */
   .welcome-banner{display:flex;align-items:center;gap:14px;
     background:linear-gradient(135deg,rgba(255,122,89,.22),rgba(255,93,143,.16));
     border:1px solid rgba(255,122,89,.32);border-radius:18px;padding:16px 18px;margin-bottom:14px}
@@ -64,35 +63,40 @@
   .welcome-banner .wtitle{font-size:22px;font-weight:900;margin:0}
   .welcome-banner .wsub{font-size:13px;color:var(--accent2);margin:2px 0 0;font-weight:600}
 
-  .datechip{display:inline-flex;align-items:center;gap:8px;background:#141832;border:1px solid var(--line);
-    color:var(--accent2);padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:8px}
   .pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
     padding:4px 10px;border-radius:999px;margin-bottom:10px}
   .pill.workout{background:rgba(255,122,89,.15);color:var(--accent2)}
   .pill.rehab{background:rgba(61,220,151,.15);color:var(--green)}
+  .timepill{display:inline-flex;align-items:center;gap:5px;background:#141832;border:1px solid var(--line);
+    color:var(--accent2);padding:4px 11px;border-radius:999px;font-size:13px;font-weight:800;text-transform:none;letter-spacing:0}
 
-  /* exercise card with image */
-  .ex{display:flex;gap:13px;background:var(--card2);border:1px solid var(--line);border-radius:14px;
-    padding:13px;margin-bottom:11px;align-items:flex-start}
-  .exsvg-wrap{flex:none;width:78px;height:78px;border-radius:12px;overflow:hidden}
-  .exsvg{width:78px;height:78px;display:block}
-  .ex-body{flex:1;min-width:0}
-  .ex .name{font-weight:800;font-size:15.5px;display:flex;align-items:center;gap:9px;margin-bottom:3px}
+  /* exercise card with photo */
+  .ex{background:var(--card2);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px}
+  .exphoto{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:#0d1024}
+  .ex-body{padding:12px 14px}
+  .ex .name{font-weight:800;font-size:16px;display:flex;align-items:center;gap:9px;margin-bottom:4px;flex-wrap:wrap}
   .ex .num{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;
     background:linear-gradient(135deg,var(--accent),var(--pink));color:#1a1030;flex:none}
+  .ex .extime{margin-left:auto;font-size:12px;font-weight:800;color:var(--accent2);background:#141832;border:1px solid var(--line);padding:2px 9px;border-radius:999px}
   .ex .meta{color:var(--accent2);font-size:13px;font-weight:700;margin-bottom:5px}
-  .ex .desc{color:var(--muted);font-size:13.5px}
+  .ex .desc{color:var(--muted);font-size:14px}
   .rehab .ex .num{background:linear-gradient(135deg,var(--green),#7af0c0);color:#0c2a1e}
   .rehab .ex .meta{color:var(--green)}
 
   .focus-banner{background:linear-gradient(135deg,rgba(255,122,89,.18),rgba(255,93,143,.12));
     border:1px solid rgba(255,122,89,.3);border-radius:14px;padding:11px 15px;margin-bottom:13px;font-size:14px}
   .focus-banner b{color:var(--accent2)}
+  .restbanner{background:linear-gradient(135deg,rgba(61,220,151,.16),rgba(99,179,237,.12));
+    border:1px solid rgba(61,220,151,.3);border-radius:14px;padding:16px;margin-bottom:6px}
+  .restbanner .rt{font-size:18px;font-weight:900;margin:0 0 4px}
+  .restbanner .rs{font-size:14px;color:var(--muted);margin:0}
 
   .streak{display:flex;gap:10px;margin-bottom:6px}
   .stat{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:13px 8px;text-align:center}
   .stat .big{font-size:25px;font-weight:900;color:var(--accent2)}
   .stat .lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-top:2px}
+  .goalline{text-align:center;font-size:13px;color:var(--muted);margin-top:10px;font-weight:600}
+  .goalline b{color:var(--green)}
 
   .done-badge{display:flex;align-items:center;gap:10px;background:rgba(61,220,151,.12);
     border:1px solid rgba(61,220,151,.35);border-radius:14px;padding:12px 15px;margin-bottom:14px;color:var(--green);font-weight:700}
@@ -100,6 +104,12 @@
   .feel-opts button{flex:1;background:#141832;border:1px solid var(--line);color:var(--text);border-radius:12px;
     padding:12px;font-size:22px;cursor:pointer;transition:border-color .2s,transform .1s}
   .feel-opts button.active{border-color:var(--accent);transform:scale(1.06);background:rgba(255,122,89,.12)}
+
+  /* weekday toggles */
+  .days{display:flex;gap:6px;margin-top:4px}
+  .days button{flex:1;background:#141832;border:1px solid var(--line);color:var(--muted);border-radius:11px;
+    padding:11px 2px;font-size:12.5px;font-weight:800;cursor:pointer;transition:all .15s}
+  .days button.on{background:linear-gradient(135deg,var(--accent),var(--pink));color:#1a1030;border-color:transparent}
 
   .log-item{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
   .log-item .d{font-size:12px;color:var(--accent2);font-weight:800;margin-bottom:4px}
@@ -116,7 +126,6 @@
   .tipcard .emoji{font-size:24px;flex:none}
   .tipcard .tt{font-size:14px}
 
-  /* bottom nav */
   .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;
     background:rgba(20,24,50,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);
     padding:6px 6px calc(6px + env(safe-area-inset-bottom));max-width:740px;margin:0 auto}
@@ -124,7 +133,6 @@
     cursor:pointer;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:12px;transition:color .2s}
   .bottom-nav button .ic{font-size:21px}
   .bottom-nav button.active{color:var(--accent2)}
-  .bottom-nav button.active .ic{transform:translateY(-1px)}
 
   .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);
     background:var(--green);color:#0c2a1e;font-weight:800;padding:12px 20px;border-radius:999px;
@@ -146,7 +154,7 @@
     </div>
   </header>
 
-  <!-- ============ LOGIN ============ -->
+  <!-- LOGIN -->
   <section id="loginScreen">
     <div class="welcome-banner">
       <span class="wave">👋</span>
@@ -169,16 +177,15 @@
     </div>
   </section>
 
-  <!-- ============ APP ============ -->
+  <!-- APP -->
   <section id="appScreen" class="hidden">
-
     <div class="welcome-banner">
       <span class="wave">🌟</span>
       <div><p class="wtitle" id="welcomeName">Welcome, Sueli!</p>
         <p class="wsub"><span id="todayDate"></span></p></div>
     </div>
 
-    <!-- TAB: TODAY -->
+    <!-- TODAY -->
     <div class="tab" id="tab-today">
       <div class="card">
         <div class="streak">
@@ -186,27 +193,36 @@
           <div class="stat"><div class="big" id="totalNum">0</div><div class="lbl" data-i18n="totalWorkouts">Workouts</div></div>
           <div class="stat"><div class="big" id="weekNum">0</div><div class="lbl" data-i18n="thisWeek">This week</div></div>
         </div>
-        <p class="small" id="streakMsg" style="text-align:center;margin-top:10px"></p>
+        <div class="goalline" id="goalLine"></div>
+        <p class="small" id="streakMsg" style="text-align:center"></p>
       </div>
 
       <div class="card">
         <span class="pill workout" data-i18n="todaysWorkout">Today's Workout</span>
-        <h2 id="workoutTitle">🔥 Workout</h2>
-        <div class="focus-banner" id="focusBanner"></div>
-        <div id="workoutList"></div>
-        <div class="tip" id="workoutTip"></div>
+        <h2 id="workoutTitle">🔥 Workout <span class="timepill" id="totalTime"></span></h2>
+        <div id="restWrap" class="hidden">
+          <div class="restbanner">
+            <p class="rt" data-i18n="restDayTitle">Rest day 💆‍♀️</p>
+            <p class="rs" data-i18n="restDaySub">No workout scheduled today. Optional: a gentle walk — and don't skip your knee exercises below.</p>
+          </div>
+        </div>
+        <div id="workoutWrap">
+          <div class="focus-banner" id="focusBanner"></div>
+          <div id="workoutList"></div>
+          <div class="tip" id="workoutTip"></div>
+        </div>
       </div>
 
       <div class="card rehab">
         <span class="pill rehab" data-i18n="kneeRehab">Knee Rehab</span>
         <h2 data-i18n="kneeTitle">🦵 3 Knee Rehab Exercises</h2>
-        <p class="sub" data-i18n="kneeSub">Gentle, low-impact moves to strengthen and protect your knees. Do these daily.</p>
+        <p class="sub" data-i18n="kneeSub">Gentle, low-impact moves to strengthen and protect your knees. Do these every day.</p>
         <div id="rehabList"></div>
         <div class="tip green" data-i18n="kneeTip">⚠️ Stop if you feel sharp pain. Mild muscle effort is normal — joint pain is not.</div>
       </div>
     </div>
 
-    <!-- TAB: LOG -->
+    <!-- LOG -->
     <div class="tab hidden" id="tab-log">
       <div class="card">
         <span class="pill workout" data-i18n="logToday">Log Today</span>
@@ -224,15 +240,22 @@
         <button class="btn" id="saveLogBtn" data-i18n="saveBtn">Save today's log</button>
       </div>
 
+      <div class="card">
+        <h2 data-i18n="scheduleTitle">🗓️ Your workout days</h2>
+        <p class="sub" data-i18n="scheduleSub">Pick the days you want to work out. We'll only remind you on those days.</p>
+        <div class="days" id="dayToggles"></div>
+        <p class="small" id="goalText"></p>
+      </div>
+
       <div class="card" id="notifCard">
         <h2 data-i18n="notifCardTitle">🔔 Daily 7 PM reminder</h2>
-        <p class="sub" data-i18n="notifCardSub">If you haven't logged your workout by 7:00 PM, we'll send you a friendly nudge to get moving.</p>
+        <p class="sub" data-i18n="notifCardSub">On your workout days, if you haven't logged by 7:00 PM, we'll send a friendly nudge.</p>
         <button class="btn ghostgreen" id="notifBtn" data-i18n="notifEnableBtn">Turn on 7 PM reminder</button>
         <p class="small" id="notifStatus"></p>
       </div>
     </div>
 
-    <!-- TAB: PROGRESS -->
+    <!-- PROGRESS -->
     <div class="tab hidden" id="tab-progress">
       <div class="card">
         <div class="streak">
@@ -240,6 +263,7 @@
           <div class="stat"><div class="big" id="totalNum2">0</div><div class="lbl" data-i18n="totalWorkouts">Workouts</div></div>
           <div class="stat"><div class="big" id="weekNum2">0</div><div class="lbl" data-i18n="thisWeek">This week</div></div>
         </div>
+        <div class="goalline" id="goalLine2"></div>
       </div>
       <div class="card">
         <h2 data-i18n="historyTitle">📚 Your history</h2>
@@ -247,7 +271,7 @@
       </div>
     </div>
 
-    <!-- TAB: TIPS -->
+    <!-- TIPS -->
     <div class="tab hidden" id="tab-tips">
       <div class="card">
         <h2 data-i18n="tipsTitle">💡 Tips for you</h2>
@@ -263,7 +287,6 @@
   </section>
 </div>
 
-<!-- bottom nav -->
 <nav class="bottom-nav hidden" id="bottomNav">
   <button data-tab="today" class="active"><span class="ic">🏠</span><span data-i18n="tabToday">Today</span></button>
   <button data-tab="log"><span class="ic">📝</span><span data-i18n="tabLog">Log</span></button>
@@ -274,153 +297,77 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* =========================================================
-   Daily Fit — workout + knee rehab app for Sueli
-   Single file. Bilingual EN/PT. Local data. Illustrated.
-   7 PM reminders via Notifications (when app installed/open).
-   ========================================================= */
+/* ============================================================
+   Daily Fit — workout + knee rehab for Sueli
+   Real exercise photos · ~45-min plans · weekly schedule
+   ============================================================ */
 
-/* ---------------- Inline SVG illustrations ---------------- */
-const SO='<svg viewBox="0 0 100 100" class="exsvg" xmlns="http://www.w3.org/2000/svg">';
-const BG='<rect x="1.5" y="1.5" width="97" height="97" rx="15" fill="#171c3a" stroke="#2a3160" stroke-width="1.5"/>';
-const FL='<line x1="16" y1="84" x2="84" y2="84" stroke="#39407a" stroke-width="2.5" stroke-dasharray="5 5" stroke-linecap="round"/>';
-const P=d=>'<path d="'+d+'" fill="none" stroke="#ff9f85" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>';
-const A=d=>'<path d="'+d+'" fill="none" stroke="#48e0a0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>';
-const AT=p=>'<polygon points="'+p+'" fill="#48e0a0"/>';
-const HD=(x,y)=>'<circle cx="'+x+'" cy="'+y+'" r="5.5" fill="#ffd7c4"/>';
-const WT=(x,y)=>'<rect x="'+x+'" y="'+y+'" width="9" height="7" rx="2" fill="#48e0a0"/>';
-const fig=i=>SO+BG+FL+i+'</svg>';
-
-const IMG={
-  walk:fig(HD(50,24)+P('M50 30 L49 51')+P('M49 51 L41 68 L39 83')+P('M49 51 L58 67 L61 83')
-    +P('M50 35 L41 45')+P('M50 35 L59 44')+A('M68 33 H81')+AT('81,33 75,29 75,37')),
-  bike:fig(HD(36,25)+P('M36 30 L46 50')+P('M39 34 L59 41')
-    +'<circle cx="61" cy="65" r="11" fill="none" stroke="#48e0a0" stroke-width="2.6"/>'
-    +P('M46 50 L61 65')+P('M46 50 L52 62')+'<circle cx="61" cy="65" r="2.4" fill="#48e0a0"/>'),
-  squat:fig(HD(50,28)+P('M50 33 L50 51')+P('M50 51 L40 60 L42 79')+P('M50 51 L60 60 L58 79')
-    +P('M50 39 L40 47')+P('M50 39 L62 45')+A('M75 42 V58')+AT('75,60 71,54 79,54')),
-  wallsit:fig('<line x1="80" y1="18" x2="80" y2="84" stroke="#39407a" stroke-width="3"/>'+HD(70,32)
-    +P('M70 37 L70 56')+P('M70 56 L52 56')+P('M52 56 L52 78')+P('M70 44 L58 48')
-    +A('M44 50 V64')+AT('44,66 40,60 48,60')),
-  bridge:fig(HD(24,66)+P('M30 66 L50 55')+P('M50 55 L62 66 L66 82')+P('M50 55 L60 62')
-    +A('M50 47 V38')+AT('50,36 46,42 54,42')),
-  calf:fig(HD(50,25)+P('M50 30 L50 60')+P('M50 60 L45 76')+P('M50 60 L55 76')
-    +'<line x1="40" y1="79" x2="60" y2="79" stroke="#ff9f85" stroke-width="3" stroke-linecap="round"/>'
-    +A('M30 52 V38')+AT('30,36 26,42 34,42')+A('M70 52 V38')+AT('70,36 66,42 74,42')),
-  sideleg:fig(HD(48,24)+P('M48 29 L48 57')+P('M48 57 L45 82')+P('M48 57 L72 64')
-    +P('M48 36 L39 42')+A('M76 60 L84 52')+AT('85,51 78,51 83,58')),
-  legraise:fig(HD(22,68)+P('M28 68 L52 68')+P('M52 68 L62 68 L62 78')+P('M52 68 L75 55')
-    +A('M70 47 L78 41')+AT('79,40 73,40 78,46')),
-  kneeext:fig('<path d="M28 56 H49 V80" fill="none" stroke="#39407a" stroke-width="3"/>'+HD(28,38)
-    +P('M28 43 L28 56')+P('M28 56 L49 56')+P('M49 56 L70 50')+P('M30 46 L42 52')
-    +A('M56 64 L72 53')+AT('74,52 67,52 71,59')),
-  heelslide:fig(HD(22,70)+P('M28 70 L50 70')+P('M50 70 L60 60 L53 72')+P('M50 70 L58 78')
-    +A('M70 74 H56')+AT('54,74 60,70 60,78')),
-  hamcurl:fig(HD(50,24)+P('M50 29 L50 58')+P('M50 58 L47 82')+P('M50 58 L58 70 L50 63')
-    +P('M50 36 L41 42')+A('M64 78 Q67 64 55 61')+AT('54,60 61,60 57,66')),
-  stepup:fig('<rect x="55" y="62" width="24" height="20" fill="none" stroke="#39407a" stroke-width="3"/>'
-    +HD(38,28)+P('M38 33 L42 55')+P('M42 55 L39 81')+P('M42 55 L58 61')+P('M40 38 L32 46')
-    +A('M48 40 L60 31')+AT('62,30 55,30 59,37')),
-  clamshell:fig(HD(22,56)+P('M28 56 L46 60')+P('M46 60 L56 58 L52 70')+P('M46 60 L60 53 L55 64')
-    +A('M64 48 A9 9 0 0 1 67 60')+AT('68,60 63,62 64,55')),
-  quadset:fig(HD(22,66)+P('M28 66 L72 66')+P('M64 66 L64 76')
-    +A('M50 56 V48')+AT('50,46 46,52 54,52')+'<line x1="44" y1="58" x2="60" y2="58" stroke="#48e0a0" stroke-width="2.4" stroke-dasharray="3 3"/>'),
-  anklepump:fig(HD(22,64)+P('M28 64 L62 64')+P('M62 64 L74 56')+P('M62 64 L74 72')
-    +A('M80 50 V44')+AT('80,42 76,48 84,48')+A('M80 78 V84')+AT('80,86 76,80 84,80')),
-  marchsit:fig('<path d="M28 56 H49 V80" fill="none" stroke="#39407a" stroke-width="3"/>'+HD(28,38)
-    +P('M28 43 L28 56')+P('M28 56 L49 56')+P('M49 56 L60 44')+P('M49 56 L52 78')
-    +A('M66 40 V30')+AT('66,28 62,34 70,34')),
-  pushup:fig('<line x1="82" y1="18" x2="82" y2="84" stroke="#39407a" stroke-width="3"/>'+HD(34,40)
-    +P('M34 45 L50 64')+P('M50 64 L54 82')+P('M37 44 L80 42')
-    +A('M62 30 H78')+AT('80,30 73,26 73,34')),
-  curl:fig(HD(50,24)+P('M50 29 L50 62')+P('M50 62 L44 82')+P('M50 62 L56 82')
-    +P('M50 38 L50 52')+P('M50 52 L63 44')+WT(61,40)+A('M72 56 Q74 46 66 42')+AT('65,41 71,41 67,47')),
-  press:fig(HD(50,32)+P('M50 37 L50 64')+P('M50 64 L44 82')+P('M50 64 L56 82')
-    +P('M50 42 L38 30')+P('M50 42 L62 30')+WT(33,22)+WT(58,22)
-    +A('M38 18 V11')+AT('38,9 34,15 42,15')+A('M62 18 V11')+AT('62,9 58,15 66,15')),
-  twist:fig(HD(50,24)+P('M50 29 L50 56')+P('M50 56 L44 82')+P('M50 56 L62 64 L57 56')
-    +P('M50 36 L60 46')+P('M50 36 L40 44')+A('M64 30 A14 14 0 0 0 47 22')+AT('46,22 52,19 50,26')),
-  plank:fig(HD(24,56)+P('M30 56 L68 70')+P('M30 56 L30 72')+P('M30 72 L42 72')+P('M68 70 L77 78')
-    +'<line x1="33" y1="50" x2="66" y2="63" stroke="#48e0a0" stroke-width="2.2" stroke-dasharray="4 3"/>'),
-  row:fig(HD(34,34)+P('M34 39 L56 52')+P('M56 52 L54 80')+P('M56 52 L66 78')
-    +P('M40 42 L40 58')+WT(35,58)+A('M40 52 V40')+AT('40,38 36,44 44,44')),
-  stretch:fig(HD(40,32)+P('M40 37 L52 56')+P('M52 56 L50 82')+P('M44 40 L54 60')
-    +A('M66 40 V58')+AT('66,60 62,54 70,54')),
-  catcow:fig(HD(24,52)+P('M30 52 Q50 40 70 52')+P('M34 52 L34 74')+P('M64 52 L64 74')
-    +A('M50 38 V30')+AT('50,28 46,34 54,34')),
-  balance:fig(HD(50,24)+P('M50 29 L50 58')+P('M50 58 L48 82')+P('M50 58 L63 70')
-    +P('M50 38 L37 40')+P('M50 38 L63 40')
-    +'<path d="M40 84 Q50 80 60 84" fill="none" stroke="#48e0a0" stroke-width="2.2" stroke-dasharray="3 3"/>'),
-  generic:fig(HD(50,28)+P('M50 33 L50 60')+P('M50 60 L44 82')+P('M50 60 L56 82')+P('M50 40 L40 50')+P('M50 40 L60 50'))
-};
-
-/* ---------------- i18n ---------------- */
+/* ---------- i18n ---------- */
 const I18N={
  en:{
   appName:"Daily Fit", signInTitle:"Sign in",
   loginWelcomeSub:"Let's get moving today.",
   welcomeSub:"Sign in every day to log your workout and get today's plan.",
-  nameLabel:"Your name", pinLabel:"4-digit PIN",
-  signInBtn:"Sign in",
+  nameLabel:"Your name", pinLabel:"4-digit PIN", signInBtn:"Sign in",
   loginHintNew:"First time? Just pick a 4-digit PIN — it becomes your daily login.",
   loginHintReturning:"Welcome back! Enter your PIN to continue.",
-  greetingWelcome:"Welcome",
-  logoutBtn:"Log out",
+  greetingWelcome:"Welcome", logoutBtn:"Log out",
   dayStreak:"Day streak", totalWorkouts:"Workouts", thisWeek:"This week",
   todaysWorkout:"Today's Workout", kneeRehab:"Knee Rehab",
   kneeTitle:"🦵 3 Knee Rehab Exercises",
-  kneeSub:"Gentle, low-impact moves to strengthen and protect your knees. Do these daily.",
+  kneeSub:"Gentle, low-impact moves to strengthen and protect your knees. Do these every day.",
   kneeTip:"⚠️ Stop if you feel sharp pain. Mild muscle effort is normal — joint pain is not.",
   logToday:"Log Today", loggedMsg:"You logged today's workout. Great job!",
   logTitle:"📝 Log your workout", whatDidYouDo:"What did you do today?",
-  logPh:"e.g. 30-min brisk walk + the 3 knee exercises + 15 min strength",
+  logPh:"e.g. The full 45-min plan + the 3 knee exercises",
   howFelt:"How did it feel?", saveBtn:"Save today's log",
-  historyTitle:"📚 Your history",
-  noHistory:"No workouts logged yet. Your first one starts today! 🌟",
+  historyTitle:"📚 Your history", noHistory:"No workouts logged yet. Your first one starts today! 🌟",
   disclaimer:"This app gives general fitness guidance, not medical advice. Check with your doctor before starting, especially for knee issues.",
   savedToast:"Saved! 🎉",
   streakSingle:"You're on a 1-day streak — keep it going!",
   streakMulti:"You're on a {n}-day streak — amazing! 🔥",
   streakNone:"Let's log today and start a streak!",
   wrongPin:"Wrong PIN. Try again.", needPin:"Please enter a 4-digit PIN.",
-  workoutTip:"💧 Warm up 3–5 min first (march in place / easy walk). Sip water. Move at a pace where you can still talk.",
+  workoutTip:"💧 Move at a pace where you can still talk. Sip water between sets. Quality over speed!",
   focusToday:"Today's focus:",
   tabToday:"Today", tabLog:"Log", tabProgress:"Progress", tabTips:"Tips",
+  scheduleTitle:"🗓️ Your workout days", scheduleSub:"Pick the days you want to work out. We'll only remind you on those days.",
+  goalText:"Goal: {n} day(s) per week.", needOneDay:"Pick at least one workout day.",
+  weekGoal:"🎯 {done} / {goal} workouts this week",
+  restDayTitle:"Rest day 💆‍♀️", restDaySub:"No workout scheduled today. Optional: a gentle walk — and don't skip your knee exercises below.",
   notifCardTitle:"🔔 Daily 7 PM reminder",
-  notifCardSub:"If you haven't logged your workout by 7:00 PM, we'll send you a friendly nudge to get moving.",
+  notifCardSub:"On your workout days, if you haven't logged by 7:00 PM, we'll send a friendly nudge.",
   notifEnableBtn:"Turn on 7 PM reminder",
-  notifOnStatus:"✅ Reminder is ON. We'll nudge you at 7 PM on days you haven't logged. Keep the app added to your home screen so it can reach you.",
+  notifOnStatus:"✅ Reminder is ON. We'll nudge you at 7 PM on your workout days. Keep the app on your home screen so it can reach you.",
   notifOffStatus:"Reminder is off. Tap the button to turn it on.",
-  notifBlockedStatus:"Notifications are blocked in your browser settings. Please allow notifications for this site, then try again.",
+  notifBlockedStatus:"Notifications are blocked in your browser settings. Please allow them for this site, then try again.",
   notifUnsupported:"Your browser doesn't support notifications. You'll still see a reminder when you open the app.",
   notifGrantedToast:"7 PM reminder is on! 🔔", notifDeniedToast:"Notifications were not allowed.",
   notifPushTitle:"Time to move, Sueli! 💪",
   notifPushBody:"You haven't logged your workout today. Let's do it — your knees and body will thank you!",
   reminderInApp:"⏰ You haven't logged today's workout yet. Tap Log when you're done!",
   tipsTitle:"💡 Tips for you", tipsSub:"Simple habits for losing weight, toning up, and feeling strong at any age.",
-  disabledToast:"Already on for today.",
-  feel_tough:"Tough", feel_ok:"OK", feel_good:"Good", feel_great:"Great",
+  minLabel:"min", feel_tough:"Tough", feel_ok:"OK", feel_good:"Good", feel_great:"Great",
+  daysShort:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
   tips:[
-   ["🚶‍♀️","Aim for a walk most days. Even 20–30 minutes burns fat and is easy on the knees."],
-   ["🥗","Fill half your plate with vegetables and add protein at every meal — it keeps you full and tones muscle."],
+   ["🚶‍♀️","On workout days, the warm-up walk already burns fat — and it's easy on the knees."],
+   ["🥗","Fill half your plate with vegetables and add protein at every meal to stay full and tone muscle."],
    ["💧","Drink water before meals. Often 'hunger' is really thirst."],
-   ["🏋️‍♀️","Strength training 3x a week is the secret to a toned, firm body after 50."],
+   ["🏋️‍♀️","Strength training a few days a week is the secret to a toned, firm body after 50."],
    ["😴","Sleep 7–8 hours. Good sleep controls hunger hormones and helps weight loss."],
-   ["🐢","Go slow and steady. Losing 0.5 kg a week is healthy and lasts."],
-   ["🦵","Strong legs protect your knees. Never skip the rehab exercises."],
-   ["🎉","Log every day — small wins add up. Be proud of showing up!"]
+   ["🐢","Go slow and steady. Losing about 0.5 kg a week is healthy and lasts."],
+   ["🦵","Strong legs protect your knees. Never skip the daily rehab exercises."],
+   ["🎉","Show up on your chosen days — small wins add up. Be proud of every session!"]
   ]
  },
  pt:{
   appName:"Daily Fit", signInTitle:"Entrar",
   loginWelcomeSub:"Vamos nos mexer hoje.",
   welcomeSub:"Entre todos os dias para registrar seu treino e receber o plano de hoje.",
-  nameLabel:"Seu nome", pinLabel:"PIN de 4 dígitos",
-  signInBtn:"Entrar",
+  nameLabel:"Seu nome", pinLabel:"PIN de 4 dígitos", signInBtn:"Entrar",
   loginHintNew:"Primeira vez? Escolha um PIN de 4 dígitos — será seu login diário.",
   loginHintReturning:"Bem-vinda de volta! Digite seu PIN para continuar.",
-  greetingWelcome:"Bem-vinda",
-  logoutBtn:"Sair",
+  greetingWelcome:"Bem-vinda", logoutBtn:"Sair",
   dayStreak:"Dias seguidos", totalWorkouts:"Treinos", thisWeek:"Esta semana",
   todaysWorkout:"Treino de Hoje", kneeRehab:"Joelho",
   kneeTitle:"🦵 3 Exercícios para o Joelho",
@@ -428,194 +375,232 @@ const I18N={
   kneeTip:"⚠️ Pare se sentir dor aguda. Esforço muscular leve é normal — dor na articulação não é.",
   logToday:"Registrar", loggedMsg:"Você registrou o treino de hoje. Muito bem!",
   logTitle:"📝 Registre seu treino", whatDidYouDo:"O que você fez hoje?",
-  logPh:"ex. 30 min de caminhada + os 3 exercícios de joelho + 15 min de força",
+  logPh:"ex. O plano completo de 45 min + os 3 exercícios de joelho",
   howFelt:"Como você se sentiu?", saveBtn:"Salvar treino de hoje",
-  historyTitle:"📚 Seu histórico",
-  noHistory:"Nenhum treino registrado ainda. O primeiro começa hoje! 🌟",
+  historyTitle:"📚 Seu histórico", noHistory:"Nenhum treino registrado ainda. O primeiro começa hoje! 🌟",
   disclaimer:"Este app oferece orientação geral de exercícios, não aconselhamento médico. Consulte seu médico antes de começar, especialmente com problemas no joelho.",
   savedToast:"Salvo! 🎉",
   streakSingle:"Você está há 1 dia seguido — continue assim!",
   streakMulti:"Você está há {n} dias seguidos — incrível! 🔥",
   streakNone:"Vamos registrar hoje e começar uma sequência!",
   wrongPin:"PIN incorreto. Tente novamente.", needPin:"Por favor, digite um PIN de 4 dígitos.",
-  workoutTip:"💧 Aqueça 3–5 min antes (marche no lugar / caminhada leve). Beba água. Vá num ritmo em que ainda consiga conversar.",
+  workoutTip:"💧 Vá num ritmo em que ainda consiga conversar. Beba água entre as séries. Qualidade antes de velocidade!",
   focusToday:"Foco de hoje:",
   tabToday:"Hoje", tabLog:"Registrar", tabProgress:"Progresso", tabTips:"Dicas",
+  scheduleTitle:"🗓️ Seus dias de treino", scheduleSub:"Escolha os dias em que você quer treinar. Só vamos lembrar nesses dias.",
+  goalText:"Meta: {n} dia(s) por semana.", needOneDay:"Escolha pelo menos um dia de treino.",
+  weekGoal:"🎯 {done} / {goal} treinos esta semana",
+  restDayTitle:"Dia de descanso 💆‍♀️", restDaySub:"Nenhum treino marcado hoje. Opcional: uma caminhada leve — e não pule os exercícios de joelho abaixo.",
   notifCardTitle:"🔔 Lembrete diário às 19h",
-  notifCardSub:"Se você não registrar seu treino até as 19h, enviaremos um lembrete carinhoso para se mexer.",
+  notifCardSub:"Nos seus dias de treino, se você não registrar até as 19h, enviaremos um lembrete carinhoso.",
   notifEnableBtn:"Ativar lembrete das 19h",
-  notifOnStatus:"✅ Lembrete ATIVADO. Vamos te avisar às 19h nos dias sem registro. Mantenha o app na tela inicial para receber.",
+  notifOnStatus:"✅ Lembrete ATIVADO. Vamos te avisar às 19h nos seus dias de treino. Mantenha o app na tela inicial para receber.",
   notifOffStatus:"Lembrete desativado. Toque no botão para ativar.",
-  notifBlockedStatus:"As notificações estão bloqueadas no navegador. Permita as notificações para este site e tente novamente.",
+  notifBlockedStatus:"As notificações estão bloqueadas no navegador. Permita-as para este site e tente novamente.",
   notifUnsupported:"Seu navegador não suporta notificações. Você ainda verá um lembrete ao abrir o app.",
   notifGrantedToast:"Lembrete das 19h ativado! 🔔", notifDeniedToast:"As notificações não foram permitidas.",
   notifPushTitle:"Hora de se mexer, Sueli! 💪",
   notifPushBody:"Você ainda não registrou seu treino hoje. Bora — seus joelhos e seu corpo vão agradecer!",
   reminderInApp:"⏰ Você ainda não registrou o treino de hoje. Toque em Registrar quando terminar!",
   tipsTitle:"💡 Dicas para você", tipsSub:"Hábitos simples para perder peso, tonificar e se sentir forte em qualquer idade.",
-  disabledToast:"Já está ativo para hoje.",
-  feel_tough:"Difícil", feel_ok:"OK", feel_good:"Bom", feel_great:"Ótimo",
+  minLabel:"min", feel_tough:"Difícil", feel_ok:"OK", feel_good:"Bom", feel_great:"Ótimo",
+  daysShort:["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"],
   tips:[
-   ["🚶‍♀️","Caminhe quase todos os dias. Mesmo 20–30 minutos queimam gordura e são suaves para os joelhos."],
-   ["🥗","Encha metade do prato com vegetais e inclua proteína em cada refeição — sacia e tonifica os músculos."],
+   ["🚶‍♀️","Nos dias de treino, a caminhada de aquecimento já queima gordura — e é suave para os joelhos."],
+   ["🥗","Encha metade do prato com vegetais e inclua proteína em cada refeição para saciar e tonificar."],
    ["💧","Beba água antes das refeições. Muitas vezes a 'fome' é sede."],
-   ["🏋️‍♀️","Musculação 3x por semana é o segredo de um corpo firme e definido depois dos 50."],
+   ["🏋️‍♀️","Treino de força alguns dias por semana é o segredo de um corpo firme depois dos 50."],
    ["😴","Durma 7–8 horas. Um bom sono controla a fome e ajuda a emagrecer."],
-   ["🐢","Vá devagar e com constância. Perder 0,5 kg por semana é saudável e dura."],
-   ["🦵","Pernas fortes protegem os joelhos. Nunca pule os exercícios de reabilitação."],
-   ["🎉","Registre todos os dias — pequenas vitórias somam. Tenha orgulho de aparecer!"]
+   ["🐢","Vá devagar e com constância. Perder cerca de 0,5 kg por semana é saudável e dura."],
+   ["🦵","Pernas fortes protegem os joelhos. Nunca pule os exercícios diários de reabilitação."],
+   ["🎉","Apareça nos seus dias escolhidos — pequenas vitórias somam. Orgulhe-se de cada treino!"]
   ]
  }
 };
 
-/* ---------------- Knee rehab pool (expanded variety) ---------------- */
+/* ---------- Knee rehab pool (photo-backed, knee-friendly) ---------- */
 const REHAB=[
- {img:"kneeext",en:{n:"Seated knee extensions",m:"3 × 12 each leg",d:"Sit tall, slowly straighten one knee, hold 2 sec at the top, lower with control."},pt:{n:"Extensão de joelho sentada",m:"3 × 12 cada perna",d:"Sente-se ereta, estenda lentamente um joelho, segure 2 seg no topo, desça com controle."}},
- {img:"legraise",en:{n:"Straight-leg raises",m:"3 × 10 each leg",d:"Lie down, one knee bent. Keep the other leg straight and lift to the bent-knee height. Lower slowly."},pt:{n:"Elevação de perna reta",m:"3 × 10 cada perna",d:"Deite-se, um joelho dobrado. Mantenha a outra perna reta e levante até a altura do joelho dobrado. Desça devagar."}},
- {img:"heelslide",en:{n:"Heel slides",m:"2 × 15 each leg",d:"Lie on your back, slowly slide your heel toward your bottom bending the knee, then slide back out."},pt:{n:"Deslize do calcanhar",m:"2 × 15 cada perna",d:"Deitada de costas, deslize o calcanhar em direção ao bumbum dobrando o joelho, e volte."}},
- {img:"wallsit",en:{n:"Wall sit (partial)",m:"3 × hold 15–20 sec",d:"Back against a wall, slide down to a shallow squat, hold, then stand. Don't push into pain."},pt:{n:"Cadeira na parede (parcial)",m:"3 × segure 15–20 seg",d:"Costas na parede, desça num agachamento raso, segure e levante. Não force até a dor."}},
- {img:"hamcurl",en:{n:"Standing hamstring curls",m:"3 × 12 each leg",d:"Hold a chair, bend one knee bringing heel toward your bottom, lower slowly."},pt:{n:"Flexão de perna em pé",m:"3 × 12 cada perna",d:"Segure uma cadeira, dobre um joelho levando o calcanhar ao bumbum, desça devagar."}},
- {img:"calf",en:{n:"Calf raises",m:"3 × 15 reps",d:"Hold a counter, rise onto your toes, hold 1 sec, lower slowly. Strengthens the calves that support the knee."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Apoie-se numa bancada, suba na ponta dos pés, segure 1 seg, desça devagar. Fortalece a panturrilha que apoia o joelho."}},
- {img:"stepup",en:{n:"Step-ups (low step)",m:"3 × 8 each leg",d:"Step up onto a low, stable step leading with one leg, step down with control."},pt:{n:"Subida no degrau (baixo)",m:"3 × 8 cada perna",d:"Suba num degrau baixo e firme com uma perna, desça com controle."}},
- {img:"bridge",en:{n:"Glute bridges",m:"3 × 12 reps",d:"Lie down, knees bent, lift hips squeezing your glutes, hold 2 sec, lower. Takes load off the knees."},pt:{n:"Ponte de glúteo",m:"3 × 12 reps",d:"Deite-se, joelhos dobrados, eleve o quadril apertando os glúteos, segure 2 seg, desça. Alivia a carga dos joelhos."}},
- {img:"clamshell",en:{n:"Clamshells",m:"3 × 15 each side",d:"Lie on your side, knees bent and stacked, open the top knee like a clam, lower slowly."},pt:{n:"Concha (clamshell)",m:"3 × 15 cada lado",d:"Deite-se de lado, joelhos dobrados e alinhados, abra o joelho de cima como uma concha, desça devagar."}},
- {img:"quadset",en:{n:"Quad sets",m:"3 × hold 5 sec ×10",d:"Sit with leg straight, tighten your thigh pressing the back of the knee down, hold 5 sec, relax."},pt:{n:"Contração do quadríceps",m:"3 × segure 5 seg ×10",d:"Sente com a perna reta, contraia a coxa pressionando a parte de trás do joelho para baixo, segure 5 seg, relaxe."}},
- {img:"sideleg",en:{n:"Side-lying leg raises",m:"3 × 12 each side",d:"Lie on your side, lift the top leg straight up, lower slowly. Strengthens hips that stabilize knees."},pt:{n:"Elevação lateral de perna",m:"3 × 12 cada lado",d:"Deite-se de lado, eleve a perna de cima reta, desça devagar. Fortalece o quadril que estabiliza o joelho."}},
- {img:"squat",en:{n:"Mini squats (chair)",m:"3 × 10 reps",d:"Stand in front of a chair, lower hips slightly as if to sit, tap and stand. Small range, no pain."},pt:{n:"Mini agachamento (cadeira)",m:"3 × 10 reps",d:"Fique em frente a uma cadeira, baixe o quadril como se fosse sentar, toque e levante. Amplitude pequena, sem dor."}},
- {img:"anklepump",en:{n:"Ankle pumps",m:"2 × 20 each foot",d:"Sit or lie, point and flex your foot up and down. Boosts circulation and warms up the joint."},pt:{n:"Bombeamento de tornozelo",m:"2 × 20 cada pé",d:"Sentada ou deitada, aponte e flexione o pé para cima e para baixo. Melhora a circulação e aquece a articulação."}},
- {img:"marchsit",en:{n:"Seated marching",m:"2 × 15 each leg",d:"Sit tall and lift one knee at a time, like marching. Gentle warm-up for hips and knees."},pt:{n:"Marcha sentada",m:"2 × 15 cada perna",d:"Sente-se ereta e levante um joelho de cada vez, como marchando. Aquecimento suave para quadris e joelhos."}},
- {img:"sideleg",en:{n:"Standing hip abduction",m:"3 × 12 each side",d:"Hold a chair, lift one leg straight out to the side, lower slowly. Strengthens outer hip and knee support."},pt:{n:"Abdução de quadril em pé",m:"3 × 12 cada lado",d:"Segure uma cadeira, eleve uma perna reta para o lado, desça devagar. Fortalece o quadril externo e o apoio do joelho."}},
- {img:"stretch",en:{n:"Gentle hamstring stretch",m:"3 × hold 20 sec each",d:"Sit with one leg straight, reach gently toward your toes until you feel a light stretch. Don't bounce."},pt:{n:"Alongamento suave de isquiotibiais",m:"3 × segure 20 seg cada",d:"Sente com uma perna reta, alcance suavemente os dedos do pé até sentir um leve alongamento. Não balance."}},
- {img:"kneeext",en:{n:"Terminal knee extension",m:"3 × 12 each leg",d:"Stand with a slight knee bend, straighten the knee fully squeezing the thigh, then bend again slowly."},pt:{n:"Extensão terminal do joelho",m:"3 × 12 cada perna",d:"Em pé com leve flexão do joelho, estenda totalmente apertando a coxa, depois dobre devagar de novo."}},
- {img:"balance",en:{n:"Single-leg balance",m:"3 × hold 15 sec each",d:"Hold a chair, stand on one leg, balance. Improves knee stability and prevents falls."},pt:{n:"Equilíbrio em uma perna",m:"3 × segure 15 seg cada",d:"Segure uma cadeira, fique em uma perna, equilibre. Melhora a estabilidade do joelho e previne quedas."}}
+ {img:"kneechest",en:{n:"Knee-to-chest mobility",m:"2 × 8 each leg",d:"Lie on your back and gently draw one knee toward your chest, hold, then switch. Warms up the joint."},pt:{n:"Joelho ao peito (mobilidade)",m:"2 × 8 cada perna",d:"Deitada de costas, traga suavemente um joelho ao peito, segure e troque. Aquece a articulação."}},
+ {img:"bridge",en:{n:"Glute bridges",m:"3 × 12 reps",d:"Lie down, knees bent, lift your hips squeezing your glutes, hold 2 sec, lower. Takes load off the knees."},pt:{n:"Ponte de glúteo",m:"3 × 12 reps",d:"Deite-se, joelhos dobrados, eleve o quadril apertando os glúteos, segure 2 seg, desça. Alivia a carga dos joelhos."}},
+ {img:"sideleg",en:{n:"Side leg raises",m:"3 × 12 each side",d:"Hold a chair, lift one leg straight out to the side, lower slowly. Strengthens the hips that stabilize the knee."},pt:{n:"Elevação lateral de perna",m:"3 × 12 cada lado",d:"Segure uma cadeira, eleve uma perna reta para o lado, desça devagar. Fortalece o quadril que estabiliza o joelho."}},
+ {img:"frontleg",en:{n:"Front leg raises",m:"3 × 10 each leg",d:"Hold a chair, lift one straight leg in front to hip height, lower with control. Strengthens the thigh."},pt:{n:"Elevação frontal de perna",m:"3 × 10 cada perna",d:"Segure uma cadeira, eleve uma perna reta à frente até a altura do quadril, desça com controle. Fortalece a coxa."}},
+ {img:"rearleg",en:{n:"Rear leg raises",m:"3 × 10 each leg",d:"Hold a chair, lift one straight leg behind you, squeeze the glute, lower slowly."},pt:{n:"Elevação de perna para trás",m:"3 × 10 cada perna",d:"Segure uma cadeira, eleve uma perna reta para trás, aperte o glúteo, desça devagar."}},
+ {img:"calf",en:{n:"Calf raises",m:"3 × 15 reps",d:"Hold a counter, rise onto your toes, hold 1 sec, lower slowly. Supports the knee."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Apoie-se numa bancada, suba na ponta dos pés, segure 1 seg, desça devagar. Apoia o joelho."}},
+ {img:"squat",en:{n:"Mini squats",m:"3 × 10 reps",d:"Lower your hips a small way as if to sit, then stand. Small range only, no pain."},pt:{n:"Mini agachamento",m:"3 × 10 reps",d:"Baixe um pouco o quadril como se fosse sentar e levante. Amplitude pequena, sem dor."}},
+ {img:"stepup",en:{n:"Step-ups (low step)",m:"3 × 8 each leg",d:"Step up onto a low, stable step, step down with control. Use a low height."},pt:{n:"Subida no degrau (baixo)",m:"3 × 8 cada perna",d:"Suba num degrau baixo e firme, desça com controle. Use uma altura baixa."}},
+ {img:"kickback",en:{n:"Glute kickbacks",m:"3 × 12 each leg",d:"On all fours or holding a chair, push one leg back and up, squeeze, return slowly."},pt:{n:"Glúteo para trás (kickback)",m:"3 × 12 cada perna",d:"De quatro ou segurando uma cadeira, empurre uma perna para trás e para cima, aperte, volte devagar."}},
+ {img:"hiprise",en:{n:"Bent-knee hip raises",m:"3 × 12 reps",d:"Lie down, knees bent, gently lift your hips/lower belly. Builds core support for the knees."},pt:{n:"Elevação de quadril (joelhos dobrados)",m:"3 × 12 reps",d:"Deite-se, joelhos dobrados, eleve suavemente o quadril/baixo ventre. Fortalece o core que apoia os joelhos."}},
+ {img:"hamstretch",en:{n:"Hamstring stretch",m:"3 × hold 20 sec each",d:"Sit with one leg straight, reach gently toward your toes until you feel a light stretch. Don't bounce."},pt:{n:"Alongamento de isquiotibiais",m:"3 × segure 20 seg cada",d:"Sente com uma perna reta, alcance suavemente os dedos do pé até sentir um leve alongamento. Não balance."}},
+ {img:"quadstretch",en:{n:"Quad stretch",m:"3 × hold 20 sec each",d:"Hold a chair, bend one knee and bring your heel toward your bottom. Gentle stretch for the thigh."},pt:{n:"Alongamento do quadríceps",m:"3 × segure 20 seg cada",d:"Segure uma cadeira, dobre um joelho levando o calcanhar ao bumbum. Alongamento suave da coxa."}},
+ {img:"calfstretch",en:{n:"Calf stretch (wall)",m:"3 × hold 20 sec each",d:"Hands on a wall, one leg back and straight, press the heel down. Loosens the calf and knee."},pt:{n:"Alongamento de panturrilha (parede)",m:"3 × segure 20 seg cada",d:"Mãos na parede, uma perna atrás e reta, pressione o calcanhar para baixo. Solta a panturrilha e o joelho."}},
+ {img:"glutestretch",en:{n:"Glute & hip stretch",m:"3 × hold 20 sec each",d:"Gently stretch the hip and glute to ease tension that pulls on the knee."},pt:{n:"Alongamento de glúteo e quadril",m:"3 × segure 20 seg cada",d:"Alongue suavemente o quadril e o glúteo para aliviar a tensão que puxa o joelho."}}
 ];
 
-/* ---------------- Workout day-types (expanded variety) ---------------- */
+/* ---------- Workout day-types (~45 min each, photo-backed) ---------- */
 const WORKOUTS=[
- {focus:{en:"Lower body & glutes (toning) + cardio",pt:"Pernas e glúteos (tonificação) + cardio"},items:[
-   {img:"walk",en:{n:"Brisk walk or stationary bike",m:"20–25 min steady",d:"Warm up the whole body and burn fat at a pace where you can still talk."},pt:{n:"Caminhada rápida ou bike",m:"20–25 min constante",d:"Aqueça o corpo e queime gordura num ritmo em que dá pra conversar."}},
-   {img:"squat",en:{n:"Sit-to-stand squats (chair)",m:"3 × 12 reps",d:"Stand from a chair without using hands, sit down slowly. Tones thighs & glutes, knee-safe."},pt:{n:"Levantar da cadeira",m:"3 × 12 reps",d:"Levante da cadeira sem usar as mãos, sente-se devagar. Tonifica coxas e glúteos, seguro pro joelho."}},
-   {img:"bridge",en:{n:"Glute bridges",m:"3 × 15 reps",d:"Lift hips and squeeze glutes at the top — great for shaping the bottom."},pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Eleve o quadril e aperte os glúteos no topo — ótimo pra modelar o bumbum."}},
-   {img:"sideleg",en:{n:"Standing side leg lifts",m:"3 × 12 each side",d:"Tones outer thighs and hips. Hold a chair for balance."},pt:{n:"Elevação lateral de perna",m:"3 × 12 cada lado",d:"Tonifica a parte externa das coxas e quadris. Apoie-se numa cadeira."}},
-   {img:"calf",en:{n:"Calf raises",m:"3 × 15 reps",d:"Shapes the lower legs and supports the knees."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Modela as panturrilhas e apoia os joelhos."}}
+ {focus:{en:"Lower body & glutes (toning)",pt:"Pernas e glúteos (tonificação)"},items:[
+   {img:"walk",min:7,en:{n:"Warm-up walk",m:"7 min, brisk",d:"March or walk briskly to warm up the whole body."},pt:{n:"Caminhada de aquecimento",m:"7 min, rápida",d:"Marche ou caminhe rápido para aquecer o corpo todo."}},
+   {img:"squat",min:6,en:{n:"Bodyweight squats",m:"3 × 12 reps",d:"Sit back as if onto a chair, stand tall. Tones thighs and glutes."},pt:{n:"Agachamento livre",m:"3 × 12 reps",d:"Sente para trás como numa cadeira e levante. Tonifica coxas e glúteos."}},
+   {img:"bridge",min:5,en:{n:"Glute bridges",m:"3 × 15 reps",d:"Squeeze the glutes at the top — shapes the bottom."},pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Aperte os glúteos no topo — modela o bumbum."}},
+   {img:"sideleg",min:5,en:{n:"Side leg raises",m:"3 × 12 each side",d:"Tones the outer thighs and hips. Hold a chair."},pt:{n:"Elevação lateral de perna",m:"3 × 12 cada lado",d:"Tonifica a parte externa das coxas e quadris. Apoie-se numa cadeira."}},
+   {img:"kickback",min:5,en:{n:"Glute kickbacks",m:"3 × 12 each leg",d:"Lifts and firms the glutes."},pt:{n:"Glúteo para trás (kickback)",m:"3 × 12 cada perna",d:"Levanta e firma os glúteos."}},
+   {img:"calf",min:5,en:{n:"Calf raises",m:"3 × 15 reps",d:"Shapes the lower legs, supports the knees."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Modela as panturrilhas, apoia os joelhos."}},
+   {img:"stepup",min:5,en:{n:"Step-ups",m:"3 × 10 each leg",d:"Use a low step. Great for legs and balance."},pt:{n:"Subida no degrau",m:"3 × 10 cada perna",d:"Use um degrau baixo. Ótimo para pernas e equilíbrio."}},
+   {img:"hamstretch",min:4,en:{n:"Cool-down: hamstring stretch",m:"hold 30 sec each",d:"Ease out the back of the legs."},pt:{n:"Volta à calma: isquiotibiais",m:"segure 30 seg cada",d:"Relaxe a parte de trás das pernas."}},
+   {img:"quadstretch",min:3,en:{n:"Cool-down: quad stretch",m:"hold 30 sec each",d:"Stretch the front of the thighs."},pt:{n:"Volta à calma: quadríceps",m:"segure 30 seg cada",d:"Alongue a frente das coxas."}}
  ]},
- {focus:{en:"Upper body & arms (toning) + core",pt:"Parte superior e braços + core"},items:[
-   {img:"marchsit",en:{n:"March in place / light cardio",m:"10 min warm-up",d:"Get the heart rate up gently before strength work."},pt:{n:"Marcha no lugar / cardio leve",m:"10 min aquecimento",d:"Eleve a frequência cardíaca suavemente antes da força."}},
-   {img:"pushup",en:{n:"Wall or knee push-ups",m:"3 × 10 reps",d:"Tones chest, shoulders and arms. Use a wall if needed — keep it doable."},pt:{n:"Flexão na parede ou de joelhos",m:"3 × 10 reps",d:"Tonifica peito, ombros e braços. Use a parede se precisar — mantenha viável."}},
-   {img:"curl",en:{n:"Bicep curls (light weights/bottles)",m:"3 × 12 reps",d:"Use light weights or water bottles. Tones the arms."},pt:{n:"Rosca bíceps (pesos/garrafas)",m:"3 × 12 reps",d:"Use pesos leves ou garrafas de água. Tonifica os braços."}},
-   {img:"press",en:{n:"Overhead shoulder press",m:"3 × 12 reps",d:"Press light weights overhead — shapes shoulders, no need to go heavy."},pt:{n:"Desenvolvimento de ombro",m:"3 × 12 reps",d:"Eleve pesos leves acima da cabeça — modela os ombros, sem carga pesada."}},
-   {img:"twist",en:{n:"Standing core twists",m:"3 × 20 reps",d:"Gently twist side to side to work the waist. Slow and controlled."},pt:{n:"Rotação de tronco em pé",m:"3 × 20 reps",d:"Gire suavemente de um lado ao outro pra trabalhar a cintura. Devagar e controlado."}},
-   {img:"plank",en:{n:"Modified plank (on knees)",m:"3 × hold 20 sec",d:"Strengthens the whole core without straining the back."},pt:{n:"Prancha modificada (joelhos)",m:"3 × segure 20 seg",d:"Fortalece todo o core sem forçar as costas."}}
+ {focus:{en:"Upper body, arms & core (toning)",pt:"Superior, braços e core (tonificação)"},items:[
+   {img:"bike",min:7,en:{n:"Warm-up: easy cardio",m:"7 min",d:"Bike, march or walk to raise the heart rate gently."},pt:{n:"Aquecimento: cardio leve",m:"7 min",d:"Bike, marcha ou caminhada para elevar a frequência suavemente."}},
+   {img:"pushup",min:6,en:{n:"Incline / wall push-ups",m:"3 × 10 reps",d:"Hands on a wall or counter. Tones chest, shoulders and arms."},pt:{n:"Flexão inclinada / na parede",m:"3 × 10 reps",d:"Mãos na parede ou bancada. Tonifica peito, ombros e braços."}},
+   {img:"press",min:6,en:{n:"Shoulder press (light)",m:"3 × 12 reps",d:"Press light weights or bottles overhead. Shapes the shoulders."},pt:{n:"Desenvolvimento de ombro (leve)",m:"3 × 12 reps",d:"Eleve pesos leves ou garrafas acima da cabeça. Modela os ombros."}},
+   {img:"curl",min:5,en:{n:"Bicep curls",m:"3 × 12 reps",d:"Light weights or water bottles. Firms the arms."},pt:{n:"Rosca bíceps",m:"3 × 12 reps",d:"Pesos leves ou garrafas. Firma os braços."}},
+   {img:"row",min:5,en:{n:"Bent-over rows",m:"3 × 12 reps",d:"Tones the back and improves posture."},pt:{n:"Remada curvada",m:"3 × 12 reps",d:"Tonifica as costas e melhora a postura."}},
+   {img:"lateral",min:4,en:{n:"Lateral raises",m:"3 × 12 reps",d:"Light weights out to the sides. Sculpts the shoulders."},pt:{n:"Elevação lateral",m:"3 × 12 reps",d:"Pesos leves para os lados. Esculpe os ombros."}},
+   {img:"plank",min:4,en:{n:"Plank (on knees)",m:"3 × hold 20–30 sec",d:"Strong, flat tummy. Keep a straight line."},pt:{n:"Prancha (nos joelhos)",m:"3 × segure 20–30 seg",d:"Barriga forte e reta. Mantenha a linha reta."}},
+   {img:"twist",min:4,en:{n:"Seated twists",m:"3 × 20 reps",d:"Trims and tones the waistline."},pt:{n:"Rotações sentada",m:"3 × 20 reps",d:"Afina e tonifica a cintura."}},
+   {img:"catstretch",min:4,en:{n:"Cool-down: cat stretch",m:"2 × 10 reps",d:"Relax and mobilize the spine."},pt:{n:"Volta à calma: alongamento do gato",m:"2 × 10 reps",d:"Relaxe e mobilize a coluna."}}
  ]},
  {focus:{en:"Full-body fat-burn circuit (low impact)",pt:"Circuito de queima de gordura (baixo impacto)"},items:[
-   {img:"walk",en:{n:"Low-impact cardio circuit",m:"3 rounds × 30 sec",d:"March, step-touch, gentle knee lifts — no jumping. Move 30 sec, rest 30 sec."},pt:{n:"Circuito de cardio leve",m:"3 voltas × 30 seg",d:"Marcha, toque lateral, elevação suave de joelho — sem pular. Mexa-se 30 seg, descanse 30 seg."}},
-   {img:"squat",en:{n:"Sit-to-stand squats",m:"3 × 12 reps",d:"Burns calories and tones the legs."},pt:{n:"Levantar da cadeira",m:"3 × 12 reps",d:"Queima calorias e tonifica as pernas."}},
-   {img:"twist",en:{n:"Standing knee-to-elbow",m:"3 × 12 each side",d:"Bring knee up to opposite elbow — light cardio + core, gentle on joints."},pt:{n:"Joelho ao cotovelo em pé",m:"3 × 12 cada lado",d:"Leve o joelho ao cotovelo oposto — cardio leve + core, suave nas articulações."}},
-   {img:"row",en:{n:"Bent-over rows (bottles/weights)",m:"3 × 12 reps",d:"Tones the back and improves posture."},pt:{n:"Remada curvada (garrafas/pesos)",m:"3 × 12 reps",d:"Tonifica as costas e melhora a postura."}},
-   {img:"bridge",en:{n:"Glute bridges",m:"3 × 15 reps",d:"Finishes the circuit shaping the glutes and core."},pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Finaliza o circuito modelando glúteos e core."}}
+   {img:"walk",min:6,en:{n:"Warm-up walk",m:"6 min, brisk",d:"Get the heart rate up, no jumping."},pt:{n:"Caminhada de aquecimento",m:"6 min, rápida",d:"Eleve a frequência cardíaca, sem pular."}},
+   {img:"squat",min:5,en:{n:"Bodyweight squats",m:"3 × 12 reps",d:"Burns calories, tones the legs."},pt:{n:"Agachamento livre",m:"3 × 12 reps",d:"Queima calorias, tonifica as pernas."}},
+   {img:"stepup",min:5,en:{n:"Step-ups",m:"3 × 10 each leg",d:"Light cardio plus leg toning."},pt:{n:"Subida no degrau",m:"3 × 10 cada perna",d:"Cardio leve e tônus das pernas."}},
+   {img:"pushup",min:5,en:{n:"Incline push-ups",m:"3 × 10 reps",d:"Tones the upper body."},pt:{n:"Flexão inclinada",m:"3 × 10 reps",d:"Tonifica a parte superior."}},
+   {img:"row",min:5,en:{n:"Bent-over rows",m:"3 × 12 reps",d:"Back strength and posture."},pt:{n:"Remada curvada",m:"3 × 12 reps",d:"Força das costas e postura."}},
+   {img:"lunge",min:5,en:{n:"Gentle lunges",m:"3 × 8 each leg",d:"Short, controlled steps. Hold a chair if needed."},pt:{n:"Avanço suave",m:"3 × 8 cada perna",d:"Passos curtos e controlados. Apoie-se numa cadeira se precisar."}},
+   {img:"bridge",min:5,en:{n:"Glute bridges",m:"3 × 15 reps",d:"Shapes the glutes and core."},pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Modela glúteos e core."}},
+   {img:"twist",min:4,en:{n:"Seated twists",m:"3 × 20 reps",d:"Works the waist."},pt:{n:"Rotações sentada",m:"3 × 20 reps",d:"Trabalha a cintura."}},
+   {img:"hamstretch",min:5,en:{n:"Cool-down stretch",m:"hold 30 sec each",d:"Stretch legs and back to finish."},pt:{n:"Volta à calma",m:"segure 30 seg cada",d:"Alongue pernas e costas para finalizar."}}
  ]},
- {focus:{en:"Core & posture + waist toning",pt:"Core e postura + cintura"},items:[
-   {img:"marchsit",en:{n:"Marching warm-up",m:"8 min",d:"Loosen the hips and get the blood flowing."},pt:{n:"Aquecimento marchando",m:"8 min",d:"Solte os quadris e ative a circulação."}},
-   {img:"plank",en:{n:"Modified plank holds",m:"3 × 20–30 sec",d:"Builds a strong, flat tummy. Keep the body in a straight line."},pt:{n:"Prancha modificada",m:"3 × 20–30 seg",d:"Fortalece a barriga. Mantenha o corpo numa linha reta."}},
-   {img:"twist",en:{n:"Seated or standing twists",m:"3 × 20 reps",d:"Trims and tones the waistline."},pt:{n:"Rotações sentada ou em pé",m:"3 × 20 reps",d:"Afina e tonifica a cintura."}},
-   {img:"bridge",en:{n:"Glute bridge with hold",m:"3 × 12 reps",d:"Strengthens core, glutes and lower back together."},pt:{n:"Ponte de glúteo com pausa",m:"3 × 12 reps",d:"Fortalece core, glúteos e lombar juntos."}},
-   {img:"legraise",en:{n:"Lying leg lifts",m:"3 × 10 each leg",d:"Tones the lower belly. Move slowly and keep the back flat."},pt:{n:"Elevação de perna deitada",m:"3 × 10 cada perna",d:"Tonifica a parte baixa da barriga. Mova devagar e mantenha as costas no chão."}},
-   {img:"catcow",en:{n:"Cat-cow finish",m:"2 × 10 reps",d:"Relax and mobilize the spine to cool down."},pt:{n:"Gato-vaca final",m:"2 × 10 reps",d:"Relaxe e mobilize a coluna para finalizar."}}
+ {focus:{en:"Core, posture & waist",pt:"Core, postura e cintura"},items:[
+   {img:"walk",min:7,en:{n:"Warm-up walk",m:"7 min",d:"Loosen up and get the blood flowing."},pt:{n:"Caminhada de aquecimento",m:"7 min",d:"Solte o corpo e ative a circulação."}},
+   {img:"plank",min:5,en:{n:"Plank holds",m:"3 × 20–30 sec",d:"Strong, flat tummy. On knees if needed."},pt:{n:"Prancha",m:"3 × 20–30 seg",d:"Barriga forte e reta. Nos joelhos se precisar."}},
+   {img:"twist",min:5,en:{n:"Seated twists",m:"3 × 20 reps",d:"Trims the waistline."},pt:{n:"Rotações sentada",m:"3 × 20 reps",d:"Afina a cintura."}},
+   {img:"hiprise",min:5,en:{n:"Bent-knee hip raises",m:"3 × 12 reps",d:"Tones the lower belly."},pt:{n:"Elevação de quadril",m:"3 × 12 reps",d:"Tonifica a parte baixa da barriga."}},
+   {img:"crunch",min:5,en:{n:"Gentle cross-body crunches",m:"3 × 12 each side",d:"Slow and controlled for the abs and waist."},pt:{n:"Abdominal cruzado suave",m:"3 × 12 cada lado",d:"Devagar e controlado para abdômen e cintura."}},
+   {img:"bridge",min:5,en:{n:"Glute bridges",m:"3 × 15 reps",d:"Core, glutes and lower back together."},pt:{n:"Ponte de glúteo",m:"3 × 15 reps",d:"Core, glúteos e lombar juntos."}},
+   {img:"pelvicbridge",min:5,en:{n:"Pelvic tilts into bridge",m:"3 × 12 reps",d:"Gentle move for the lower back and core."},pt:{n:"Báscula pélvica em ponte",m:"3 × 12 reps",d:"Movimento suave para lombar e core."}},
+   {img:"catstretch",min:4,en:{n:"Cool-down: cat stretch",m:"2 × 10 reps",d:"Mobilize and relax the spine."},pt:{n:"Volta à calma: gato",m:"2 × 10 reps",d:"Mobilize e relaxe a coluna."}},
+   {img:"childpose",min:4,en:{n:"Cool-down: child's pose",m:"hold 60 sec",d:"Relax the back and breathe."},pt:{n:"Volta à calma: postura da criança",m:"segure 60 seg",d:"Relaxe as costas e respire."}}
  ]},
- {focus:{en:"Strength & tone: full body with light weights",pt:"Força e tônus: corpo todo com pesos leves"},items:[
-   {img:"walk",en:{n:"Brisk walk warm-up",m:"10 min",d:"Raise your heart rate and warm the muscles."},pt:{n:"Caminhada de aquecimento",m:"10 min",d:"Eleve a frequência cardíaca e aqueça os músculos."}},
-   {img:"squat",en:{n:"Chair squats",m:"3 × 12 reps",d:"The #1 move for toned legs and glutes."},pt:{n:"Agachamento na cadeira",m:"3 × 12 reps",d:"O melhor exercício para pernas e glúteos definidos."}},
-   {img:"press",en:{n:"Shoulder press (light)",m:"3 × 12 reps",d:"Shapes shoulders and arms."},pt:{n:"Desenvolvimento de ombro (leve)",m:"3 × 12 reps",d:"Modela ombros e braços."}},
-   {img:"row",en:{n:"Bent-over rows",m:"3 × 12 reps",d:"Strong back, better posture."},pt:{n:"Remada curvada",m:"3 × 12 reps",d:"Costas fortes, melhor postura."}},
-   {img:"curl",en:{n:"Bicep curls",m:"3 × 12 reps",d:"Firms and tones the arms."},pt:{n:"Rosca bíceps",m:"3 × 12 reps",d:"Firma e tonifica os braços."}},
-   {img:"calf",en:{n:"Calf raises",m:"3 × 15 reps",d:"Sculpts the lower legs."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Esculpe as panturrilhas."}}
+ {focus:{en:"Strength & tone: full body, light weights",pt:"Força e tônus: corpo todo, pesos leves"},items:[
+   {img:"walk",min:7,en:{n:"Warm-up walk",m:"7 min",d:"Warm the muscles before strength work."},pt:{n:"Caminhada de aquecimento",m:"7 min",d:"Aqueça os músculos antes da força."}},
+   {img:"squat",min:6,en:{n:"Bodyweight squats",m:"3 × 12 reps",d:"#1 move for toned legs and glutes."},pt:{n:"Agachamento livre",m:"3 × 12 reps",d:"O melhor para pernas e glúteos definidos."}},
+   {img:"press",min:5,en:{n:"Shoulder press (light)",m:"3 × 12 reps",d:"Shapes shoulders and arms."},pt:{n:"Desenvolvimento de ombro (leve)",m:"3 × 12 reps",d:"Modela ombros e braços."}},
+   {img:"row",min:5,en:{n:"Bent-over rows",m:"3 × 12 reps",d:"Strong back, better posture."},pt:{n:"Remada curvada",m:"3 × 12 reps",d:"Costas fortes, melhor postura."}},
+   {img:"curl",min:5,en:{n:"Bicep curls",m:"3 × 12 reps",d:"Firms and tones the arms."},pt:{n:"Rosca bíceps",m:"3 × 12 reps",d:"Firma e tonifica os braços."}},
+   {img:"kickback",min:5,en:{n:"Glute kickbacks",m:"3 × 12 each leg",d:"Lifts and firms the glutes."},pt:{n:"Glúteo para trás",m:"3 × 12 cada perna",d:"Levanta e firma os glúteos."}},
+   {img:"calf",min:5,en:{n:"Calf raises",m:"3 × 15 reps",d:"Sculpts the lower legs."},pt:{n:"Elevação de panturrilha",m:"3 × 15 reps",d:"Esculpe as panturrilhas."}},
+   {img:"hamstretch",min:4,en:{n:"Cool-down: hamstring stretch",m:"hold 30 sec each",d:"Ease out the legs."},pt:{n:"Volta à calma: isquiotibiais",m:"segure 30 seg cada",d:"Relaxe as pernas."}},
+   {img:"glutestretch",min:3,en:{n:"Cool-down: glute stretch",m:"hold 30 sec each",d:"Release the hips."},pt:{n:"Volta à calma: glúteo",m:"segure 30 seg cada",d:"Solte os quadris."}}
  ]},
- {focus:{en:"Active recovery: walking & full-body mobility",pt:"Recuperação ativa: caminhada e mobilidade"},items:[
-   {img:"walk",en:{n:"Easy walk (outdoors or treadmill)",m:"30–40 min relaxed",d:"Active recovery that still burns fat and protects the joints."},pt:{n:"Caminhada leve",m:"30–40 min relaxada",d:"Recuperação ativa que ainda queima gordura e protege as articulações."}},
-   {img:"stretch",en:{n:"Full-body gentle stretching",m:"10 min",d:"Stretch calves, thighs, hips, back and shoulders. Hold each 20–30 sec."},pt:{n:"Alongamento suave do corpo",m:"10 min",d:"Alongue panturrilhas, coxas, quadris, costas e ombros. Segure cada um 20–30 seg."}},
-   {img:"catcow",en:{n:"Cat-cow / spine mobility",m:"2 × 10 reps",d:"On hands and knees, arch and round the spine slowly. Great for the back."},pt:{n:"Gato-vaca / mobilidade da coluna",m:"2 × 10 reps",d:"De quatro, arqueie e arredonde a coluna devagar. Ótimo pras costas."}},
-   {img:"balance",en:{n:"Balance holds + deep breathing",m:"5 min",d:"Stand on one leg (hold a chair), breathe deeply. Improves balance and calm."},pt:{n:"Equilíbrio + respiração",m:"5 min",d:"Fique num pé só (apoie numa cadeira), respire fundo. Melhora equilíbrio e calma."}}
+ {focus:{en:"Active recovery: walk & full-body mobility",pt:"Recuperação ativa: caminhada e mobilidade"},items:[
+   {img:"walk",min:25,en:{n:"Easy walk",m:"25 min, relaxed",d:"Active recovery that still burns fat and protects the joints."},pt:{n:"Caminhada leve",m:"25 min, relaxada",d:"Recuperação ativa que ainda queima gordura e protege as articulações."}},
+   {img:"catstretch",min:4,en:{n:"Cat stretch",m:"2 × 10 reps",d:"Mobilize the spine."},pt:{n:"Alongamento do gato",m:"2 × 10 reps",d:"Mobilize a coluna."}},
+   {img:"childpose",min:4,en:{n:"Child's pose",m:"hold 60 sec",d:"Relax the back and breathe deeply."},pt:{n:"Postura da criança",m:"segure 60 seg",d:"Relaxe as costas e respire fundo."}},
+   {img:"hamstretch",min:4,en:{n:"Hamstring stretch",m:"hold 30 sec each",d:"Stretch the back of the legs."},pt:{n:"Alongamento de isquiotibiais",m:"segure 30 seg cada",d:"Alongue a parte de trás das pernas."}},
+   {img:"quadstretch",min:4,en:{n:"Quad stretch",m:"hold 30 sec each",d:"Stretch the thighs."},pt:{n:"Alongamento do quadríceps",m:"segure 30 seg cada",d:"Alongue as coxas."}},
+   {img:"calfstretch",min:4,en:{n:"Calf stretch",m:"hold 30 sec each",d:"Loosen the calves and ankles."},pt:{n:"Alongamento de panturrilha",m:"segure 30 seg cada",d:"Solte panturrilhas e tornozelos."}}
  ]}
 ];
 
-/* ---------------- helpers ---------------- */
+/* ---------- helpers ---------- */
 const $=id=>document.getElementById(id);
 let lang=localStorage.getItem("df_lang")||"en";
 let currentUser=null, pendingFeel=null, reminderTimer=null;
 
 function t(k){return (I18N[lang]&&I18N[lang][k]!==undefined)?I18N[lang][k]:(I18N.en[k]!==undefined?I18N.en[k]:k);}
-function todayKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function todayKey(d){d=d||new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function dayIndex(){return Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/86400000);}
 function userKey(n){return "df_user_"+n.trim().toLowerCase();}
 function getUser(n){try{return JSON.parse(localStorage.getItem(userKey(n)));}catch(e){return null;}}
 function saveUser(u){localStorage.setItem(userKey(u.name),JSON.stringify(u));}
-function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2400);}
+function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2600);}
 
-/* ---------------- language ---------------- */
+/* ---------- language ---------- */
 function applyLang(){
   document.documentElement.lang=lang;
   document.querySelectorAll("[data-i18n]").forEach(el=>{el.textContent=t(el.getAttribute("data-i18n"));});
   $("logText").setAttribute("placeholder",t("logPh"));
   if(lang==="en"){$("langFlag").textContent="🇧🇷";$("langLabel").textContent="PT";}
   else{$("langFlag").textContent="🇬🇧";$("langLabel").textContent="EN";}
-  // feel button tooltips
   document.querySelectorAll("#feelOpts button").forEach(b=>b.title=t("feel_"+b.dataset.feel));
   if(currentUser){renderAll();}else{updateLoginHint();updateLoginWelcome();}
 }
 function toggleLang(){lang=(lang==="en")?"pt":"en";localStorage.setItem("df_lang",lang);applyLang();}
-function updateLoginWelcome(){
-  const name=($("nameInput").value.trim())||"Sueli";
-  $("loginWelcome").textContent=t("greetingWelcome")+", "+name+"!";
-}
-function updateLoginHint(){
-  const name=$("nameInput").value.trim();
-  $("loginHint").textContent=(name&&getUser(name))?t("loginHintReturning"):t("loginHintNew");
-}
+function updateLoginWelcome(){const name=($("nameInput").value.trim())||"Sueli";$("loginWelcome").textContent=t("greetingWelcome")+", "+name+"!";}
+function updateLoginHint(){const name=$("nameInput").value.trim();$("loginHint").textContent=(name&&getUser(name))?t("loginHintReturning"):t("loginHintNew");}
 
-/* ---------------- date ---------------- */
+/* ---------- date ---------- */
 function prettyDate(){const l=lang==="pt"?"pt-BR":"en-US";return new Date().toLocaleDateString(l,{weekday:"long",month:"long",day:"numeric"});}
 
-/* ---------------- plan ---------------- */
+/* ---------- schedule ---------- */
+function schedule(){return (currentUser&&currentUser.schedule)?currentUser.schedule:[0,1,2,3,4,5,6];}
+function isWorkoutDay(d){d=d||new Date();return schedule().includes(d.getDay());}
+function renderDayToggles(){
+  const sch=schedule();const labels=t("daysShort");
+  $("dayToggles").innerHTML=labels.map((lb,i)=>
+    '<button data-day="'+i+'" class="'+(sch.includes(i)?"on":"")+'">'+lb+'</button>').join("");
+  document.querySelectorAll("#dayToggles button").forEach(b=>b.addEventListener("click",()=>toggleDay(parseInt(b.dataset.day))));
+  $("goalText").textContent=t("goalText").replace("{n}",sch.length);
+}
+function toggleDay(i){
+  let sch=schedule().slice();
+  if(sch.includes(i)) sch=sch.filter(x=>x!==i); else sch.push(i);
+  if(sch.length===0){toast(t("needOneDay"));return;}
+  sch.sort();currentUser.schedule=sch;saveUser(currentUser);
+  renderDayToggles();renderAll();setupReminder();
+}
+
+/* ---------- plan ---------- */
 function todaysWorkout(){return WORKOUTS[dayIndex()%WORKOUTS.length];}
 function todaysRehab(){const b=dayIndex()*3;return [REHAB[b%REHAB.length],REHAB[(b+1)%REHAB.length],REHAB[(b+2)%REHAB.length]];}
-function exHtml(ex,num){
-  const e=ex[lang];const img=IMG[ex.img]||IMG.generic;
-  return '<div class="ex"><div class="exsvg-wrap">'+img+'</div><div class="ex-body">'+
-    '<div class="name"><span class="num">'+num+'</span>'+e.n+'</div>'+
+function exHtml(ex,num,showTime){
+  const e=ex[lang];
+  const time=(showTime&&ex.min)?'<span class="extime">⏱ '+ex.min+' '+t("minLabel")+'</span>':'';
+  return '<div class="ex"><img class="exphoto" loading="lazy" alt="'+e.n.replace(/"/g,'')+'" src="img/'+ex.img+'.jpg" onerror="this.style.visibility=\'hidden\'">'+
+    '<div class="ex-body"><div class="name"><span class="num">'+num+'</span>'+e.n+time+'</div>'+
     '<div class="meta">'+e.m+'</div><div class="desc">'+e.d+'</div></div></div>';
 }
 function renderPlan(){
-  const w=todaysWorkout();
-  $("focusBanner").innerHTML="<b>"+t("focusToday")+"</b> "+w.focus[lang];
-  $("workoutTip").textContent=t("workoutTip");
-  $("workoutTitle").textContent="🔥 "+t("todaysWorkout");
-  $("workoutList").innerHTML=w.items.map((ex,i)=>exHtml(ex,i+1)).join("");
-  $("rehabList").innerHTML=todaysRehab().map((ex,i)=>exHtml(ex,i+1)).join("");
+  const workoutDay=isWorkoutDay();
+  $("restWrap").classList.toggle("hidden",workoutDay);
+  $("workoutWrap").classList.toggle("hidden",!workoutDay);
+  $("workoutTitle").firstChild.nodeValue="🔥 "+t("todaysWorkout")+" ";
+  if(workoutDay){
+    const w=todaysWorkout();
+    const total=w.items.reduce((s,x)=>s+(x.min||0),0);
+    $("totalTime").textContent="≈ "+total+" "+t("minLabel");
+    $("totalTime").classList.remove("hidden");
+    $("focusBanner").innerHTML="<b>"+t("focusToday")+"</b> "+w.focus[lang];
+    $("workoutTip").textContent=t("workoutTip");
+    $("workoutList").innerHTML=w.items.map((ex,i)=>exHtml(ex,i+1,true)).join("");
+  }else{
+    $("totalTime").classList.add("hidden");
+  }
+  $("rehabList").innerHTML=todaysRehab().map((ex,i)=>exHtml(ex,i+1,false)).join("");
 }
 
-/* ---------------- stats ---------------- */
+/* ---------- stats ---------- */
 function computeStats(){
-  const logs=currentUser.logs||{};
-  const total=Object.keys(logs).length;
+  const logs=currentUser.logs||{};const total=Object.keys(logs).length;
   let streak=0,d=new Date();
-  while(true){const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    if(logs[k]){streak++;d.setDate(d.getDate()-1);}else break;}
-  let week=0;for(let i=0;i<7;i++){const dd=new Date();dd.setDate(dd.getDate()-i);
-    const k=dd.getFullYear()+"-"+String(dd.getMonth()+1).padStart(2,"0")+"-"+String(dd.getDate()).padStart(2,"0");
-    if(logs[k])week++;}
+  while(true){if(logs[todayKey(d)]){streak++;d.setDate(d.getDate()-1);}else break;}
+  let week=0;for(let i=0;i<7;i++){const dd=new Date();dd.setDate(dd.getDate()-i);if(logs[todayKey(dd)])week++;}
   return {total,streak,week};
 }
 function renderStats(){
-  const s=computeStats();
+  const s=computeStats();const goal=schedule().length;
   ["streakNum","streakNum2"].forEach(id=>$(id).textContent=s.streak);
   ["totalNum","totalNum2"].forEach(id=>$(id).textContent=s.total);
   ["weekNum","weekNum2"].forEach(id=>$(id).textContent=s.week);
+  const gl=t("weekGoal").replace("{done}",s.week).replace("{goal}",goal);
+  $("goalLine").innerHTML=gl;$("goalLine2").innerHTML=gl;
   let msg=t("streakNone");
   if(s.streak===1)msg=t("streakSingle");else if(s.streak>1)msg=t("streakMulti").replace("{n}",s.streak);
   $("streakMsg").textContent=msg;
 }
 
-/* ---------------- history ---------------- */
+/* ---------- history ---------- */
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
 function renderHistory(){
   const logs=currentUser.logs||{};const dates=Object.keys(logs).sort().reverse();
@@ -630,12 +615,10 @@ function renderHistory(){
   }).join("");
 }
 
-/* ---------------- tips ---------------- */
-function renderTips(){
-  $("tipsList").innerHTML=t("tips").map(p=>'<div class="tipcard"><span class="emoji">'+p[0]+'</span><div class="tt">'+p[1]+'</div></div>').join("");
-}
+/* ---------- tips ---------- */
+function renderTips(){$("tipsList").innerHTML=t("tips").map(p=>'<div class="tipcard"><span class="emoji">'+p[0]+'</span><div class="tt">'+p[1]+'</div></div>').join("");}
 
-/* ---------------- log state ---------------- */
+/* ---------- log state ---------- */
 function loggedToday(){return currentUser&&currentUser.logs&&currentUser.logs[todayKey()];}
 function renderLogState(){
   const today=loggedToday();
@@ -647,70 +630,62 @@ function renderLogState(){
 function renderAll(){
   $("welcomeName").textContent=t("greetingWelcome")+", "+currentUser.name+"!";
   $("todayDate").textContent=prettyDate();
-  renderPlan();renderStats();renderHistory();renderTips();renderLogState();updateNotifUI();
+  renderDayToggles();renderPlan();renderStats();renderHistory();renderTips();renderLogState();updateNotifUI();
 }
 
-/* ---------------- tabs ---------------- */
+/* ---------- tabs ---------- */
 function showTab(name){
   ["today","log","progress","tips"].forEach(n=>$("tab-"+n).classList.toggle("hidden",n!==name));
   document.querySelectorAll("#bottomNav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ---------------- auth ---------------- */
+/* ---------- auth ---------- */
 function doLogin(){
   const name=($("nameInput").value.trim())||"Sueli";
   const pin=$("pinInput").value.trim();
   if(!/^\d{4}$/.test(pin)){toast(t("needPin"));return;}
   let u=getUser(name);
   if(u){if(u.pin!==pin){toast(t("wrongPin"));return;}}
-  else{u={name:name,pin:pin,logs:{},created:todayKey()};saveUser(u);}
+  else{u={name:name,pin:pin,logs:{},schedule:[0,1,2,3,4,5,6],created:todayKey()};saveUser(u);}
+  if(!u.schedule)u.schedule=[0,1,2,3,4,5,6];
   currentUser=u;localStorage.setItem("df_last_user",name);$("pinInput").value="";
   showApp();
 }
 function logout(){
   currentUser=null;pendingFeel=null;clearTimeout(reminderTimer);
   $("appScreen").classList.add("hidden");$("bottomNav").classList.add("hidden");
-  $("loginScreen").classList.remove("hidden");
-  updateLoginHint();updateLoginWelcome();
+  $("loginScreen").classList.remove("hidden");updateLoginHint();updateLoginWelcome();
 }
 function showApp(){
-  $("loginScreen").classList.add("hidden");
-  $("appScreen").classList.remove("hidden");
-  $("bottomNav").classList.remove("hidden");
-  showTab("today");renderAll();
+  $("loginScreen").classList.add("hidden");$("appScreen").classList.remove("hidden");
+  $("bottomNav").classList.remove("hidden");showTab("today");renderAll();
   setupReminder();checkOverdue();
 }
 
-/* ---------------- save log ---------------- */
+/* ---------- save log ---------- */
 function saveLog(){
   const text=$("logText").value.trim();
   if(!text&&!pendingFeel)return;
   currentUser.logs=currentUser.logs||{};
   currentUser.logs[todayKey()]={text:text,feel:pendingFeel,ts:Date.now()};
-  saveUser(currentUser);
-  toast(t("savedToast"));renderAll();
+  saveUser(currentUser);toast(t("savedToast"));renderAll();
 }
 
-/* ---------------- notifications / 7pm reminder ---------------- */
+/* ---------- notifications / 7pm reminder ---------- */
 function notifEnabled(){return localStorage.getItem("df_notif")==="1";}
 function updateNotifUI(){
   const supported=("Notification" in window);
-  const st=$("notifStatus");const btn=$("notifBtn");const bell=$("bellBtn");
+  const st=$("notifStatus"),btn=$("notifBtn"),bell=$("bellBtn");
   if(!supported){st.textContent=t("notifUnsupported");bell.classList.remove("on");return;}
-  if(Notification.permission==="granted"&&notifEnabled()){
-    st.textContent=t("notifOnStatus");btn.textContent="✅ "+t("notifEnableBtn");bell.classList.add("on");
-  }else if(Notification.permission==="denied"){
-    st.textContent=t("notifBlockedStatus");btn.textContent=t("notifEnableBtn");bell.classList.remove("on");
-  }else{
-    st.textContent=t("notifOffStatus");btn.textContent=t("notifEnableBtn");bell.classList.remove("on");
-  }
+  if(Notification.permission==="granted"&&notifEnabled()){st.textContent=t("notifOnStatus");btn.textContent="✅ "+t("notifEnableBtn");bell.classList.add("on");}
+  else if(Notification.permission==="denied"){st.textContent=t("notifBlockedStatus");btn.textContent=t("notifEnableBtn");bell.classList.remove("on");}
+  else{st.textContent=t("notifOffStatus");btn.textContent=t("notifEnableBtn");bell.classList.remove("on");}
 }
 async function enableNotifs(){
   if(!("Notification" in window)){toast(t("notifUnsupported"));return;}
   if(Notification.permission==="granted"){localStorage.setItem("df_notif","1");setupReminder();updateNotifUI();toast(t("notifGrantedToast"));return;}
-  try{
-    const p=await Notification.requestPermission();
+  try{const p=await Notification.requestPermission();
     if(p==="granted"){localStorage.setItem("df_notif","1");setupReminder();updateNotifUI();toast(t("notifGrantedToast"));}
     else{updateNotifUI();toast(t("notifDeniedToast"));}
   }catch(e){updateNotifUI();}
@@ -720,29 +695,25 @@ function setupReminder(){
   clearTimeout(reminderTimer);
   if(!("Notification" in window)||Notification.permission!=="granted"||!notifEnabled())return;
   reminderTimer=setTimeout(function fire(){
-    if(currentUser&&!loggedToday())showNotif(t("notifPushTitle"),t("notifPushBody"));
+    if(currentUser&&isWorkoutDay()&&!loggedToday())showNotif(t("notifPushTitle"),t("notifPushBody"));
     reminderTimer=setTimeout(fire,msUntilHour(19));
   },msUntilHour(19));
 }
 function showNotif(title,body){
-  try{
-    const opts={body:body,icon:"./icon.svg",badge:"./icon.svg",tag:"dailyfit-reminder"};
-    if(navigator.serviceWorker&&navigator.serviceWorker.ready){
-      navigator.serviceWorker.ready.then(r=>r.showNotification(title,opts)).catch(()=>new Notification(title,opts));
-    }else{new Notification(title,opts);}
+  try{const opts={body:body,icon:"./icon.svg",badge:"./icon.svg",tag:"dailyfit-reminder"};
+    if(navigator.serviceWorker&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(r=>r.showNotification(title,opts)).catch(()=>new Notification(title,opts));}
+    else{new Notification(title,opts);}
   }catch(e){try{new Notification(title,{body:body});}catch(_){}}
 }
 function checkOverdue(){
-  // If she opens the app after 7pm and hasn't logged, gently remind in-app (+ notification if enabled)
-  if(!currentUser||loggedToday())return;
+  if(!currentUser||loggedToday()||!isWorkoutDay())return;
   if(new Date().getHours()>=19){
     toast(t("reminderInApp"));
-    if(("Notification" in window)&&Notification.permission==="granted"&&notifEnabled())
-      showNotif(t("notifPushTitle"),t("notifPushBody"));
+    if(("Notification" in window)&&Notification.permission==="granted"&&notifEnabled())showNotif(t("notifPushTitle"),t("notifPushBody"));
   }
 }
 
-/* ---------------- events ---------------- */
+/* ---------- events ---------- */
 $("langBtn").addEventListener("click",toggleLang);
 $("loginBtn").addEventListener("click",doLogin);
 $("logoutBtn").addEventListener("click",logout);
@@ -758,12 +729,10 @@ document.querySelectorAll("#feelOpts button").forEach(b=>b.addEventListener("cli
 document.querySelectorAll("#bottomNav button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&currentUser){renderLogState();checkOverdue();setupReminder();}});
 
-/* ---------------- service worker (PWA / notifications when hosted) ---------------- */
-if("serviceWorker" in navigator && location.protocol!=="file:"){
-  navigator.serviceWorker.register("./sw.js").catch(()=>{});
-}
+/* ---------- service worker ---------- */
+if("serviceWorker" in navigator && location.protocol!=="file:"){navigator.serviceWorker.register("./sw.js").catch(()=>{});}
 
-/* ---------------- boot ---------------- */
+/* ---------- boot ---------- */
 (function init(){
   applyLang();
   const last=localStorage.getItem("df_last_user");
