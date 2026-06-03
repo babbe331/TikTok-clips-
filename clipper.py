@@ -24,6 +24,9 @@ CREATORS = [
     "nickeh30",
     "tarik",
     "hasanabi",
+    "valkyrae",
+    "ludwig",
+    "ninja",
 ]
 
 MIN_CLIP_DURATION = 60  # seconds
@@ -206,10 +209,11 @@ def make_tiktok_clip(source: str, start: float, end: float, words: list[dict],
     style = "FontName=Arial,FontSize=14,PrimaryColour=&H00FFFF00,OutlineColour=&H00000000,BorderStyle=1,Outline=3,Alignment=2"
     safe_creator = creator.replace("'", r"\'")
     watermark = f"drawtext=text='{safe_creator}':fontsize=22:fontcolor=white:x=(w-text_w)/2:y=50:box=1:boxcolor=black@0.6:boxborderw=8"
-    vf = f"crop={tw}:{oh}:{cx}:0,scale=1080:1920:flags=lanczos,subtitles={srt_path}:force_style='{style}',{watermark}"
+    vf = f"crop={tw}:{oh}:{cx}:0,scale=720:1280:flags=lanczos,subtitles={srt_path}:force_style='{style}',{watermark}"
 
     cmd = ["ffmpeg", "-y", "-ss", str(start), "-i", source, "-t", str(duration),
-           "-vf", vf, "-c:v", "libx264", "-preset", "fast", "-c:a", "aac", out_path]
+           "-vf", vf, "-c:v", "libx264", "-crf", "28", "-preset", "fast",
+           "-c:a", "aac", "-b:a", "96k", out_path]
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     os.remove(srt_path)
@@ -305,7 +309,7 @@ if __name__ == "__main__":
     token = helix_token()
     print("Token OK\n")
 
-    for login in CREATORS:
+    for login in ["valkyrae", "ludwig", "ninja"]:
         try:
             process_creator(login, token)
         except Exception as e:
