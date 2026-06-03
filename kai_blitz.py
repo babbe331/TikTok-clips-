@@ -9,7 +9,7 @@ GOOGLE_API_KEY       = os.environ.get("GOOGLE_API_KEY",       "PASTE_GOOGLE_API_
 TWITCH_WEB_CLIENT_ID = "kimne78kx3ncx6brgo4mv6wki5h1ko"
 OUTPUT_DIR           = "kai_clips"
 TARGET               = 15
-MIN_DURATION         = 61
+MIN_DURATION         = 58  # Twitch clips cap at 60s, so 58+ catches full-length clips
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -107,8 +107,8 @@ def pick_best_window(words, title):
 
         Avoid: slow intros, dead air, low energy explanations, off-topic tangents.
 
-        Reply ONLY with JSON: {{"start": 0.0, "end": 61.0, "reason": "why this will go viral"}}
-        Rules: end-start must be 61-65s. If clip under 65s, use start=0 end={min(total,61):.0f}.
+        Reply ONLY with JSON: {{"start": 0.0, "end": 60.0, "reason": "why this will go viral"}}
+        Rules: end-start must be 58-62s. If clip under 62s, use start=0 and end={min(total,60):.0f}.
 
         Transcript:
         {chr(10).join(lines)}
