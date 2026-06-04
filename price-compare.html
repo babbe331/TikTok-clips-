@@ -157,16 +157,16 @@
         <h3>1️⃣ Old prices <span class="muted">(baseline)</span></h3>
         <button class="btn ghost small" id="useBaselineBtn" onclick="useSavedBaseline()" style="display:none">Use saved</button>
       </div>
-      <div class="drop" id="dropOld" style="cursor:pointer" onclick="document.getElementById('oldPhoto').click()"
+      <div class="drop" id="dropOld" style="cursor:pointer" onclick="document.getElementById('oldFile').click()"
            ondragover="dz(event,'dropOld',1)" ondragleave="dz(event,'dropOld',0)" ondrop="dropFile(event,'old')">
-        <span style="font-size:30px;display:block;margin-bottom:4px">📷</span>
-        Tap to take or upload a photo<br><span style="font-size:12.5px">of your old price list</span>
+        <span style="font-size:30px;display:block;margin-bottom:4px">⬆️</span>
+        Tap to upload your old list<br><span style="font-size:12.5px">CSV, PDF, or a photo — or drag one here</span>
       </div>
       <input type="file" id="oldPhoto" accept="image/*" capture="environment" style="display:none" onchange="pickPhoto(event,'old')">
-      <input type="file" id="oldFile"  accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'old')">
+      <input type="file" id="oldFile"  accept=".csv,.pdf,image/*,text/csv,application/pdf" style="display:none" onchange="pickFile(event,'old')">
       <div class="row-flex" style="margin-top:10px">
-        <button class="btn secondary" onclick="document.getElementById('oldPhoto').click()">📷 Add photo</button>
-        <button class="btn secondary" onclick="document.getElementById('oldFile').click()">📄 Use CSV file</button>
+        <button class="btn secondary" onclick="document.getElementById('oldFile').click()">📎 Choose file</button>
+        <button class="btn secondary" onclick="document.getElementById('oldPhoto').click()">📷 Take photo</button>
       </div>
       <div class="ocr" id="ocrOld"></div>
       <p id="oldInfo" class="muted" style="font-size:13px"></p>
@@ -175,16 +175,16 @@
     <!-- NEW -->
     <div class="card">
       <div class="card-head"><h3>2️⃣ New prices <span class="muted">(latest)</span></h3></div>
-      <div class="drop" id="dropNew" style="cursor:pointer" onclick="document.getElementById('newPhoto').click()"
+      <div class="drop" id="dropNew" style="cursor:pointer" onclick="document.getElementById('newFile').click()"
            ondragover="dz(event,'dropNew',1)" ondragleave="dz(event,'dropNew',0)" ondrop="dropFile(event,'new')">
-        <span style="font-size:30px;display:block;margin-bottom:4px">📷</span>
-        Tap to take or upload a photo<br><span style="font-size:12.5px">of the latest price list</span>
+        <span style="font-size:30px;display:block;margin-bottom:4px">⬆️</span>
+        Tap to upload the latest list<br><span style="font-size:12.5px">CSV, PDF, or a photo — or drag one here</span>
       </div>
       <input type="file" id="newPhoto" accept="image/*" capture="environment" style="display:none" onchange="pickPhoto(event,'new')">
-      <input type="file" id="newFile"  accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'new')">
+      <input type="file" id="newFile"  accept=".csv,.pdf,image/*,text/csv,application/pdf" style="display:none" onchange="pickFile(event,'new')">
       <div class="row-flex" style="margin-top:10px">
-        <button class="btn" onclick="document.getElementById('newPhoto').click()">📷 Add photo</button>
-        <button class="btn secondary" onclick="document.getElementById('newFile').click()">📄 Use CSV file</button>
+        <button class="btn" onclick="document.getElementById('newFile').click()">📎 Choose file</button>
+        <button class="btn secondary" onclick="document.getElementById('newPhoto').click()">📷 Take photo</button>
       </div>
       <div class="ocr" id="ocrNew"></div>
       <p id="newInfo" class="muted" style="font-size:13px"></p>
@@ -228,19 +228,22 @@
       the saved baseline as the old one, so you never have to dig up the previous list.<br><br>
       <strong>Sending the list:</strong> use <code class="k">📋 Copy full list to send</code> to copy a clean text report you
       can paste straight into an email or text message, or <code class="k">⬇ Export comparison (CSV)</code> for a spreadsheet.<br><br>
-      <strong>Two ways to add prices — use either:</strong><br>
-      • <strong>📷 Photo</strong> — snap or upload a picture of a printed price list and the app reads the prices off it.
-      Photos aren't perfect, so each reading drops into an <em>editable list</em> where you can fix any wrong name or price
-      before comparing. Works best on clear, well-lit, printed (typed) lists.<br>
-      • <strong>📄 CSV file</strong> — a spreadsheet with at least a <code class="k">name</code> column and a
-      <code class="k">price</code> column (<code class="k">sell</code> works too); <code class="k">category</code>/<code class="k">unit</code> optional.<br><br>
-      Everything stays on your device — nothing is uploaded anywhere.
+      <strong>Add the list any way you have it — CSV, PDF, or a photo:</strong><br>
+      • <strong>📄 CSV</strong> — a spreadsheet with at least a <code class="k">name</code> column and a
+      <code class="k">price</code> column (<code class="k">sell</code> works too); <code class="k">category</code>/<code class="k">unit</code> optional. Most accurate.<br>
+      • <strong>📕 PDF</strong> — drop in a price-list PDF. If it has real text, prices are read directly; if it's a scanned
+      image, it's read by OCR. Either way the result lands in an <em>editable list</em> to fix before comparing.<br>
+      • <strong>📷 Photo</strong> — snap or upload a picture of a printed list and the app reads the prices off it. Works best
+      on clear, well-lit, typed lists.<br><br>
+      Photos and scanned PDFs aren't 100% perfect, so every reading drops into an <em>editable list</em> where you can correct
+      any name or price before it compares. Everything stays on your device — nothing is uploaded anywhere.
     </div>
   </details>
 </main>
 
-<!-- In-browser OCR (loads only when you add a photo). -->
+<!-- In-browser OCR (photos & scanned PDFs) and PDF reading. Loaded from CDN. -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 
 <div id="toast"></div>
 
@@ -333,17 +336,22 @@ function rowsFromCSV(text){
 
 /* ---------- file intake ---------- */
 function dz(e,id,on){ e.preventDefault(); document.getElementById(id).classList.toggle("over",!!on); }
+/* Route any uploaded file to the right reader by its type/extension. */
+function intake(file,which){
+  if(!file) return;
+  const name=(file.name||"").toLowerCase();
+  const type=file.type||"";
+  if(type==="application/pdf" || name.endsWith(".pdf")) return readPDF(file,which);
+  if(type.indexOf("image")===0 || /\.(png|jpe?g|gif|webp|bmp|heic|heif)$/.test(name)) return readPhoto(file,which);
+  return readFile(file,which); // CSV / text
+}
 function dropFile(e,which){
   e.preventDefault();
   document.getElementById(which==="old"?"dropOld":"dropNew").classList.remove("over");
-  const f=(e.dataTransfer.files||[])[0];
-  if(!f) return;
-  if(f.type && f.type.indexOf("image")===0) readPhoto(f,which);
-  else readFile(f,which);
+  intake((e.dataTransfer.files||[])[0],which);
 }
 function pickFile(e,which){
-  const f=(e.target.files||[])[0];
-  if(f) readFile(f,which);
+  intake((e.target.files||[])[0],which);
   e.target.value="";
 }
 function pickPhoto(e,which){
@@ -378,12 +386,12 @@ function reflectSide(which){
     drop.classList.add("loaded");
     drop.innerHTML=`<span style="font-size:22px;display:block;margin-bottom:2px">✓</span>`+
       `<b>${esc(side.label)}</b><br>${side.items.length} product(s) loaded<br>`+
-      `<span style="font-size:12.5px">Tap for a different photo (or use the buttons below)</span>`;
+      `<span style="font-size:12.5px">Tap to upload a different one (or use the buttons below)</span>`;
     info.textContent="";
   }else{
     drop.classList.remove("loaded");
-    drop.innerHTML=`<span style="font-size:30px;display:block;margin-bottom:4px">📷</span>`+
-      `Tap to take or upload a photo<br><span style="font-size:12.5px">(or drop a photo / CSV here)</span>`;
+    drop.innerHTML=`<span style="font-size:30px;display:block;margin-bottom:4px">⬆️</span>`+
+      `Tap to upload a list<br><span style="font-size:12.5px">CSV, PDF, or a photo — or drag one here</span>`;
     info.textContent="";
     document.getElementById(which==="old"?"editOld":"editNew").innerHTML="";
   }
@@ -443,12 +451,78 @@ function parseOCR(text){
   return Object.values(byName);
 }
 
+/* ---------- PDF intake (text PDFs read directly; scanned PDFs OCR'd) ---------- */
+const PDF_WORKER="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+async function readPDF(file,which){
+  if(typeof pdfjsLib==="undefined"){
+    toast("PDF reader still loading — check your connection and try again","bad"); return;
+  }
+  if(!pdfjsLib.GlobalWorkerOptions.workerSrc) pdfjsLib.GlobalWorkerOptions.workerSrc=PDF_WORKER;
+  const ocrBox=document.getElementById(which==="old"?"ocrOld":"ocrNew");
+  ocrBox.innerHTML=`<div class="progress"><i id="prog-${which}"></i></div>
+    <div class="status" id="stat-${which}">Reading the PDF…</div>`;
+  const prog=document.getElementById("prog-"+which);
+  const stat=document.getElementById("stat-"+which);
+  try{
+    const buf=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:new Uint8Array(buf)}).promise;
+    let all=[];
+    for(let p=1;p<=pdf.numPages;p++){
+      if(stat) stat.textContent=`Reading PDF… page ${p} of ${pdf.numPages}`;
+      const page=await pdf.getPage(p);
+      const tc=await page.getTextContent();
+      let items=parseOCR(linesFromTextContent(tc));
+      if(items.length===0){                 // no embedded text → scanned page, OCR it
+        if(stat) stat.textContent=`Scanning page ${p} (image PDF)…`;
+        items=await ocrPdfPage(page);
+      }
+      all.push(...items);
+      if(prog) prog.style.width=Math.round(p/pdf.numPages*100)+"%";
+    }
+    const byName={}; all.forEach(it=>byName[nkey(it.name)]=it); all=Object.values(byName);
+    const items=all.length?all:[{name:"",price:0,category:"",unit:""}];
+    setSide(which,{items,label:file.name+" (PDF)",source:"pdf"});
+    if(prog) prog.style.width="100%";
+    if(stat) stat.textContent = all.length
+      ? `Read ${all.length} line(s) from the PDF. Check & fix them below — they compare automatically.`
+      : `Couldn't find prices in that PDF — type them in below.`;
+    toast(all.length?`Read ${all.length} line(s) from the PDF`:"No prices found — type them in",all.length?"good":"");
+  }catch(err){
+    console.error(err);
+    if(stat) stat.textContent="Couldn't read that PDF. Try a CSV or a photo instead.";
+    toast("Couldn't read that PDF","bad");
+  }
+}
+/* Rebuild visual lines from a PDF page's positioned text items. */
+function linesFromTextContent(tc){
+  const rows={};
+  (tc.items||[]).forEach(it=>{
+    if(!it.str || !it.str.trim()) return;
+    const y=Math.round(it.transform[5]/3)*3;   // bucket by vertical position
+    const x=it.transform[4];
+    (rows[y]=rows[y]||[]).push({x,s:it.str});
+  });
+  return Object.keys(rows).map(Number).sort((a,b)=>b-a)  // top → bottom
+    .map(y=>rows[y].sort((a,b)=>a.x-b.x).map(o=>o.s).join(" ").replace(/\s+/g," ").trim())
+    .join("\n");
+}
+/* Render a scanned PDF page to a canvas and OCR it. */
+async function ocrPdfPage(page){
+  if(typeof Tesseract==="undefined") return [];
+  const viewport=page.getViewport({scale:2});
+  const canvas=document.createElement("canvas");
+  canvas.width=viewport.width; canvas.height=viewport.height;
+  await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
+  const {data}=await Tesseract.recognize(canvas,"eng");
+  return parseOCR(data.text);
+}
+
 /* ---------- editable rows (fix OCR / hand-enter) ---------- */
 function renderEditRows(which){
   const side=which==="old"?oldSide:newSide;
   const box=document.getElementById(which==="old"?"editOld":"editNew");
   if(!box) return;
-  if(!side || side.source!=="photo"){ box.innerHTML=""; return; }
+  if(!side || (side.source!=="photo" && side.source!=="pdf")){ box.innerHTML=""; return; }
   box.innerHTML=`<h4>Check & fix the prices</h4>`+
     side.items.map((it,i)=>`<div class="erow">
       <input class="nm" value="${esc(it.name)}" placeholder="Product name"
