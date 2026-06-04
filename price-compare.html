@@ -95,6 +95,26 @@
   .empty{text-align:center;padding:48px 20px;color:var(--muted)}
   .empty .ic{font-size:42px;display:block;margin-bottom:8px}
 
+  /* ---- OCR preview / progress ---- */
+  .ocr{margin-top:10px}
+  .ocr img{max-width:100%;max-height:160px;border-radius:9px;border:1px solid var(--line);display:block;margin-bottom:8px}
+  .progress{height:8px;background:#eef2ee;border-radius:999px;overflow:hidden;margin:6px 0}
+  .progress > i{display:block;height:100%;background:var(--green);width:0;transition:width .2s}
+  .ocr .status{font-size:12.5px;color:var(--muted)}
+
+  /* ---- Editable extracted rows ---- */
+  .editrows{margin-top:10px}
+  .editrows h4{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+  .erow{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+  .erow input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+  .erow input.nm{flex:1;min-width:0}
+  .erow input.pr{width:84px;text-align:right}
+  .erow .del{background:none;border:none;color:var(--muted);font-size:18px;line-height:1;padding:2px 6px}
+  .erow .del:hover{color:var(--red)}
+  .editrows .addrow{font-size:13px;color:var(--green-dark);background:none;border:1px dashed var(--line);
+    border-radius:8px;padding:7px 10px;width:100%;margin-top:2px}
+  .editrows .addrow:hover{background:var(--green-light)}
+
   code.k{background:#eef2ee;padding:1px 6px;border-radius:5px;font-size:13px}
   details.help{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 16px;box-shadow:var(--shadow)}
   details.help summary{cursor:pointer;font-weight:600;padding:14px 0;color:var(--green-dark)}
@@ -125,10 +145,10 @@
 </header>
 
 <main>
-  <h2 class="pagehead">Compare this week's prices</h2>
+  <h2 class="pagehead">Compare your latest prices</h2>
   <p class="pagehead-sub">Drop in your old and new price lists. We line them up by product and show what went
-    <b style="color:var(--red)">up</b> or <b style="color:var(--green-dark)">down</b>. Save the new list and next week
-    it becomes the old one automatically — no need to keep the old file around.</p>
+    <b style="color:var(--red)">up</b> or <b style="color:var(--green-dark)">down</b>. Save the new list and next time —
+    whether that's a couple times a week or any time a new list comes in — it becomes the old one automatically.</p>
 
   <div class="cmp-grid">
     <!-- OLD -->
@@ -137,37 +157,45 @@
         <h3>1️⃣ Old prices <span class="muted">(baseline)</span></h3>
         <button class="btn ghost small" id="useBaselineBtn" onclick="useSavedBaseline()" style="display:none">Use saved</button>
       </div>
-      <div class="drop" id="dropOld" style="cursor:pointer" onclick="document.getElementById('oldFile').click()"
+      <div class="drop" id="dropOld" style="cursor:pointer" onclick="document.getElementById('oldPhoto').click()"
            ondragover="dz(event,'dropOld',1)" ondragleave="dz(event,'dropOld',0)" ondrop="dropFile(event,'old')">
-        <span style="font-size:26px;display:block;margin-bottom:4px">📂</span>
-        Tap to choose a CSV file<br><span style="font-size:12.5px">(or drag one here)</span>
+        <span style="font-size:30px;display:block;margin-bottom:4px">📷</span>
+        Tap to take or upload a photo<br><span style="font-size:12.5px">of your old price list</span>
       </div>
-      <input type="file" id="oldFile" accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'old')">
+      <input type="file" id="oldPhoto" accept="image/*" capture="environment" style="display:none" onchange="pickPhoto(event,'old')">
+      <input type="file" id="oldFile"  accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'old')">
       <div class="row-flex" style="margin-top:10px">
-        <button class="btn secondary" onclick="document.getElementById('oldFile').click()">📂 Choose file</button>
+        <button class="btn secondary" onclick="document.getElementById('oldPhoto').click()">📷 Add photo</button>
+        <button class="btn secondary" onclick="document.getElementById('oldFile').click()">📄 Use CSV file</button>
       </div>
+      <div class="ocr" id="ocrOld"></div>
       <p id="oldInfo" class="muted" style="font-size:13px"></p>
+      <div class="editrows" id="editOld"></div>
     </div>
     <!-- NEW -->
     <div class="card">
-      <div class="card-head"><h3>2️⃣ New prices <span class="muted">(this week)</span></h3></div>
-      <div class="drop" id="dropNew" style="cursor:pointer" onclick="document.getElementById('newFile').click()"
+      <div class="card-head"><h3>2️⃣ New prices <span class="muted">(latest)</span></h3></div>
+      <div class="drop" id="dropNew" style="cursor:pointer" onclick="document.getElementById('newPhoto').click()"
            ondragover="dz(event,'dropNew',1)" ondragleave="dz(event,'dropNew',0)" ondrop="dropFile(event,'new')">
-        <span style="font-size:26px;display:block;margin-bottom:4px">📂</span>
-        Tap to choose a CSV file<br><span style="font-size:12.5px">(or drag one here)</span>
+        <span style="font-size:30px;display:block;margin-bottom:4px">📷</span>
+        Tap to take or upload a photo<br><span style="font-size:12.5px">of the latest price list</span>
       </div>
-      <input type="file" id="newFile" accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'new')">
+      <input type="file" id="newPhoto" accept="image/*" capture="environment" style="display:none" onchange="pickPhoto(event,'new')">
+      <input type="file" id="newFile"  accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'new')">
       <div class="row-flex" style="margin-top:10px">
-        <button class="btn" onclick="document.getElementById('newFile').click()">📂 Choose file</button>
+        <button class="btn" onclick="document.getElementById('newPhoto').click()">📷 Add photo</button>
+        <button class="btn secondary" onclick="document.getElementById('newFile').click()">📄 Use CSV file</button>
       </div>
+      <div class="ocr" id="ocrNew"></div>
       <p id="newInfo" class="muted" style="font-size:13px"></p>
+      <div class="editrows" id="editNew"></div>
     </div>
   </div>
 
   <div class="stats" id="stats" style="display:none"></div>
 
   <div class="row-flex" id="actions" style="margin:16px 0 4px;display:none">
-    <button class="btn" onclick="saveBaselineFromNew()">💾 Save new list as next week's baseline</button>
+    <button class="btn" onclick="saveBaselineFromNew()">💾 Save new list as the baseline</button>
     <button class="btn secondary" onclick="exportCompareCSV()">⬇ Export comparison (CSV)</button>
     <button class="btn secondary" onclick="copyReport()">📋 Copy full list to send</button>
   </div>
@@ -195,17 +223,24 @@
       <strong>First time:</strong> upload your <em>old</em> price list and your <em>new</em> one. We match rows by
       product <code class="k">name</code> and show every change — <code class="k">+$2.00</code> if it costs more now,
       <code class="k">−$2.00</code> if it's cheaper, plus anything brand-new or dropped.<br><br>
-      <strong>Then press “💾 Save new list as next week's baseline.”</strong> It's remembered on this device (in your
-      browser). Next week you only upload the new list and it auto-loads the saved baseline as the old one — so you never
-      have to dig up last week's file.<br><br>
+      <strong>Then press “💾 Save new list as the baseline.”</strong> It's remembered on this device (in your
+      browser). Next time a new list comes in — twice a week or however often — you only add the new one and it auto-loads
+      the saved baseline as the old one, so you never have to dig up the previous list.<br><br>
       <strong>Sending the list:</strong> use <code class="k">📋 Copy full list to send</code> to copy a clean text report you
       can paste straight into an email or text message, or <code class="k">⬇ Export comparison (CSV)</code> for a spreadsheet.<br><br>
-      <strong>Your file:</strong> a <code class="k">.csv</code> with at least a <code class="k">name</code> column and a
-      <code class="k">price</code> column (a column called <code class="k">sell</code> works too). <code class="k">category</code>
-      and <code class="k">unit</code> are optional. Everything stays on your device — nothing is uploaded anywhere.
+      <strong>Two ways to add prices — use either:</strong><br>
+      • <strong>📷 Photo</strong> — snap or upload a picture of a printed price list and the app reads the prices off it.
+      Photos aren't perfect, so each reading drops into an <em>editable list</em> where you can fix any wrong name or price
+      before comparing. Works best on clear, well-lit, printed (typed) lists.<br>
+      • <strong>📄 CSV file</strong> — a spreadsheet with at least a <code class="k">name</code> column and a
+      <code class="k">price</code> column (<code class="k">sell</code> works too); <code class="k">category</code>/<code class="k">unit</code> optional.<br><br>
+      Everything stays on your device — nothing is uploaded anywhere.
     </div>
   </details>
 </main>
+
+<!-- In-browser OCR (loads only when you add a photo). -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 
 <div id="toast"></div>
 
@@ -231,6 +266,10 @@ function signedMoney(n){
 function esc(s){ return String(s??"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function nkey(name){ return String(name||"").trim().toLowerCase(); }
 function todayStr(){ return new Date().toISOString().slice(0,10); }
+function stampStr(){ // date + time, e.g. "Jun 4, 2:15 PM" — distinguishes same-day saves
+  try{ return new Date().toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}); }
+  catch(e){ return todayStr(); }
+}
 
 function toast(msg,type=""){
   const t=document.getElementById("toast");
@@ -298,11 +337,18 @@ function dropFile(e,which){
   e.preventDefault();
   document.getElementById(which==="old"?"dropOld":"dropNew").classList.remove("over");
   const f=(e.dataTransfer.files||[])[0];
-  if(f) readFile(f,which);
+  if(!f) return;
+  if(f.type && f.type.indexOf("image")===0) readPhoto(f,which);
+  else readFile(f,which);
 }
 function pickFile(e,which){
   const f=(e.target.files||[])[0];
   if(f) readFile(f,which);
+  e.target.value="";
+}
+function pickPhoto(e,which){
+  const f=(e.target.files||[])[0];
+  if(f) readPhoto(f,which);
   e.target.value="";
 }
 function readFile(file,which){
@@ -321,6 +367,7 @@ function readFile(file,which){
 function setSide(which,side){
   if(which==="old") oldSide=side; else newSide=side;
   reflectSide(which);
+  renderEditRows(which);   // build editable inputs once, on load (not on every keystroke)
   render();
 }
 function reflectSide(which){
@@ -331,14 +378,103 @@ function reflectSide(which){
     drop.classList.add("loaded");
     drop.innerHTML=`<span style="font-size:22px;display:block;margin-bottom:2px">✓</span>`+
       `<b>${esc(side.label)}</b><br>${side.items.length} product(s) loaded<br>`+
-      `<span style="font-size:12.5px">Tap to choose a different file</span>`;
+      `<span style="font-size:12.5px">Tap for a different photo (or use the buttons below)</span>`;
     info.textContent="";
   }else{
     drop.classList.remove("loaded");
-    drop.innerHTML=`<span style="font-size:26px;display:block;margin-bottom:4px">📂</span>`+
-      `Tap to choose a CSV file<br><span style="font-size:12.5px">(or drag one here)</span>`;
+    drop.innerHTML=`<span style="font-size:30px;display:block;margin-bottom:4px">📷</span>`+
+      `Tap to take or upload a photo<br><span style="font-size:12.5px">(or drop a photo / CSV here)</span>`;
     info.textContent="";
+    document.getElementById(which==="old"?"editOld":"editNew").innerHTML="";
   }
+}
+
+/* ---------- photo intake + OCR ---------- */
+function readPhoto(file,which){
+  if(typeof Tesseract==="undefined"){
+    toast("Reading tool still loading — check your connection and try again","bad"); return;
+  }
+  const ocrBox=document.getElementById(which==="old"?"ocrOld":"ocrNew");
+  const url=URL.createObjectURL(file);
+  ocrBox.innerHTML=`<img src="${url}" alt="price list photo">
+    <div class="progress"><i id="prog-${which}"></i></div>
+    <div class="status" id="stat-${which}">Reading prices from the photo…</div>`;
+  const prog=document.getElementById("prog-"+which);
+  const stat=document.getElementById("stat-"+which);
+  Tesseract.recognize(file,"eng",{
+    logger:m=>{ if(m.status==="recognizing text"){ const pct=Math.round(m.progress*100);
+      if(prog) prog.style.width=pct+"%"; if(stat) stat.textContent=`Reading prices… ${pct}%`; } }
+  }).then(({data})=>{
+    const found=parseOCR(data.text);
+    const items=found.length?found:[{name:"",price:0,category:"",unit:""}]; // blank row to type into
+    setSide(which,{items,label:file.name+" (photo)",source:"photo"});
+    if(prog) prog.style.width="100%";
+    if(stat) stat.textContent = found.length
+      ? `Read ${found.length} line(s). Check & fix them below — they compare automatically.`
+      : `Couldn't pick out any prices — type them in below, or try a clearer photo.`;
+    toast(found.length?`Read ${found.length} line(s) from the photo`:"No prices found — type them in",found.length?"good":"");
+  }).catch(err=>{
+    console.error(err);
+    if(stat){ stat.textContent="Couldn't read that photo. Try a clearer one, or use a CSV."; }
+    toast("Couldn't read that photo","bad");
+  });
+}
+/* Pull "name ..... price" out of each OCR text line. */
+function parseOCR(text){
+  const out=[];
+  String(text||"").split("\n").forEach(raw=>{
+    const line=raw.replace(/\s+/g," ").trim();
+    if(!line) return;
+    // find money-looking numbers; take the LAST as the price
+    const matches=line.match(/\$?\s*\d{1,4}(?:[.,]\d{1,2})?/g);
+    if(!matches) return;
+    const last=matches[matches.length-1];
+    const price=parseFloat(last.replace(/[$\s]/g,"").replace(",","."));
+    if(isNaN(price)) return;
+    // name = everything before that last number
+    const idx=line.lastIndexOf(last);
+    let name=line.slice(0,idx).replace(/[.\-:|·•]+$/,"").trim();
+    if(!name) return;                       // skip lines that are just a number
+    if(/^[\d.,\s$]+$/.test(name)) return;   // name is only digits/punctuation → junk
+    if(/^(price|prices|total|item|product|name|qty|quantity)$/i.test(name)) return; // header-ish
+    out.push({name,price,category:"",unit:""});
+  });
+  const byName={}; out.forEach(p=>byName[nkey(p.name)]=p);
+  return Object.values(byName);
+}
+
+/* ---------- editable rows (fix OCR / hand-enter) ---------- */
+function renderEditRows(which){
+  const side=which==="old"?oldSide:newSide;
+  const box=document.getElementById(which==="old"?"editOld":"editNew");
+  if(!box) return;
+  if(!side || side.source!=="photo"){ box.innerHTML=""; return; }
+  box.innerHTML=`<h4>Check & fix the prices</h4>`+
+    side.items.map((it,i)=>`<div class="erow">
+      <input class="nm" value="${esc(it.name)}" placeholder="Product name"
+        oninput="updateRow('${which}',${i},'name',this.value)">
+      <input class="pr" value="${it.price||""}" placeholder="0.00" inputmode="decimal"
+        oninput="updateRow('${which}',${i},'price',this.value)">
+      <button class="del" title="Remove" onclick="removeRow('${which}',${i})">×</button>
+    </div>`).join("")+
+    `<button class="addrow" onclick="addRow('${which}')">＋ Add a row</button>`;
+}
+function curSide(which){ return which==="old"?oldSide:newSide; }
+function updateRow(which,i,field,val){
+  const s=curSide(which); if(!s||!s.items[i]) return;
+  if(field==="price"){ const v=parseFloat(String(val).replace(/[$,]/g,"")); s.items[i].price=isNaN(v)?0:v; }
+  else s.items[i].name=val;
+  render(); // recompute comparison live (don't re-render edit inputs to keep focus)
+}
+function addRow(which){
+  const s=curSide(which); if(!s) return;
+  s.items.push({name:"",price:0,category:"",unit:""});
+  renderEditRows(which); render();
+}
+function removeRow(which,i){
+  const s=curSide(which); if(!s) return;
+  s.items.splice(i,1);
+  renderEditRows(which); render();
 }
 
 /* ---------- saved baseline (localStorage) ---------- */
@@ -365,11 +501,11 @@ function useSavedBaseline(){
 }
 function saveBaselineFromNew(){
   if(!newSide){ toast("Upload a new list first","bad"); return; }
-  const payload={ savedAt:todayStr(), items:newSide.items };
+  const payload={ savedAt:stampStr(), items:newSide.items };
   try{ localStorage.setItem(LS_BASELINE, JSON.stringify(payload)); }
   catch(e){ toast("Couldn't save baseline on this device","bad"); return; }
   refreshBaselineUI();
-  toast(`Saved ${newSide.items.length} prices as next week's baseline ✓`,"good");
+  toast(`Saved ${newSide.items.length} prices as the new baseline ✓`,"good");
 }
 
 /* ---------- comparison ---------- */
