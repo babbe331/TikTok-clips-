@@ -1,0 +1,10 @@
+# Jarvis voice assistant dependencies
+anthropic>=0.92.0          # Claude API (the brain)
+elevenlabs>=1.0.0          # voice output (optional — falls back to local TTS)
+
+# Voice input (optional — only needed for microphone/voice mode, not --text mode)
+SpeechRecognition>=3.10.0  # microphone capture + Google speech-to-text
+PyAudio>=0.2.13            # microphone access (may need: brew install portaudio / apt install portaudio19-dev)
+
+# Local text-to-speech fallback if ElevenLabs key is not set
+pyttsx3>=2.90
