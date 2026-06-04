@@ -13,17 +13,12 @@ at **7:00 PM** on days she hasn't logged a workout.
 ## What's inside
 
 - 👋 **"Welcome, Sueli!"** banner every time the app opens.
-- 📸 **A real photo for every exercise** — actual demonstration photos (from the
-  open-source free-exercise-db) downloaded into the app, so they always load and
-  work offline.
-- 🔥 **Full ~45-minute workouts** — each day has a warm-up, main strength/toning
-  block, and a cool-down stretch, with a time estimate per exercise and a total.
-  6 rotating day-types: legs & glutes, arms & core, fat-burn circuit, core &
-  posture, full-body strength, and active recovery.
-- 🗓️ **Choose your workout days** — pick how many days per week (e.g. 4) and
-  which ones. Reminders only fire on those days; other days show a "rest day"
-  card (knee exercises still appear every day).
-- 🦵 **3 fresh knee-rehab exercises every day**, with photos, sets/reps and tips.
+- 🖼️ **A picture for every exercise** — clear drawings show exactly what to do
+  (drawn into the app, so they always load and work offline).
+- 🔥 **Lots of variety** — 6 rotating workout day-types (legs & glutes, arms &
+  core, fat-burn circuit, core & posture, full-body strength, active recovery)
+  and **18 knee-rehab exercises** that rotate so it's never the same boring day.
+- 🦵 **3 fresh knee-rehab exercises daily**, with sets/reps and instructions.
 - 📝 **Log your workout** and how it felt (😮‍💨🙂😀🤩).
 - 📈 **Progress tab** — day streak, total workouts, weekly count, full history.
 - 💡 **Tips tab** — friendly habits for weight loss and toning after 50.
