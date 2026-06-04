@@ -215,11 +215,19 @@ def execute_tool(name, tool_input):
 
 # ── Voice output (text-to-speech) ────────────────────────────────────────────────
 class Voice:
-    """Speaks text via ElevenLabs, falling back to local TTS, then to print."""
+    """Speaks text aloud.
+
+    Order of preference:
+      1. ElevenLabs (lifelike, needs ELEVENLABS_API_KEY)
+      2. macOS built-in `say` command (reliable, free, no setup)
+      3. pyttsx3 (cross-platform local TTS)
+      4. plain print (last resort)
+    """
 
     def __init__(self):
         self.eleven = None
         self._pyttsx3 = None
+        self._mac_say = platform.system() == "Darwin"
         if ELEVENLABS_API_KEY:
             try:
                 from elevenlabs.client import ElevenLabs
@@ -227,7 +235,7 @@ class Voice:
                 self.eleven = ElevenLabs(api_key=ELEVENLABS_API_KEY)
             except Exception:
                 self.eleven = None
-        if self.eleven is None:
+        if self.eleven is None and not self._mac_say:
             try:
                 import pyttsx3
 
@@ -239,6 +247,12 @@ class Voice:
         print(f"\nJarvis: {text}")
         if self.eleven is not None and self._speak_elevenlabs(text):
             return
+        if self._mac_say:
+            try:
+                subprocess.run(["say", text], check=False)
+                return
+            except Exception:
+                pass
         if self._pyttsx3 is not None:
             try:
                 self._pyttsx3.say(text)
