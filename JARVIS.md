@@ -1,8 +1,9 @@
 # 🤖 Jarvis — your voice assistant
 
-A voice-controlled AI assistant powered by **Claude (Opus 4.8)**. You talk to it,
-it thinks, takes real actions through tools, and talks back in an Iron-Man-style
-voice using **ElevenLabs** (the same setup the rest of this repo already uses).
+A voice-controlled AI assistant powered by **Claude (Opus 4.8)**. It sits quietly
+on standby — say **"Wake up Jarvis"** and it instantly starts listening, thinks,
+takes real actions through tools, and talks back in an Iron-Man-style voice using
+**ElevenLabs** (the same setup the rest of this repo already uses).
 
 Lives in one file: **`jarvis.py`**.
 
@@ -26,11 +27,21 @@ export ELEVENLABS_API_KEY="..."           # optional — the voice (falls back t
 ## Run
 
 ```bash
-python jarvis.py            # 🎙️ voice mode — press Enter, speak, Jarvis answers
+python jarvis.py            # 🎙️ voice mode — say "Wake up Jarvis", then just talk
 python jarvis.py --text     # ⌨️  text mode — just type (no microphone needed)
 ```
 
-Say **"goodbye"**, **"exit"**, or press **Ctrl-C** to quit.
+**How voice mode works:**
+
+1. Jarvis starts on **standby**, silently listening for the wake phrase.
+2. Say **"Wake up Jarvis"** (or "Hey Jarvis", "Jarvis wake up", …) and it answers
+   *"Yes, sir? I'm listening."*
+3. Now just talk — ask questions, give commands, back and forth. You can even bundle
+   the first command in: *"Wake up Jarvis, what's the weather?"*
+4. After ~15 seconds of silence, or if you say **"go to sleep"**, it returns to standby.
+5. Say **"goodbye"** / **"exit"**, or press **Ctrl-C**, to quit entirely.
+
+> The wake phrases live in `WAKE_PHRASES` at the top of `jarvis.py` — edit to taste.
 
 ---
 
@@ -55,7 +66,8 @@ Notes persist in `jarvis_notes.json`.
 
 ## How it works
 
-1. **Ears** — `SpeechRecognition` captures the mic and transcribes via Google STT.
+1. **Ears** — `SpeechRecognition` continuously captures the mic and transcribes via
+   Google STT, watching for the wake phrase while on standby.
 2. **Brain** — Claude Opus 4.8 with adaptive thinking runs an agentic tool loop:
    it decides which tools to call, you (the script) run the local ones, web search
    runs server-side, and it loops until it has a final spoken answer.

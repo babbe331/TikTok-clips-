@@ -2,21 +2,23 @@
 """
 Jarvis — a voice-controlled AI assistant powered by Claude.
 
-It listens to you (microphone), thinks with Claude (Opus 4.8 + adaptive
-thinking), can actually *do* things via tools (open apps/sites, search the web,
-tell the time, run your TikTok clip pipeline, take notes), and talks back using
-ElevenLabs (the same voice setup the rest of this repo already uses).
+It sits quietly and listens for a wake phrase. The moment you say
+**"Wake up Jarvis"**, it springs to life, thinks with Claude (Opus 4.8 +
+adaptive thinking), can actually *do* things via tools (open apps/sites, search
+the web, tell the time, run your TikTok clip pipeline, take notes), and talks
+back using ElevenLabs (the same voice setup the rest of this repo already uses).
 
 Quick start
 -----------
     pip install -r requirements-jarvis.txt
     export ANTHROPIC_API_KEY="sk-ant-..."
     export ELEVENLABS_API_KEY="..."        # optional — falls back to local TTS
-    python jarvis.py                        # voice mode (push-to-talk)
+    python jarvis.py                        # voice mode (say "Wake up Jarvis")
     python jarvis.py --text                 # type instead of talk (no mic needed)
 
-In voice mode: press Enter, speak, and Jarvis answers. Say "goodbye" / "exit"
-(or Ctrl-C) to quit.
+In voice mode it stays asleep until it hears "Wake up Jarvis", then keeps the
+conversation going. Say "go to sleep" to send it back to standby, or "goodbye" /
+"exit" (or Ctrl-C) to quit entirely.
 """
 
 import os
@@ -39,6 +41,20 @@ ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
 ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")  # Adam
 NOTES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "jarvis_notes.json")
 REPO_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Phrases that wake Jarvis from standby. Matching is fuzzy (speech-to-text is
+# imperfect), so any of these — or just hearing "jarvis" with "wake" — counts.
+WAKE_PHRASES = [
+    "wake up jarvis",
+    "wakeup jarvis",
+    "wake jarvis",
+    "jarvis wake up",
+    "hey jarvis",
+    "ok jarvis",
+    "okay jarvis",
+]
+# Phrases that send Jarvis back to standby (without quitting the program).
+SLEEP_PHRASES = {"go to sleep", "goto sleep", "go sleep", "stand down", "that's all", "thats all", "never mind", "nevermind"}
 
 SYSTEM_PROMPT = (
     "You are Jarvis, a witty, capable voice assistant modeled on Tony Stark's AI. "
@@ -262,12 +278,21 @@ class Ears:
         with self.mic as source:
             self.recognizer.adjust_for_ambient_noise(source, duration=0.6)
 
-    def listen(self):
-        with self.mic as source:
-            print("\n[Listening... speak now]")
-            audio = self.recognizer.listen(source, timeout=None, phrase_time_limit=15)
+    def listen_phrase(self, timeout=None, phrase_time_limit=15):
+        """Capture one spoken phrase and transcribe it (lowercased).
+
+        Returns the text, or "" if nothing intelligible was heard, or None if
+        no speech even started within `timeout` seconds (used to detect silence).
+        """
         try:
-            return self.recognizer.recognize_google(audio)
+            with self.mic as source:
+                audio = self.recognizer.listen(
+                    source, timeout=timeout, phrase_time_limit=phrase_time_limit
+                )
+        except self.sr.WaitTimeoutError:
+            return None
+        try:
+            return self.recognizer.recognize_google(audio).lower()
         except self.sr.UnknownValueError:
             return ""
         except self.sr.RequestError as e:
@@ -320,8 +345,98 @@ class Jarvis:
         return " ".join(b.text for b in response.content if b.type == "text").strip()
 
 
+# ── Wake-word matching ───────────────────────────────────────────────────────────
+QUIT_WORDS = {"goodbye", "exit", "quit", "stop", "shut down", "shutdown", "bye", "power down"}
+
+
+def _normalize(text):
+    return "".join(c for c in text.lower() if c.isalnum() or c.isspace()).strip()
+
+
+def wake_match(text):
+    """Decide whether `text` is a wake command.
+
+    Returns None if it isn't. If it is, returns any trailing command spoken in
+    the same breath (e.g. "wake up jarvis, what's the time?" -> "what's the
+    time") — or "" if the wake phrase was said on its own.
+    """
+    if not text:
+        return None
+    t = _normalize(text)
+    for phrase in WAKE_PHRASES:
+        if phrase in t:
+            return t.split(phrase, 1)[1].strip()
+    # Fuzzy fallback: heard "jarvis" together with "wake".
+    if "jarvis" in t and "wake" in t:
+        return t.replace("wake", "").replace("up", "").replace("jarvis", "").strip()
+    return None
+
+
+def is_quit(text):
+    return _normalize(text) in QUIT_WORDS
+
+
+def is_sleep(text):
+    return _normalize(text) in SLEEP_PHRASES
+
+
 # ── Main loop ────────────────────────────────────────────────────────────────────
-QUIT_WORDS = {"goodbye", "exit", "quit", "stop", "shut down", "shutdown", "bye"}
+AWAKE_SILENCE_TIMEOUT = 15  # seconds of silence before Jarvis returns to standby
+
+
+def run_text_mode(jarvis, voice):
+    voice.say("Jarvis online. How can I help you, sir?")
+    while True:
+        try:
+            user_text = input("\nYou: ").strip()
+        except (KeyboardInterrupt, EOFError):
+            print()
+            voice.say("Powering down. Goodbye, sir.")
+            return
+        if not user_text:
+            continue
+        if is_quit(user_text):
+            voice.say("Goodbye, sir.")
+            return
+        reply = jarvis.respond(user_text)
+        if reply:
+            voice.say(reply)
+
+
+def run_voice_mode(jarvis, voice, ears):
+    print('\nJarvis is on standby. Say "Wake up Jarvis" to begin.  (Ctrl-C to quit)')
+    while True:
+        # ── Standby: wait until we hear the wake phrase ──────────────────────
+        heard = ears.listen_phrase(timeout=None, phrase_time_limit=4)
+        command = wake_match(heard)
+        if command is None:
+            continue  # not the wake word — keep sleeping
+
+        voice.say("Yes, sir? I'm listening.")
+
+        # ── Awake: converse until silence, sleep phrase, or quit ─────────────
+        while True:
+            if command:  # an inline command rode in with the wake phrase
+                user_text, command = command, ""
+            else:
+                user_text = ears.listen_phrase(timeout=AWAKE_SILENCE_TIMEOUT, phrase_time_limit=15)
+                if user_text is None:  # silence
+                    voice.say('Going back to standby. Say "Wake up Jarvis" when you need me.')
+                    break
+                if not user_text:  # heard noise but couldn't make it out
+                    continue
+                print(f"You: {user_text}")
+
+            if is_quit(user_text):
+                voice.say("Powering down. Goodbye, sir.")
+                return
+            if is_sleep(user_text):
+                voice.say("Standing by, sir.")
+                break
+
+            reply = jarvis.respond(user_text)
+            if reply:
+                voice.say(reply)
 
 
 def main():
@@ -332,7 +447,6 @@ def main():
     jarvis = Jarvis()
     voice = Voice()
 
-    ears = None
     if not text_mode:
         try:
             ears = Ears()
@@ -340,34 +454,16 @@ def main():
             print(f"(No microphone available: {e})\nFalling back to text mode.\n")
             text_mode = True
 
-    voice.say("Jarvis online. How can I help you, sir?")
-
-    while True:
-        try:
-            if text_mode:
-                user_text = input("\nYou: ").strip()
-            else:
-                input("\n[Press Enter to speak]")
-                user_text = ears.listen()
-                if user_text:
-                    print(f"You: {user_text}")
-
-            if not user_text:
-                continue
-            if user_text.lower().strip(".!? ") in QUIT_WORDS:
-                voice.say("Goodbye, sir.")
-                break
-
-            reply = jarvis.respond(user_text)
-            if reply:
-                voice.say(reply)
-
-        except (KeyboardInterrupt, EOFError):
-            print()
-            voice.say("Powering down. Goodbye, sir.")
-            break
-        except anthropic.APIError as e:
-            print(f"  (API error: {e})")
+    try:
+        if text_mode:
+            run_text_mode(jarvis, voice)
+        else:
+            run_voice_mode(jarvis, voice, ears)
+    except (KeyboardInterrupt, EOFError):
+        print()
+        voice.say("Powering down. Goodbye, sir.")
+    except anthropic.APIError as e:
+        print(f"  (API error: {e})")
 
 
 if __name__ == "__main__":
