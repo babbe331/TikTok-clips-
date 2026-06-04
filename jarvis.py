@@ -38,7 +38,11 @@ except ImportError:
 # ── Configuration ───────────────────────────────────────────────────────────────
 MODEL = "claude-opus-4-8"
 ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
-ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")  # Adam
+# Default ElevenLabs voice: "Daniel" — a deep, refined British male, the closest
+# premade voice to the cinematic JARVIS. Override with ELEVENLABS_VOICE_ID.
+ELEVENLABS_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "onwK4e9ZLuTAKqWW03F9")  # Daniel (British)
+# Free macOS fallback voice: "Daniel" is the built-in British male voice.
+MAC_VOICE = os.environ.get("JARVIS_MAC_VOICE", "Daniel")
 NOTES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "jarvis_notes.json")
 REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -249,10 +253,15 @@ class Voice:
             return
         if self._mac_say:
             try:
-                subprocess.run(["say", text], check=False)
+                # British voice ("Daniel") at a measured pace for that JARVIS feel.
+                subprocess.run(["say", "-v", MAC_VOICE, "-r", "180", text], check=False)
                 return
             except Exception:
-                pass
+                try:
+                    subprocess.run(["say", text], check=False)  # any voice is better than silence
+                    return
+                except Exception:
+                    pass
         if self._pyttsx3 is not None:
             try:
                 self._pyttsx3.say(text)
