@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Farmlind — Price Compare</title>
+<style>
+  :root{
+    --green:#2e7d32; --green-dark:#1b5e20; --green-light:#e8f5e9;
+    --amber:#ef6c00; --amber-light:#fff3e0; --red:#c62828; --red-light:#ffebee;
+    --ink:#1c2421; --muted:#647067; --line:#e2e8e3; --bg:#f5f8f5; --card:#ffffff;
+    --blue:#1565c0; --blue-light:#e3f2fd;
+    --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+    --shadow-lg:0 10px 30px rgba(0,0,0,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit;font-size:15px}
+  .muted{color:var(--muted)}
+
+  /* ---- Top bar ---- */
+  header.topbar{background:linear-gradient(120deg,var(--green-dark),var(--green));
+    color:#fff;padding:16px 22px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);
+    position:sticky;top:0;z-index:50}
+  .logo{font-size:28px}
+  header .title{font-size:21px;font-weight:700;letter-spacing:.2px}
+  header .sub{font-size:12.5px;opacity:.85;font-weight:500}
+  header .spacer{flex:1}
+
+  main{max-width:1040px;margin:0 auto;padding:22px 16px 60px}
+
+  /* ---- Cards ---- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;
+    box-shadow:var(--shadow)}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+  .card-head h3{font-size:16px}
+  .cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:680px){ .cmp-grid{grid-template-columns:1fr} }
+
+  .pagehead{font-size:24px;margin-bottom:2px}
+  .pagehead-sub{color:var(--muted);margin-bottom:18px;max-width:620px}
+
+  /* ---- Buttons ---- */
+  .btn{background:var(--green);color:#fff;border:none;padding:11px 16px;border-radius:10px;
+    font-size:14.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;box-shadow:var(--shadow)}
+  .btn:hover{background:var(--green-dark)}
+  .btn.secondary{background:#fff;color:var(--green-dark);border:1px solid var(--line)}
+  .btn.secondary:hover{background:var(--green-light)}
+  .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);box-shadow:none}
+  .btn.ghost:hover{background:#f0f4f0;color:var(--ink)}
+  .btn.small{padding:7px 11px;font-size:13px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .row-flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+  /* ---- Drop zone ---- */
+  .drop{border:2px dashed var(--line);border-radius:11px;padding:16px;text-align:center;
+    color:var(--muted);margin:10px 0;transition:.15s;font-size:14px}
+  .drop.over{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
+  .drop.loaded{border-style:solid;border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
+  .drop b{color:var(--ink)}
+
+  /* ---- Stats ---- */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  .stat .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+  .stat .value{font-size:25px;font-weight:700;margin-top:3px}
+  .stat .foot{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .value.up{color:var(--red)} .value.down{color:var(--green-dark)} .value.new{color:var(--blue)}
+
+  /* ---- Toolbar ---- */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 10px}
+  .search input{padding:10px 12px;border:1px solid var(--line);border-radius:9px;min-width:210px}
+  .toolbar select{padding:10px 12px;border:1px solid var(--line);border-radius:9px}
+
+  /* ---- Table ---- */
+  .table-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:14.5px}
+  th{background:#f7faf7;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafdfa}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .delta{font-weight:700;font-variant-numeric:tabular-nums}
+  .delta.up{color:var(--red)} .delta.down{color:var(--green-dark)} .delta.same{color:var(--muted);font-weight:500}
+  .pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700}
+  .pill.up{background:var(--red-light);color:var(--red)}
+  .pill.down{background:var(--green-light);color:var(--green-dark)}
+  .pill.same{background:#eef2ee;color:var(--muted)}
+  .pill.new{background:var(--blue-light);color:var(--blue)}
+  .pill.drop{background:var(--amber-light);color:var(--amber)}
+  .tag-cat{display:inline-block;background:#eef4ef;color:var(--green-dark);padding:2px 8px;border-radius:6px;font-size:12px}
+
+  .empty{text-align:center;padding:48px 20px;color:var(--muted)}
+  .empty .ic{font-size:42px;display:block;margin-bottom:8px}
+
+  code.k{background:#eef2ee;padding:1px 6px;border-radius:5px;font-size:13px}
+  details.help{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 16px;box-shadow:var(--shadow)}
+  details.help summary{cursor:pointer;font-weight:600;padding:14px 0;color:var(--green-dark)}
+  details.help[open] summary{border-bottom:1px solid var(--line)}
+  details.help>div{padding:14px 0;font-size:14px;color:var(--ink)}
+
+  /* ---- Toast ---- */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;
+    box-shadow:var(--shadow-lg);pointer-events:none;transition:.25s;z-index:100;max-width:90vw}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #toast.bad{background:var(--red)} #toast.good{background:var(--green)}
+
+  .badge-saved{font-size:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+    padding:5px 11px;border-radius:999px;font-weight:600}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="logo">🥬</span>
+  <div>
+    <div class="title">Farmlind — Price Compare</div>
+    <div class="sub">Old list vs. new list, side by side</div>
+  </div>
+  <span class="spacer"></span>
+  <span class="badge-saved" id="baselineBadge">No baseline saved yet</span>
+</header>
+
+<main>
+  <h2 class="pagehead">Compare this week's prices</h2>
+  <p class="pagehead-sub">Drop in your old and new price lists. We line them up by product and show what went
+    <b style="color:var(--red)">up</b> or <b style="color:var(--green-dark)">down</b>. Save the new list and next week
+    it becomes the old one automatically — no need to keep the old file around.</p>
+
+  <div class="cmp-grid">
+    <!-- OLD -->
+    <div class="card">
+      <div class="card-head">
+        <h3>1️⃣ Old prices <span class="muted">(baseline)</span></h3>
+        <button class="btn ghost small" id="useBaselineBtn" onclick="useSavedBaseline()" style="display:none">Use saved</button>
+      </div>
+      <div class="drop" id="dropOld"
+           ondragover="dz(event,'dropOld',1)" ondragleave="dz(event,'dropOld',0)" ondrop="dropFile(event,'old')">
+        Drag a CSV here, or <b style="color:var(--green-dark);cursor:pointer" onclick="document.getElementById('oldFile').click()">browse</b>
+      </div>
+      <input type="file" id="oldFile" accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'old')">
+      <p id="oldInfo" class="muted" style="font-size:13px"></p>
+    </div>
+    <!-- NEW -->
+    <div class="card">
+      <div class="card-head"><h3>2️⃣ New prices <span class="muted">(this week)</span></h3></div>
+      <div class="drop" id="dropNew"
+           ondragover="dz(event,'dropNew',1)" ondragleave="dz(event,'dropNew',0)" ondrop="dropFile(event,'new')">
+        Drag a CSV here, or <b style="color:var(--green-dark);cursor:pointer" onclick="document.getElementById('newFile').click()">browse</b>
+      </div>
+      <input type="file" id="newFile" accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'new')">
+      <p id="newInfo" class="muted" style="font-size:13px"></p>
+    </div>
+  </div>
+
+  <div class="stats" id="stats" style="display:none"></div>
+
+  <div class="row-flex" id="actions" style="margin:16px 0 4px;display:none">
+    <button class="btn" onclick="saveBaselineFromNew()">💾 Save new list as next week's baseline</button>
+    <button class="btn secondary" onclick="exportCompareCSV()">⬇ Export comparison (CSV)</button>
+    <button class="btn secondary" onclick="copyReport()">📋 Copy full list to send</button>
+  </div>
+
+  <div class="toolbar" id="toolbar" style="display:none">
+    <div class="search"><input id="search" placeholder="Search products…" oninput="render()"></div>
+    <select id="filter" onchange="render()">
+      <option value="all">Show all</option>
+      <option value="changed">Changed only</option>
+      <option value="up">Price up</option>
+      <option value="down">Price down</option>
+      <option value="new">New items</option>
+      <option value="drop">Dropped items</option>
+    </select>
+  </div>
+
+  <div class="table-wrap" id="tableWrap">
+    <div class="empty"><span class="ic">🔁</span><strong>Nothing to compare yet</strong><br>
+      <span>Upload an old list and a new list above to see the changes.</span></div>
+  </div>
+
+  <details class="help">
+    <summary>How does this work?</summary>
+    <div>
+      <strong>First time:</strong> upload your <em>old</em> price list and your <em>new</em> one. We match rows by
+      product <code class="k">name</code> and show every change — <code class="k">+$2.00</code> if it costs more now,
+      <code class="k">−$2.00</code> if it's cheaper, plus anything brand-new or dropped.<br><br>
+      <strong>Then press “💾 Save new list as next week's baseline.”</strong> It's remembered on this device (in your
+      browser). Next week you only upload the new list and it auto-loads the saved baseline as the old one — so you never
+      have to dig up last week's file.<br><br>
+      <strong>Sending the list:</strong> use <code class="k">📋 Copy full list to send</code> to copy a clean text report you
+      can paste straight into an email or text message, or <code class="k">⬇ Export comparison (CSV)</code> for a spreadsheet.<br><br>
+      <strong>Your file:</strong> a <code class="k">.csv</code> with at least a <code class="k">name</code> column and a
+      <code class="k">price</code> column (a column called <code class="k">sell</code> works too). <code class="k">category</code>
+      and <code class="k">unit</code> are optional. Everything stays on your device — nothing is uploaded anywhere.
+    </div>
+  </details>
+</main>
+
+<div id="toast"></div>
+
+<script>
+/* =====================================================================
+   FARMLIND — PRICE COMPARE
+   100% local. The saved baseline lives in this browser (localStorage).
+   ===================================================================== */
+const LS_BASELINE = "farmlind_pricecompare_baseline_v1";
+
+/* Working state: each side is {items:[{name,category,unit,price}], label} or null */
+let oldSide = null;
+let newSide = null;
+
+/* ---------- helpers ---------- */
+const money = n => "$"+(Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+function signedMoney(n){
+  const v=Number(n)||0;
+  if(v===0) return "$0.00";
+  const s=Math.abs(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  return (v>0?"+$":"−$")+s;   /* note: real minus sign */
+}
+function esc(s){ return String(s??"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function nkey(name){ return String(name||"").trim().toLowerCase(); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+function toast(msg,type=""){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.className=""; if(type) t.classList.add(type);
+  void t.offsetWidth; t.classList.add("show");
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2800);
+}
+
+/* ---------- CSV parsing (handles quotes, commas, newlines) ---------- */
+function parseCSV(text){
+  const rows=[]; let row=[], cur="", q=false;
+  text=String(text).replace(/\r\n?/g,"\n");
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){
+      if(ch==='"'){ if(text[i+1]==='"'){ cur+='"'; i++; } else q=false; }
+      else cur+=ch;
+    }else{
+      if(ch==='"') q=true;
+      else if(ch===','){ row.push(cur); cur=""; }
+      else if(ch==='\n'){ row.push(cur); rows.push(row); row=[]; cur=""; }
+      else cur+=ch;
+    }
+  }
+  if(cur!=="" || row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(r=>r.some(c=>String(c).trim()!==""));
+}
+function rowsFromCSV(text){
+  const rows=parseCSV(text);
+  if(rows.length<2) throw new Error("Not enough rows");
+  const headers=rows[0].map(h=>h.trim().toLowerCase());
+  const find=(...names)=>{
+    for(const n of names){ const i=headers.indexOf(n); if(i>=0) return i; }
+    for(const n of names){ const i=headers.findIndex(h=>h.includes(n)); if(i>=0) return i; }
+    return -1;
+  };
+  const ci={
+    name:find("name","product","item","produce"),
+    price:find("price","sell","sale price","selling"),
+    cat:find("category","type","group"),
+    unit:find("unit","uom","units","measure"),
+  };
+  if(ci.name<0) throw new Error("No name column found");
+  if(ci.price<0) throw new Error("No price column found");
+  const out=[];
+  for(let r=1;r<rows.length;r++){
+    const cells=rows[r];
+    const name=(cells[ci.name]||"").trim(); if(!name) continue;
+    const price=parseFloat(String(cells[ci.price]||"").replace(/[$,]/g,""));
+    out.push({
+      name,
+      price:isNaN(price)?0:price,
+      category:ci.cat>=0?(cells[ci.cat]||"").trim():"",
+      unit:ci.unit>=0?(cells[ci.unit]||"").trim():"",
+    });
+  }
+  // de-dupe by name (last one wins)
+  const byName={}; out.forEach(p=>byName[nkey(p.name)]=p);
+  return Object.values(byName);
+}
+
+/* ---------- file intake ---------- */
+function dz(e,id,on){ e.preventDefault(); document.getElementById(id).classList.toggle("over",!!on); }
+function dropFile(e,which){
+  e.preventDefault();
+  document.getElementById(which==="old"?"dropOld":"dropNew").classList.remove("over");
+  const f=(e.dataTransfer.files||[])[0];
+  if(f) readFile(f,which);
+}
+function pickFile(e,which){
+  const f=(e.target.files||[])[0];
+  if(f) readFile(f,which);
+  e.target.value="";
+}
+function readFile(file,which){
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    let items;
+    try{ items=rowsFromCSV(ev.target.result); }
+    catch(err){ toast("Couldn't read that file: "+err.message,"bad"); return; }
+    if(!items.length){ toast("No products found in that file","bad"); return; }
+    setSide(which,{items,label:file.name});
+    toast(`Loaded ${items.length} product(s) from “${file.name}”`,"good");
+  };
+  reader.onerror=()=>toast("Couldn't open that file","bad");
+  reader.readAsText(file);
+}
+function setSide(which,side){
+  if(which==="old") oldSide=side; else newSide=side;
+  reflectSide(which);
+  render();
+}
+function reflectSide(which){
+  const side=which==="old"?oldSide:newSide;
+  const drop=document.getElementById(which==="old"?"dropOld":"dropNew");
+  const info=document.getElementById(which==="old"?"oldInfo":"newInfo");
+  if(side){
+    drop.classList.add("loaded");
+    drop.innerHTML=`✓ <b>${esc(side.label)}</b> — ${side.items.length} product(s). `+
+      `<span style="color:var(--green-dark);cursor:pointer;text-decoration:underline" onclick="document.getElementById('${which}File').click()">replace</span>`;
+    info.textContent="";
+  }else{
+    drop.classList.remove("loaded");
+    drop.innerHTML=`Drag a CSV here, or <b style="color:var(--green-dark);cursor:pointer" onclick="document.getElementById('${which}File').click()">browse</b>`;
+    info.textContent="";
+  }
+}
+
+/* ---------- saved baseline (localStorage) ---------- */
+function loadBaseline(){
+  try{ const raw=localStorage.getItem(LS_BASELINE); return raw?JSON.parse(raw):null; }catch(e){ return null; }
+}
+function refreshBaselineUI(){
+  const b=loadBaseline();
+  const badge=document.getElementById("baselineBadge");
+  const btn=document.getElementById("useBaselineBtn");
+  if(b && b.items && b.items.length){
+    badge.textContent=`📌 Baseline saved ${b.savedAt} (${b.items.length} items)`;
+    btn.style.display="inline-flex";
+  }else{
+    badge.textContent="No baseline saved yet";
+    btn.style.display="none";
+  }
+}
+function useSavedBaseline(){
+  const b=loadBaseline();
+  if(!b || !b.items || !b.items.length){ toast("No saved baseline yet","bad"); return; }
+  setSide("old",{items:b.items,label:`Saved baseline (${b.savedAt})`});
+  toast("Loaded saved baseline as the old list","good");
+}
+function saveBaselineFromNew(){
+  if(!newSide){ toast("Upload a new list first","bad"); return; }
+  const payload={ savedAt:todayStr(), items:newSide.items };
+  try{ localStorage.setItem(LS_BASELINE, JSON.stringify(payload)); }
+  catch(e){ toast("Couldn't save baseline on this device","bad"); return; }
+  refreshBaselineUI();
+  toast(`Saved ${newSide.items.length} prices as next week's baseline ✓`,"good");
+}
+
+/* ---------- comparison ---------- */
+function buildRows(){
+  if(!oldSide && !newSide) return [];
+  const oldMap={}; (oldSide?oldSide.items:[]).forEach(p=>oldMap[nkey(p.name)]=p);
+  const newMap={}; (newSide?newSide.items:[]).forEach(p=>newMap[nkey(p.name)]=p);
+  const keys=Array.from(new Set([...Object.keys(oldMap),...Object.keys(newMap)]));
+  const rows=keys.map(k=>{
+    const o=oldMap[k], n=newMap[k];
+    const ref=n||o;
+    let status, delta=0, oldPrice=o?o.price:null, newPrice=n?n.price:null;
+    if(o&&n){
+      delta=+(n.price-o.price).toFixed(2);
+      status = delta>0?"up" : delta<0?"down" : "same";
+    }else if(n&&!o){ status="new"; }
+    else { status="drop"; }
+    return { name:ref.name, category:ref.category||"", unit:ref.unit||"",
+             oldPrice, newPrice, delta, status };
+  });
+  rows.sort((a,b)=>a.name.localeCompare(b.name));
+  return rows;
+}
+
+function render(){
+  reflectSide("old"); reflectSide("new");
+  const haveBoth = oldSide && newSide;
+  document.getElementById("actions").style.display = newSide ? "flex" : "none";
+
+  const rows=buildRows();
+  const stats=document.getElementById("stats");
+  const toolbar=document.getElementById("toolbar");
+  const wrap=document.getElementById("tableWrap");
+
+  if(!rows.length){
+    stats.style.display="none"; toolbar.style.display="none";
+    wrap.innerHTML=`<div class="empty"><span class="ic">🔁</span><strong>Nothing to compare yet</strong><br>
+      <span>Upload an old list and a new list above to see the changes.</span></div>`;
+    return;
+  }
+
+  // stats
+  const up=rows.filter(r=>r.status==="up").length;
+  const down=rows.filter(r=>r.status==="down").length;
+  const same=rows.filter(r=>r.status==="same").length;
+  const nw=rows.filter(r=>r.status==="new").length;
+  const dr=rows.filter(r=>r.status==="drop").length;
+  stats.style.display="grid";
+  stats.innerHTML=`
+    ${stat("Products",rows.length,"in the new vs old lists")}
+    ${stat("Went up",up,"priced higher now","up")}
+    ${stat("Went down",down,"priced lower now","down")}
+    ${stat("Unchanged",same,"same price","")}
+    ${stat("New / dropped",nw+" / "+dr,"added or removed","new")}
+  `;
+
+  // filtered table
+  const q=(document.getElementById("search").value||"").toLowerCase();
+  const f=document.getElementById("filter").value;
+  toolbar.style.display="flex";
+  let view=rows.filter(r=>r.name.toLowerCase().includes(q)||(r.category||"").toLowerCase().includes(q));
+  if(f==="changed") view=view.filter(r=>r.status!=="same");
+  else if(f!=="all") view=view.filter(r=>r.status===f);
+
+  if(!haveBoth){
+    // only one side loaded — show a gentle hint banner above the table
+  }
+
+  if(!view.length){
+    wrap.innerHTML=`<div class="empty"><span class="ic">🔍</span><strong>No matches</strong><br><span>Try a different search or filter.</span></div>`;
+    return;
+  }
+  wrap.innerHTML=`<table><thead><tr>
+    <th>Product</th><th>Category</th>
+    <th class="num">Old price</th><th class="num">New price</th>
+    <th class="num">Change</th><th>Status</th></tr></thead><tbody>
+    ${view.map(r=>rowHtml(r)).join("")}
+  </tbody></table>`;
+}
+function rowHtml(r){
+  const pill={up:'<span class="pill up">▲ Higher</span>',
+              down:'<span class="pill down">▼ Lower</span>',
+              same:'<span class="pill same">Same</span>',
+              new:'<span class="pill new">New</span>',
+              drop:'<span class="pill drop">Dropped</span>'}[r.status];
+  let deltaCell;
+  if(r.status==="new") deltaCell=`<span class="delta same">—</span>`;
+  else if(r.status==="drop") deltaCell=`<span class="delta same">—</span>`;
+  else deltaCell=`<span class="delta ${r.status}">${signedMoney(r.delta)}</span>`;
+  return `<tr>
+    <td><strong>${esc(r.name)}</strong>${r.unit?` <span class="muted" style="font-size:12.5px">/ ${esc(r.unit)}</span>`:""}</td>
+    <td>${r.category?`<span class="tag-cat">${esc(r.category)}</span>`:'<span class="muted">—</span>'}</td>
+    <td class="num">${r.oldPrice===null?'<span class="muted">—</span>':money(r.oldPrice)}</td>
+    <td class="num">${r.newPrice===null?'<span class="muted">—</span>':money(r.newPrice)}</td>
+    <td class="num">${deltaCell}</td>
+    <td>${pill}</td></tr>`;
+}
+function stat(label,value,foot,cls=""){
+  return `<div class="stat"><div class="label">${label}</div>
+    <div class="value ${cls}">${value}</div><div class="foot">${foot}</div></div>`;
+}
+
+/* ---------- export & send ---------- */
+function csvCell(v){ const s=String(v??""); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }
+function exportCompareCSV(){
+  const rows=buildRows();
+  if(!rows.length){ toast("Nothing to export yet","bad"); return; }
+  const head=["name","category","unit","old_price","new_price","change","status"];
+  const lines=[head.join(",")];
+  const label={up:"higher",down:"lower",same:"same",new:"new",drop:"dropped"};
+  rows.forEach(r=>{
+    lines.push([r.name,r.category,r.unit,
+      r.oldPrice===null?"":r.oldPrice.toFixed(2),
+      r.newPrice===null?"":r.newPrice.toFixed(2),
+      (r.status==="new"||r.status==="drop")?"":r.delta.toFixed(2),
+      label[r.status]].map(csvCell).join(","));
+  });
+  downloadFile(`farmlind_price_compare_${todayStr()}.csv`, lines.join("\n"), "text/csv");
+  toast("Comparison exported");
+}
+function buildReport(){
+  const rows=buildRows();
+  const oldLbl=oldSide?oldSide.label:"(none)";
+  const newLbl=newSide?newSide.label:"(none)";
+  const L=[];
+  L.push(`FARMLIND — UPDATED PRICE LIST`);
+  L.push(`Date: ${todayStr()}`);
+  L.push(`Old list: ${oldLbl}`);
+  L.push(`New list: ${newLbl}`);
+  L.push("");
+  rows.forEach(r=>{
+    if(r.status==="new"){
+      L.push(`NEW  ${r.name}: ${money(r.newPrice)}`);
+    }else if(r.status==="drop"){
+      L.push(`DROPPED  ${r.name} (was ${money(r.oldPrice)})`);
+    }else if(r.status==="same"){
+      L.push(`${r.name}: ${money(r.newPrice)} (no change)`);
+    }else{
+      L.push(`${r.name}: ${money(r.oldPrice)} -> ${money(r.newPrice)} (${signedMoney(r.delta)})`);
+    }
+  });
+  const up=rows.filter(r=>r.status==="up").length;
+  const down=rows.filter(r=>r.status==="down").length;
+  const same=rows.filter(r=>r.status==="same").length;
+  const nw=rows.filter(r=>r.status==="new").length;
+  const dr=rows.filter(r=>r.status==="drop").length;
+  L.push("");
+  L.push(`Summary: ${up} up, ${down} down, ${same} unchanged, ${nw} new, ${dr} dropped.`);
+  return L.join("\n");
+}
+function copyReport(){
+  const rows=buildRows();
+  if(!rows.length){ toast("Nothing to copy yet","bad"); return; }
+  const text=buildReport();
+  const done=()=>toast("Full list copied — paste it into an email or text ✓","good");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
+  }else fallbackCopy(text,done);
+}
+function fallbackCopy(text,done){
+  const ta=document.createElement("textarea");
+  ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand("copy"); done(); }catch(e){ toast("Couldn't copy automatically","bad"); }
+  document.body.removeChild(ta);
+}
+function downloadFile(name,content,type){
+  const blob=new Blob([content],{type});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---------- boot ---------- */
+function init(){
+  refreshBaselineUI();
+  // If a baseline is saved, auto-load it as the old side so the user only uploads the new list.
+  const b=loadBaseline();
+  if(b && b.items && b.items.length){
+    oldSide={items:b.items,label:`Saved baseline (${b.savedAt})`};
+  }
+  render();
+}
+init();
+</script>
+</body>
+</html>
