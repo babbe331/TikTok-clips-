@@ -45,6 +45,36 @@ python jarvis.py --text     # ⌨️  text mode — just type (no microphone nee
 
 ---
 
+## 🍎 Always-on, hands-free (macOS)
+
+Want Jarvis running in the background from the moment you log in — so you never
+start anything, you just say *"Wake up Jarvis"*? Run the installer once:
+
+```bash
+./install_mac.sh
+```
+
+It will:
+
+1. Set up a private Python environment and install everything.
+2. Create `~/.jarvis.env` and open it so you can paste in your `ANTHROPIC_API_KEY`
+   (run the installer again after saving).
+3. Launch Jarvis once so macOS shows the **Microphone permission** prompt — click **Allow**.
+4. Register a **LaunchAgent** so Jarvis auto-starts at every login and stays listening.
+
+After that, Jarvis is always on. Useful controls:
+
+| Action | Command |
+| ------ | ------- |
+| Pause / fully stop it | `launchctl unload ~/Library/LaunchAgents/com.jarvis.assistant.plist` |
+| Start it again | `launchctl load ~/Library/LaunchAgents/com.jarvis.assistant.plist` |
+| See what it's doing | `tail -f jarvis.log` |
+
+> While the service is loaded, saying "goodbye" just sends Jarvis back to standby
+> (macOS relaunches it). Use the `unload` command above to truly stop it.
+
+---
+
 ## What it can do
 
 Jarvis doesn't just chat — it acts, using tools:

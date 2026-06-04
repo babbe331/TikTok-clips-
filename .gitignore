@@ -11,3 +11,7 @@ kai_clips/
 # Jarvis runtime data
 jarvis_notes.json
 __pycache__/
+
+# Jarvis macOS install artifacts
+.venv/
+jarvis.log
