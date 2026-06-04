@@ -273,15 +273,30 @@ class Voice:
 
     def _speak_elevenlabs(self, text):
         try:
-            from elevenlabs import VoiceSettings, play
+            import tempfile
+            from elevenlabs import VoiceSettings
 
             audio = self.eleven.text_to_speech.convert(
                 voice_id=ELEVENLABS_VOICE_ID,
                 text=text,
-                model_id="eleven_monolingual_v1",
-                voice_settings=VoiceSettings(stability=0.5, similarity_boost=0.75),
+                model_id="eleven_turbo_v2_5",  # fast + high quality, good for live speech
+                output_format="mp3_44100_128",
+                voice_settings=VoiceSettings(stability=0.45, similarity_boost=0.8),
             )
-            play(audio)
+            # Collect the streamed bytes and play with a built-in player (no ffmpeg/mpv needed).
+            with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
+                for chunk in audio:
+                    if chunk:
+                        f.write(chunk)
+                tmp_path = f.name
+            if self._mac_say:
+                subprocess.run(["afplay", tmp_path], check=False)  # macOS built-in player
+            else:
+                from elevenlabs import play
+
+                with open(tmp_path, "rb") as fh:
+                    play(fh.read())
+            os.remove(tmp_path)
             return True
         except Exception as e:
             print(f"  (ElevenLabs playback failed: {e})")
