@@ -229,17 +229,12 @@ class Voice:
     """
 
     def __init__(self):
-        self.eleven = None
+        # Use ElevenLabs if both a key and a voice are configured. We call the
+        # REST API directly (below), so no SDK version quirks can break playback.
+        self.use_eleven = bool(ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID)
         self._pyttsx3 = None
         self._mac_say = platform.system() == "Darwin"
-        if ELEVENLABS_API_KEY:
-            try:
-                from elevenlabs.client import ElevenLabs
-
-                self.eleven = ElevenLabs(api_key=ELEVENLABS_API_KEY)
-            except Exception:
-                self.eleven = None
-        if self.eleven is None and not self._mac_say:
+        if not self.use_eleven and not self._mac_say:
             try:
                 import pyttsx3
 
@@ -249,7 +244,7 @@ class Voice:
 
     def say(self, text):
         print(f"\nJarvis: {text}")
-        if self.eleven is not None and self._speak_elevenlabs(text):
+        if self.use_eleven and self._speak_elevenlabs(text):
             return
         if self._mac_say:
             try:
@@ -272,30 +267,47 @@ class Voice:
         # Final fallback: the printed line above is the output.
 
     def _speak_elevenlabs(self, text):
+        """Fetch speech from the ElevenLabs REST API and play it (no SDK needed)."""
         try:
+            import json as _json
             import tempfile
-            from elevenlabs import VoiceSettings
+            import urllib.request
 
-            audio = self.eleven.text_to_speech.convert(
-                voice_id=ELEVENLABS_VOICE_ID,
-                text=text,
-                model_id="eleven_turbo_v2_5",  # fast + high quality, good for live speech
-                output_format="mp3_44100_128",
-                voice_settings=VoiceSettings(stability=0.45, similarity_boost=0.8),
+            url = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}"
+            payload = _json.dumps(
+                {
+                    "text": text,
+                    "model_id": "eleven_turbo_v2_5",  # fast + high quality for live speech
+                    "voice_settings": {"stability": 0.45, "similarity_boost": 0.8},
+                }
+            ).encode("utf-8")
+            req = urllib.request.Request(
+                url,
+                data=payload,
+                method="POST",
+                headers={
+                    "xi-api-key": ELEVENLABS_API_KEY,
+                    "Content-Type": "application/json",
+                    "Accept": "audio/mpeg",
+                },
             )
-            # Collect the streamed bytes and play with a built-in player (no ffmpeg/mpv needed).
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                audio_bytes = resp.read()
+
             with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
-                for chunk in audio:
-                    if chunk:
-                        f.write(chunk)
+                f.write(audio_bytes)
                 tmp_path = f.name
+
             if self._mac_say:
                 subprocess.run(["afplay", tmp_path], check=False)  # macOS built-in player
             else:
-                from elevenlabs import play
+                try:
+                    from elevenlabs import play
 
-                with open(tmp_path, "rb") as fh:
-                    play(fh.read())
+                    play(audio_bytes)
+                except Exception:
+                    os.remove(tmp_path)
+                    return False
             os.remove(tmp_path)
             return True
         except Exception as e:
