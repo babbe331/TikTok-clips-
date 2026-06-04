@@ -74,6 +74,23 @@ spreadsheets**, or **export to CSV**.
 ### 🏢 Customers
 The companies he sells to.
 
+### 💲 Pricing
+Costs, sell prices, and margins for every product. Import a price-list spreadsheet to
+update prices in bulk (*update matches only* or *update & add new*). Because everything
+shares one product list, a price import instantly updates Inventory, new Sales, and Earnings.
+
+### 💰 Earnings
+For each sale: the **sale total (before margin)** next to the **profit (after cost)**, plus
+margin %, running totals, and CSV export. Profit uses each product's cost from Pricing.
+
+### 💬 Help bot ("Sprout")
+A built-in help assistant in the bottom-right corner. Tap a question or type your own and
+it explains how to use the app. It runs **fully offline** — nothing typed there leaves the
+device.
+
+> Everything is connected: edit a price, import a spreadsheet, or mark an order delivered,
+> and every tab updates to match.
+
 ---
 
 ## Importing his spreadsheets
