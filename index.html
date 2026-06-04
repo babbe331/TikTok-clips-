@@ -243,6 +243,7 @@
   <button class="topbtn" onclick="exportBackup()">⬇ Backup</button>
   <button class="topbtn" onclick="document.getElementById('restoreFile').click()">⬆ Restore</button>
   <input type="file" id="restoreFile" accept="application/json" style="display:none" onchange="restoreBackup(event)">
+  <button class="topbtn" onclick="openSlackSettings()" title="Connect Slack">🔗 Slack</button>
   <button class="topbtn" onclick="lockApp()" title="Lock this app">🔒 Lock</button>
 </header>
 
@@ -340,7 +341,10 @@
   <section class="page" id="page-orders">
     <div class="pagehead-row">
       <div><h2 class="pagehead">Orders</h2><p>Everything you've sold, and what still needs buying.</p></div>
-      <button class="btn" onclick="go('newsale')">＋ New Sale</button>
+      <div class="row-flex">
+        <button class="btn secondary" onclick="openSlackModal()">📥 From Slack message</button>
+        <button class="btn" onclick="go('newsale')">＋ New Sale</button>
+      </div>
     </div>
     <div class="toolbar">
       <div class="search"><input id="orderSearch" placeholder="Search orders…" oninput="renderOrders()"></div>
@@ -553,6 +557,51 @@
   </div>
 </div>
 
+<!-- ============ SLACK / TEXT ORDER MODAL ============ -->
+<div class="modal-bg" id="slackModal">
+  <div class="modal">
+    <div class="mhead"><h3>📥 Add order from a Slack message</h3><button class="xbtn" onclick="closeModal('slackModal')">×</button></div>
+    <div class="mbody">
+      <p class="muted" style="font-size:13.5px;margin-bottom:10px">
+        Paste the message exactly as it comes in on Slack. <strong>First line is the customer</strong>,
+        then one line per item — like <code class="k">three heirloom tomatoes</code>.</p>
+      <textarea id="slackText" rows="6" placeholder="David&#10;one heirloom tomato&#10;three roma tomatoes&#10;two cases romaine" oninput="previewSlack()" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px"></textarea>
+      <div id="slackPreview" style="margin-top:12px"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn secondary" onclick="closeModal('slackModal')">Cancel</button>
+      <button class="btn" id="slackCreateBtn" onclick="createSlackOrder()">Create order</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLACK CONNECTION SETTINGS ============ -->
+<div class="modal-bg" id="slackSettingsModal">
+  <div class="modal">
+    <div class="mhead"><h3>🔗 Connect Slack</h3><button class="xbtn" onclick="closeModal('slackSettingsModal')">×</button></div>
+    <div class="mbody">
+      <p class="muted" style="font-size:13.5px;margin-bottom:14px">
+        Once the connector is set up (see <code class="k">slack-connector/README</code>), paste its web address and key here.
+        After that, orders posted in your Slack channel show up automatically — no extra steps.</p>
+      <label class="field"><span class="lab">Connector web address</span>
+        <input id="slackUrl" placeholder="https://your-connector.onrender.com"></label>
+      <label class="field"><span class="lab">Access key</span>
+        <input id="slackKey" placeholder="the APP_KEY you set on the connector"></label>
+      <label class="field" style="margin-bottom:0;display:flex;align-items:center;gap:8px;flex-direction:row">
+        <input type="checkbox" id="slackAuto" style="width:auto"> <span class="lab" style="margin:0">Automatically pull new Slack orders</span></label>
+      <details class="help"><summary>How does this work?</summary>
+        <div>A tiny always-on “connector” listens to your Slack channel. When someone posts an order, it parses it
+        and this app pulls it in automatically every 30 seconds while open (and catches up on anything posted while
+        it was closed). Setup steps are in the <code class="k">slack-connector</code> folder of your project.</div>
+      </details>
+    </div>
+    <div class="mfoot">
+      <button class="btn secondary" onclick="pollSlack(true)">Check now</button>
+      <button class="btn" onclick="saveSlackSettings()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ ORDER DETAIL MODAL ============ -->
 <div class="modal-bg" id="orderModal">
   <div class="modal wide">
@@ -678,6 +727,7 @@ function load(){
   if(!db.products) db.products=[]; if(!db.customers) db.customers=[]; if(!db.sales) db.sales=[];
   if(!db.tiers) db.tiers=JSON.parse(JSON.stringify(DEFAULT_TIERS));
   ["high","medium","low"].forEach(k=>{ if(!db.tiers[k]) db.tiers[k]={...DEFAULT_TIERS[k]}; });
+  if(!db.slack) db.slack={url:"",key:"",enabled:false,lastSeen:0};
   db.customers.forEach(c=>{ if(!c.tier) c.tier="medium"; });
   if(db.products.length===0 && db.customers.length===0 && db.sales.length===0) seedSample();
 }
@@ -1518,6 +1568,151 @@ function saveSale(){
 }
 
 /* ============================================================
+   SLACK / TEXT ORDERS
+   Turns a message like:   David
+                           one heirloom tomato
+                           three roma tomatoes
+   into a real order, matching products and flagging shortages.
+   (This same parser is what the always-on Slack connector will use.)
+   ============================================================ */
+const NUM_WORDS={zero:0,a:1,an:1,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,
+ eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,
+ twenty:20,thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,couple:2,few:3};
+const NUM_MULT={dozen:12,hundred:100};
+const UNIT_WORDS=new Set(["case","cases","box","boxes","flat","flats","bag","bags","lb","lbs","pound","pounds",
+ "crown","crowns","bunch","bunches","head","heads","carton","cartons","piece","pieces","ct","count","of","x"]);
+function cleanWord(w){ return w.toLowerCase().replace(/[^a-z]/g,""); }
+function parseQtyLine(line){
+  line=line.trim();
+  let qty=1, rest=line;
+  const m=line.match(/^(\d+(?:\.\d+)?)\s*(?:x|\*)?\s+(.*)$/i);
+  if(m){ qty=parseFloat(m[1]); rest=m[2]; }
+  else{
+    const tokens=line.split(/\s+/); let i=0,cur=0,used=false;
+    while(i<tokens.length && i<3){
+      const w=cleanWord(tokens[i]);
+      if(NUM_WORDS[w]!==undefined){ cur+=NUM_WORDS[w]; used=true; i++; }
+      else if(NUM_MULT[w]!==undefined){ cur=(cur||1)*NUM_MULT[w]; used=true; i++; }
+      else break;
+    }
+    if(used){ qty=cur||1; rest=tokens.slice(i).join(" "); }
+  }
+  let nt=rest.split(/\s+/);
+  while(nt.length>1 && UNIT_WORDS.has(cleanWord(nt[0]))) nt.shift();
+  return {qty, name:nt.join(" ").trim()};
+}
+function parseSlackOrder(text){
+  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  if(lines.length<1) return null;
+  return {customerName:lines[0], items:lines.slice(1).map(parseQtyLine).filter(it=>it.name)};
+}
+/* best-effort product match by name */
+function matchProduct(name){
+  const n=name.toLowerCase().trim(); if(!n) return null;
+  let p=db.products.find(x=>x.name.toLowerCase()===n); if(p) return p;
+  p=db.products.find(x=>x.name.toLowerCase().includes(n)||n.includes(x.name.toLowerCase())); if(p) return p;
+  const nt=new Set(n.split(/\s+/));
+  let best=null,bestScore=0;
+  db.products.forEach(x=>{ const sc=x.name.toLowerCase().split(/\s+/).filter(t=>nt.has(t)).length; if(sc>bestScore){bestScore=sc;best=x;} });
+  return bestScore>0?best:null;
+}
+function openSlackModal(){
+  document.getElementById("slackText").value="";
+  document.getElementById("slackPreview").innerHTML="";
+  document.getElementById("slackModal").classList.add("open");
+  setTimeout(()=>document.getElementById("slackText").focus(),60);
+}
+function previewSlack(){
+  const text=document.getElementById("slackText").value;
+  const box=document.getElementById("slackPreview");
+  const parsed=parseSlackOrder(text);
+  if(!parsed || !parsed.customerName){ box.innerHTML=""; return; }
+  const cust=db.customers.find(c=>c.name.toLowerCase()===parsed.customerName.toLowerCase());
+  const rows=parsed.items.map(it=>{
+    const p=matchProduct(it.name);
+    const label = p ? `<strong>${esc(p.name)}</strong>` : `<strong>${esc(it.name)}</strong> <span class="pill blue">new product</span>`;
+    const have = p?Math.max(0,p.qty):0; const short=Math.max(0,it.qty-have);
+    const st = p ? (short>0?`<span style="color:var(--amber);font-weight:700">buy ${num(short)}</span>`:`<span class="pill ok">in stock</span>`) : `<span style="color:var(--amber);font-weight:700">buy ${num(it.qty)}</span>`;
+    return `<div class="shortage-line"><span>${num(it.qty)} × ${label}</span>${st}</div>`;
+  }).join("");
+  box.innerHTML=`<div class="shortage-box ${parsed.items.some(it=>{const p=matchProduct(it.name);return !p||it.qty>Math.max(0,p?p.qty:0);})?'has':'none'}">
+    <h4>👤 ${esc(parsed.customerName)} ${cust?`<span class="pill ${cust.tier==='high'?'ok':cust.tier==='low'?'gray':'low'}">${esc(customerTierLabel(cust))}</span>`:'<span class="pill blue">new customer</span>'}</h4>
+    ${rows||'<p class="muted" style="font-size:13px">Add item lines below the name…</p>'}</div>`;
+}
+/* shared core: turn a parsed {customerName, items:[{qty,name}]} into a real order.
+   Used by the paste box AND the live Slack poller. Returns a summary or null. */
+function createParsedOrder(parsed, source){
+  if(!parsed || !parsed.customerName || !parsed.items || parsed.items.length===0) return null;
+  let customer=db.customers.find(c=>c.name.toLowerCase()===parsed.customerName.toLowerCase());
+  let newCust=false;
+  if(!customer){ customer={id:uid(),name:parsed.customerName,contact:"",phone:"",email:"",notes:source||"From Slack",tier:"medium",customMarkup:0}; db.customers.push(customer); newCust=true; }
+  let newProds=0;
+  const items=parsed.items.map(it=>{
+    let p=matchProduct(it.name);
+    if(!p){ p={id:uid(),name:it.name,category:"",unit:"",qty:0,low:0,cost:0,price:0}; db.products.push(p); newProds++; }
+    return {productId:p.id,name:p.name,qty:it.qty,price:productPriceForCustomer(p,customer)};
+  });
+  db.sales.push({ id:uid(),created:Date.now(),customerId:customer.id,
+    date:new Date().toISOString().slice(0,10), notes:source||"From Slack message", status:"open", items });
+  return {customer:customer.name, newCust, newProds, count:items.length};
+}
+function createSlackOrder(){
+  const parsed=parseSlackOrder(document.getElementById("slackText").value);
+  if(!parsed || !parsed.customerName){ toast("Add a customer name on the first line","warn"); return; }
+  if(!parsed.items || parsed.items.length===0){ toast("Add at least one item line","warn"); return; }
+  const r=createParsedOrder(parsed,"From Slack message");
+  save(); closeModal("slackModal"); refreshAll(); go("orders");
+  let extra=[]; if(r.newCust) extra.push("new customer added"); if(r.newProds) extra.push(r.newProds+" new product"+(r.newProds>1?"s":"")+" added");
+  toast("Order created ✓"+(extra.length?" — "+extra.join(", "):""));
+}
+
+/* ---------- live Slack connection (polls the connector for new messages) ---------- */
+function openSlackSettings(){
+  const s=db.slack||{};
+  document.getElementById("slackUrl").value=s.url||"";
+  document.getElementById("slackKey").value=s.key||"";
+  document.getElementById("slackAuto").checked=!!s.enabled;
+  document.getElementById("slackSettingsModal").classList.add("open");
+}
+function saveSlackSettings(){
+  db.slack={ url:document.getElementById("slackUrl").value.trim().replace(/\/$/,""),
+             key:document.getElementById("slackKey").value.trim(),
+             enabled:document.getElementById("slackAuto").checked,
+             lastSeen:(db.slack&&db.slack.lastSeen)||0 };
+  save(); closeModal("slackSettingsModal");
+  toast(db.slack.enabled?"Slack connected ✓ checking for orders…":"Slack settings saved");
+  if(db.slack.enabled) pollSlack(true);
+}
+let slackTimer=null;
+function startSlackPolling(){
+  if(slackTimer) clearInterval(slackTimer);
+  if(db.slack && db.slack.enabled && db.slack.url){
+    slackTimer=setInterval(()=>pollSlack(false), 30000);  // every 30s
+    pollSlack(false);
+  }
+}
+async function pollSlack(announce){
+  const s=db.slack; if(!s || !s.enabled || !s.url) return;
+  try{
+    const res=await fetch(`${s.url}/pending?key=${encodeURIComponent(s.key||"")}`,{cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const list=(data&&data.orders)||[];
+    if(list.length===0){ if(announce) toast("Connected ✓ no new Slack orders"); return; }
+    let made=0; const ids=[];
+    list.forEach(o=>{ const r=createParsedOrder({customerName:o.customerName,items:o.items},"From Slack (auto)"); if(r){ made++; ids.push(o.id); } });
+    if(made>0){
+      save(); refreshAll();
+      try{ await fetch(`${s.url}/ack`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:s.key||"",ids})}); }catch(e){}
+      toast(`📥 ${made} new Slack order${made>1?"s":""} added`);
+    }
+  }catch(err){
+    if(announce) toast("Couldn't reach the Slack connector — check the URL","bad");
+    console.warn("Slack poll failed:",err);
+  }
+}
+
+/* ============================================================
    ORDERS
    ============================================================ */
 function renderOrders(){
@@ -1748,6 +1943,7 @@ checkAuth();
 load();
 renderDashboard();
 updateBadges();
+startSlackPolling();
 </script>
 </body>
 </html>

@@ -1,0 +1,15 @@
+{
+  "name": "farmlind-slack-connector",
+  "version": "1.0.0",
+  "description": "Listens to a Slack channel and queues parsed produce orders for the Farmlind app.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
