@@ -137,21 +137,29 @@
         <h3>1️⃣ Old prices <span class="muted">(baseline)</span></h3>
         <button class="btn ghost small" id="useBaselineBtn" onclick="useSavedBaseline()" style="display:none">Use saved</button>
       </div>
-      <div class="drop" id="dropOld"
+      <div class="drop" id="dropOld" style="cursor:pointer" onclick="document.getElementById('oldFile').click()"
            ondragover="dz(event,'dropOld',1)" ondragleave="dz(event,'dropOld',0)" ondrop="dropFile(event,'old')">
-        Drag a CSV here, or <b style="color:var(--green-dark);cursor:pointer" onclick="document.getElementById('oldFile').click()">browse</b>
+        <span style="font-size:26px;display:block;margin-bottom:4px">📂</span>
+        Tap to choose a CSV file<br><span style="font-size:12.5px">(or drag one here)</span>
       </div>
       <input type="file" id="oldFile" accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'old')">
+      <div class="row-flex" style="margin-top:10px">
+        <button class="btn secondary" onclick="document.getElementById('oldFile').click()">📂 Choose file</button>
+      </div>
       <p id="oldInfo" class="muted" style="font-size:13px"></p>
     </div>
     <!-- NEW -->
     <div class="card">
       <div class="card-head"><h3>2️⃣ New prices <span class="muted">(this week)</span></h3></div>
-      <div class="drop" id="dropNew"
+      <div class="drop" id="dropNew" style="cursor:pointer" onclick="document.getElementById('newFile').click()"
            ondragover="dz(event,'dropNew',1)" ondragleave="dz(event,'dropNew',0)" ondrop="dropFile(event,'new')">
-        Drag a CSV here, or <b style="color:var(--green-dark);cursor:pointer" onclick="document.getElementById('newFile').click()">browse</b>
+        <span style="font-size:26px;display:block;margin-bottom:4px">📂</span>
+        Tap to choose a CSV file<br><span style="font-size:12.5px">(or drag one here)</span>
       </div>
       <input type="file" id="newFile" accept=".csv,text/csv" style="display:none" onchange="pickFile(event,'new')">
+      <div class="row-flex" style="margin-top:10px">
+        <button class="btn" onclick="document.getElementById('newFile').click()">📂 Choose file</button>
+      </div>
       <p id="newInfo" class="muted" style="font-size:13px"></p>
     </div>
   </div>
@@ -321,12 +329,14 @@ function reflectSide(which){
   const info=document.getElementById(which==="old"?"oldInfo":"newInfo");
   if(side){
     drop.classList.add("loaded");
-    drop.innerHTML=`✓ <b>${esc(side.label)}</b> — ${side.items.length} product(s). `+
-      `<span style="color:var(--green-dark);cursor:pointer;text-decoration:underline" onclick="document.getElementById('${which}File').click()">replace</span>`;
+    drop.innerHTML=`<span style="font-size:22px;display:block;margin-bottom:2px">✓</span>`+
+      `<b>${esc(side.label)}</b><br>${side.items.length} product(s) loaded<br>`+
+      `<span style="font-size:12.5px">Tap to choose a different file</span>`;
     info.textContent="";
   }else{
     drop.classList.remove("loaded");
-    drop.innerHTML=`Drag a CSV here, or <b style="color:var(--green-dark);cursor:pointer" onclick="document.getElementById('${which}File').click()">browse</b>`;
+    drop.innerHTML=`<span style="font-size:26px;display:block;margin-bottom:4px">📂</span>`+
+      `Tap to choose a CSV file<br><span style="font-size:12.5px">(or drag one here)</span>`;
     info.textContent="";
   }
 }
