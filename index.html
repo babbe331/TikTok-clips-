@@ -123,11 +123,31 @@
     box-shadow:0 30px 80px rgba(0,0,0,.55), var(--glow);transform:perspective(1400px) rotateY(-7deg) rotateX(3deg);
     transition:.6s}
   .hero-visual:hover .photo-frame{transform:perspective(1400px) rotateY(-3deg) rotateX(1deg)}
-  .photo-frame img{width:100%;height:480px;object-fit:cover;display:block}
-  .photo-frame::after{content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg,transparent 40%,rgba(4,15,9,.55)),linear-gradient(90deg,rgba(61,255,162,.12),transparent 60%)}
-  .frame-badge{position:absolute;left:18px;bottom:16px;z-index:2;font-family:'Space Grotesk';font-weight:700;
+  .photo-frame img{width:100%;height:500px;object-fit:cover;display:block}
+  .photo-frame::after{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg,transparent 45%,rgba(4,15,9,.55)),linear-gradient(90deg,rgba(61,255,162,.12),transparent 60%)}
+  .frame-badge{position:absolute;left:18px;bottom:16px;z-index:4;font-family:'Space Grotesk';font-weight:700;
     font-size:15px;text-shadow:0 2px 12px rgba(0,0,0,.7);display:flex;align-items:center;gap:8px}
+
+  /* futuristic holographic frame */
+  .photo-frame.holo{border:1px solid rgba(61,255,162,.4);
+    box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 64px rgba(61,255,162,.38), inset 0 0 0 1px rgba(157,255,210,.15)}
+  .holo .holo-sheen{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;
+    background:linear-gradient(115deg,transparent 42%,rgba(157,255,210,.28) 50%,transparent 58%);
+    background-size:300% 300%;animation:sheen 6s linear infinite}
+  @keyframes sheen{to{background-position:-200% -200%}}
+  .hud{position:absolute;width:26px;height:26px;z-index:4;pointer-events:none;border:2px solid var(--neon);
+    filter:drop-shadow(0 0 6px rgba(61,255,162,.8))}
+  .hud.tl{top:12px;left:12px;border-right:0;border-bottom:0;border-radius:7px 0 0 0}
+  .hud.tr{top:12px;right:12px;border-left:0;border-bottom:0;border-radius:0 7px 0 0}
+  .hud.bl{bottom:12px;left:12px;border-right:0;border-top:0;border-radius:0 0 0 7px}
+  .hud.br{bottom:12px;right:12px;border-left:0;border-top:0;border-radius:0 0 7px 0}
+  .scanline{position:absolute;left:0;right:0;height:64px;z-index:2;pointer-events:none;top:-64px;
+    background:linear-gradient(180deg,transparent,rgba(61,255,162,.20),transparent);animation:scan 4.5s linear infinite}
+  @keyframes scan{0%{top:-64px}100%{top:100%}}
+  .holo-tag{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:4;
+    font-family:'Space Grotesk';font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--neon);
+    background:rgba(4,15,9,.55);border:1px solid var(--line);border-radius:20px;padding:5px 12px;backdrop-filter:blur(6px)}
   .float-chip{position:absolute;display:flex;align-items:center;gap:8px;padding:10px 15px;border-radius:14px;
     background:var(--glass-2);backdrop-filter:blur(14px);border:1px solid var(--line);z-index:3;
     font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5);white-space:nowrap}
@@ -187,6 +207,20 @@
     padding:0 8%;background:linear-gradient(90deg,rgba(4,15,9,.85),rgba(4,15,9,.25) 70%,transparent)}
   .showcase .ov h3{font-size:clamp(24px,3vw,38px);max-width:480px;margin-bottom:10px}
   .showcase .ov p{color:var(--neon-2);font-weight:600;font-size:15px;letter-spacing:.02em}
+
+  /* ---------- Cinematic farm band (futuristic) ---------- */
+  .cine{position:relative;border-radius:26px;overflow:hidden;margin-top:46px;
+    border:1px solid rgba(61,255,162,.32);
+    box-shadow:0 30px 70px rgba(0,0,0,.5), 0 0 54px rgba(61,255,162,.26)}
+  .cine img{width:100%;height:440px;object-fit:cover;display:block}
+  .cine .cine-ov{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;padding:0 8%;
+    background:linear-gradient(90deg,rgba(4,15,9,.85),rgba(4,15,9,.3) 68%,transparent)}
+  .cine .holo-tag{position:static;transform:none;align-self:flex-start;margin-bottom:16px}
+  .cine h3{font-size:clamp(26px,3.4vw,46px);font-weight:800;max-width:560px;margin-bottom:12px}
+  .cine p{color:var(--neon-2);font-weight:600;font-size:16px}
+  .cine .holo-sheen{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;
+    background:linear-gradient(115deg,transparent 44%,rgba(157,255,210,.22) 50%,transparent 56%);
+    background-size:300% 300%;animation:sheen 7s linear infinite}
 
   /* ---------- Products ---------- */
   .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
@@ -370,6 +404,8 @@
     .float-chip{display:none}
     .showcase img{height:240px}
     .showcase .ov{padding:0 28px;background:linear-gradient(90deg,rgba(4,15,9,.9),rgba(4,15,9,.5))}
+    .cine img{height:300px}
+    .cine .cine-ov{padding:0 26px;background:linear-gradient(90deg,rgba(4,15,9,.92),rgba(4,15,9,.55))}
   }
   @media(prefers-reduced-motion:reduce){
     *{animation:none!important;scroll-behavior:auto}
@@ -430,13 +466,17 @@
     </div>
 
     <div class="hero-visual reveal d2">
-      <div class="photo-frame">
-        <img src="assets/img/aerial.jpg" alt="Aerial view of a FarmLind partner farm">
-        <div class="frame-badge">🌿 Fresh from local farms</div>
+      <div class="photo-frame holo">
+        <img src="assets/img/customer.jpg" alt="Fresh fruits and vegetables from FarmLind Produce">
+        <span class="holo-sheen"></span>
+        <span class="scanline"></span>
+        <span class="hud tl"></span><span class="hud tr"></span><span class="hud bl"></span><span class="hud br"></span>
+        <div class="holo-tag">◉ LIVE · PEAK FRESHNESS</div>
+        <div class="frame-badge">🌿 Fresh fruits &amp; veggies, daily</div>
       </div>
-      <div class="float-chip fc1"><span class="em">🥬</span><div>Just harvested<small>local fields &amp; greenhouses</small></div></div>
+      <div class="float-chip fc1"><span class="em">🫐</span><div>Just harvested<small>berries, tomatoes &amp; more</small></div></div>
       <div class="float-chip fc2"><span class="em">❄️</span><div>Cold-chain kept<small>peak freshness</small></div></div>
-      <div class="float-chip fc3"><span class="em">🚛</span><div>On the road<small>arriving today</small></div></div>
+      <div class="float-chip fc3"><span class="em">⚡</span><div>Farm → you in 24h<small>tracked &amp; fresh</small></div></div>
     </div>
   </div>
 </section>
@@ -475,11 +515,11 @@
         <div class="tx"><h3>Grown local</h3><p>We partner directly with trusted family farms — we know every grower by name.</p></div>
       </div>
       <div class="step reveal d1">
-        <div class="ph"><span class="n">2</span><img src="assets/img/customer.jpg" alt="Fresh produce display"></div>
+        <div class="ph"><span class="n">2</span><img src="assets/img/event1.jpg" alt="Freshly picked sweet corn"></div>
         <div class="tx"><h3>Picked at peak</h3><p>Harvested only at peak flavor, then handled with care to lock in texture and taste.</p></div>
       </div>
       <div class="step reveal d2">
-        <div class="ph"><span class="n">3</span><img src="assets/img/aerial.jpg" alt="FarmLind sourcing hub"></div>
+        <div class="ph"><span class="n">3</span><img src="assets/img/produce.jpg" alt="Fresh produce kept crisp"></div>
         <div class="tx"><h3>Cold-chain rushed</h3><p>An unbroken cold chain and tight routing keep everything crisp from field to dock.</p></div>
       </div>
       <div class="step reveal d3">
@@ -499,14 +539,6 @@
       <p>From heirloom tomatoes to the freshest cut herbs, our range turns the produce aisle into a destination.</p>
     </div>
 
-    <div class="showcase reveal">
-      <img src="assets/img/produce.jpg" alt="FarmLind Jersey Fresh produce display">
-      <div class="ov">
-        <h3>We put the PRO in produce.</h3>
-        <p>Jersey Fresh displays merchandised to sell — and built to last on the shelf.</p>
-      </div>
-    </div>
-
     <div class="prod-grid">
       <div class="prod reveal"><div class="glowbg g-tom"></div><span class="tag">Signature</span><div class="emoji">🍅</div><h3>Heirloom &amp; Field Tomatoes</h3><p>Tastier tomatoes with true flavor integrity — vine-ripened and never bland.</p></div>
       <div class="prod reveal d1"><div class="glowbg g-veg"></div><span class="tag">Everyday</span><div class="emoji">🥒</div><h3>Garden Vegetables</h3><p>Zucchini, cucumbers, eggplant, squash &amp; more — crisp, clean, consistent.</p></div>
@@ -514,6 +546,18 @@
       <div class="prod reveal"><div class="glowbg g-herb"></div><span class="tag">Aromatic</span><div class="emoji">🌿</div><h3>Fresh Herbs</h3><p>Cilantro, dill, mint, rosemary, sage, thyme, oregano, chives — kitchen-ready.</p></div>
       <div class="prod reveal d1"><div class="glowbg g-pep"></div><span class="tag">Colorful</span><div class="emoji">🫑</div><h3>Peppers</h3><p>Multiple varieties and colors to brighten any plate, salad bar, or display.</p></div>
       <div class="prod reveal d2"><div class="glowbg g-fruit"></div><span class="tag">Seasonal</span><div class="emoji">🍓</div><h3>Seasonal Fruit</h3><p>Peak-season fruit sourced from NY, NJ, PA &amp; Florida farms as it ripens.</p></div>
+    </div>
+
+    <div class="cine reveal">
+      <img src="assets/img/aerial.jpg" alt="Aerial view of a FarmLind partner farm">
+      <span class="holo-sheen"></span>
+      <span class="scanline"></span>
+      <span class="hud tl"></span><span class="hud tr"></span><span class="hud bl"></span><span class="hud br"></span>
+      <div class="cine-ov">
+        <div class="holo-tag">◉ FARM-DIRECT NETWORK</div>
+        <h3>From this field to your shelves — in a single day.</h3>
+        <p>100% farm-direct sourcing across NY · NJ · CT · PA.</p>
+      </div>
     </div>
   </div>
 </section>
