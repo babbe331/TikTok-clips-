@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="FarmLind Produce — premium farm-to-table fruits & vegetables delivered within 24 hours of harvest. The shortest distance between the grower and you." />
+<meta name="description" content="FarmLind Produce — premium farm-to-table fruits & vegetables delivered within 24 hours of harvest. Farm Today… Yours Tomorrow." />
 <meta name="theme-color" content="#05140d" />
-<title>FarmLind Produce — Farm-Fresh, Future-Ready</title>
+<title>FarmLind Produce — Farm Today, Yours Tomorrow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -62,7 +62,6 @@
   @keyframes float1{50%{transform:translate(-40px,60px) scale(1.1)}}
   @keyframes float2{50%{transform:translate(60px,-50px) scale(1.08)}}
 
-  /* cursor glow */
   #cursor-glow{position:fixed;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:0;
     background:radial-gradient(circle,rgba(61,255,162,.10),transparent 60%);
     transform:translate(-50%,-50%);transition:opacity .3s;mix-blend-mode:screen}
@@ -71,17 +70,16 @@
 
   /* ---------- Nav ---------- */
   header.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.35s}
-  .nav-inner{max-width:var(--maxw);margin:14px auto;padding:0 18px;height:64px;
+  .nav-inner{max-width:var(--maxw);margin:14px auto;padding:0 16px 0 12px;height:64px;
     display:flex;align-items:center;gap:18px;
     background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.35);
     transition:.35s}
   header.nav.scrolled .nav-inner{margin-top:8px;background:rgba(7,22,15,.85);box-shadow:0 14px 50px rgba(0,0,0,.5)}
-  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-family:'Space Grotesk';font-size:19px;letter-spacing:-.02em}
-  .brand .mark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
-    background:linear-gradient(135deg,var(--neon),var(--cyan));color:#04120a;font-size:20px;
-    box-shadow:var(--glow);flex:none}
-  .brand b{background:linear-gradient(90deg,var(--neon),var(--lime));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand .logo-chip{background:rgba(255,255,255,.95);border-radius:12px;padding:6px 12px;display:grid;place-items:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  .brand .logo-chip img{height:30px;width:auto}
   .nav-links{display:flex;gap:6px;margin-left:auto}
   .nav-links a{padding:9px 14px;border-radius:11px;font-size:14.5px;color:var(--muted);font-weight:500;transition:.2s}
   .nav-links a:hover{color:var(--ink);background:rgba(61,255,162,.08)}
@@ -91,7 +89,6 @@
   .hamburger{display:none;margin-left:auto;background:none;border:1px solid var(--line);color:var(--ink);
     width:46px;height:46px;border-radius:12px;font-size:20px;cursor:pointer}
 
-  /* mobile menu */
   .mobile-menu{position:fixed;inset:0;z-index:99;background:rgba(4,15,9,.96);backdrop-filter:blur(20px);
     display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px}
   .mobile-menu.open{display:flex;animation:fade .3s}
@@ -99,8 +96,8 @@
   .mobile-menu a:hover{color:var(--neon)}
 
   /* ---------- Hero ---------- */
-  .hero{min-height:100vh;display:flex;align-items:center;padding:140px 0 80px;overflow:hidden}
-  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center;width:100%}
+  .hero{min-height:100vh;display:flex;align-items:center;padding:150px 0 80px;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:54px;align-items:center;width:100%}
   .eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 16px;border-radius:30px;
     background:rgba(61,255,162,.1);border:1px solid var(--line);font-size:13px;font-weight:600;
     color:var(--neon-2);letter-spacing:.04em;text-transform:uppercase}
@@ -120,29 +117,26 @@
   .hero-trust{margin-top:36px;display:flex;gap:26px;flex-wrap:wrap;color:var(--muted);font-size:13.5px}
   .hero-trust b{color:var(--ink)}
 
-  /* hero visual */
-  .hero-visual{position:relative;height:520px}
-  .ring{position:absolute;border:1px solid var(--line);border-radius:50%;inset:0;margin:auto}
-  .ring.r1{width:480px;height:480px;animation:spin 40s linear infinite}
-  .ring.r2{width:340px;height:340px;border-color:rgba(182,255,92,.18);animation:spin 28s linear infinite reverse}
-  .ring.r3{width:200px;height:200px;border-color:rgba(46,230,200,.22);animation:spin 18s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .hero-core{position:absolute;inset:0;margin:auto;width:170px;height:170px;border-radius:50%;
-    display:grid;place-items:center;font-size:78px;
-    background:radial-gradient(circle at 30% 30%,rgba(61,255,162,.25),rgba(8,28,18,.9));
-    border:1px solid var(--line);box-shadow:var(--glow),inset 0 0 40px rgba(61,255,162,.2)}
+  /* hero photo visual */
+  .hero-visual{position:relative}
+  .photo-frame{position:relative;border-radius:24px;overflow:hidden;border:1px solid var(--line);
+    box-shadow:0 30px 80px rgba(0,0,0,.55), var(--glow);transform:perspective(1400px) rotateY(-7deg) rotateX(3deg);
+    transition:.6s}
+  .hero-visual:hover .photo-frame{transform:perspective(1400px) rotateY(-3deg) rotateX(1deg)}
+  .photo-frame img{width:100%;height:480px;object-fit:cover;display:block}
+  .photo-frame::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,transparent 40%,rgba(4,15,9,.55)),linear-gradient(90deg,rgba(61,255,162,.12),transparent 60%)}
+  .frame-badge{position:absolute;left:18px;bottom:16px;z-index:2;font-family:'Space Grotesk';font-weight:700;
+    font-size:15px;text-shadow:0 2px 12px rgba(0,0,0,.7);display:flex;align-items:center;gap:8px}
   .float-chip{position:absolute;display:flex;align-items:center;gap:8px;padding:10px 15px;border-radius:14px;
-    background:var(--glass-2);backdrop-filter:blur(14px);border:1px solid var(--line);
-    font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.4);white-space:nowrap}
+    background:var(--glass-2);backdrop-filter:blur(14px);border:1px solid var(--line);z-index:3;
+    font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5);white-space:nowrap}
   .float-chip .em{font-size:20px}
   .float-chip small{color:var(--muted);font-weight:500;font-size:11px;display:block}
-  .fc1{top:6%;left:-2%;animation:bob 6s ease-in-out infinite}
-  .fc2{top:34%;right:-6%;animation:bob 7s ease-in-out infinite .5s}
-  .fc3{bottom:14%;left:2%;animation:bob 6.5s ease-in-out infinite 1s}
-  .fc4{bottom:-2%;right:6%;animation:bob 5.5s ease-in-out infinite .3s}
-  @keyframes bob{50%{transform:translateY(-16px)}}
-  .orbit-em{position:absolute;font-size:34px;top:50%;left:50%;
-    filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))}
+  .fc1{top:-18px;left:-22px;animation:bob 6s ease-in-out infinite}
+  .fc2{top:38%;right:-30px;animation:bob 7s ease-in-out infinite .5s}
+  .fc3{bottom:-16px;left:8%;animation:bob 6.5s ease-in-out infinite 1s}
+  @keyframes bob{50%{transform:translateY(-14px)}}
 
   /* ---------- Marquee ---------- */
   .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0;
@@ -171,26 +165,39 @@
 
   /* ---------- Process ---------- */
   .process{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-  .step{padding:32px 26px;border-radius:var(--radius);background:var(--glass);border:1px solid var(--line);
+  .step{border-radius:var(--radius);background:var(--glass);border:1px solid var(--line);
     backdrop-filter:blur(14px);position:relative;transition:.3s;overflow:hidden}
-  .step:hover{transform:translateY(-6px);border-color:rgba(61,255,162,.4)}
-  .step::before{content:attr(data-n);position:absolute;top:-10px;right:14px;font-family:'Space Grotesk';
-    font-size:80px;font-weight:800;color:rgba(61,255,162,.07)}
-  .step .ic{width:56px;height:56px;border-radius:15px;display:grid;place-items:center;font-size:26px;
-    background:rgba(61,255,162,.1);border:1px solid var(--line);margin-bottom:18px}
-  .step h3{font-size:20px;margin-bottom:10px}
+  .step:hover{transform:translateY(-6px);border-color:rgba(61,255,162,.4);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+  .step .ph{position:relative;height:160px;overflow:hidden}
+  .step .ph img{width:100%;height:100%;object-fit:cover;transition:.5s}
+  .step:hover .ph img{transform:scale(1.07)}
+  .step .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,15,9,.1),rgba(8,28,18,.9))}
+  .step .n{position:absolute;top:12px;left:12px;z-index:2;width:34px;height:34px;border-radius:10px;
+    display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:15px;
+    background:rgba(4,15,9,.7);border:1px solid var(--line);color:var(--neon)}
+  .step .tx{padding:22px 24px 26px}
+  .step h3{font-size:20px;margin-bottom:9px}
   .step p{color:var(--muted);font-size:14.5px}
+
+  /* ---------- Showcase banner ---------- */
+  .showcase{position:relative;border-radius:24px;overflow:hidden;border:1px solid var(--line);
+    margin-bottom:46px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+  .showcase img{width:100%;height:340px;object-fit:cover}
+  .showcase .ov{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+    padding:0 8%;background:linear-gradient(90deg,rgba(4,15,9,.85),rgba(4,15,9,.25) 70%,transparent)}
+  .showcase .ov h3{font-size:clamp(24px,3vw,38px);max-width:480px;margin-bottom:10px}
+  .showcase .ov p{color:var(--neon-2);font-weight:600;font-size:15px;letter-spacing:.02em}
 
   /* ---------- Products ---------- */
   .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
   .prod{border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);position:relative;
-    min-height:280px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;
+    min-height:240px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;
     background:var(--glass);transition:.35s;isolation:isolate}
   .prod .glowbg{position:absolute;inset:0;z-index:-1;opacity:.9;transition:.4s}
   .prod:hover{transform:translateY(-8px);border-color:rgba(61,255,162,.45);box-shadow:0 24px 60px rgba(0,0,0,.5)}
   .prod:hover .glowbg{transform:scale(1.08)}
-  .prod .emoji{font-size:64px;margin-bottom:auto;filter:drop-shadow(0 8px 20px rgba(0,0,0,.5))}
-  .prod h3{font-size:23px;margin-bottom:8px}
+  .prod .emoji{font-size:58px;margin-bottom:auto;filter:drop-shadow(0 8px 20px rgba(0,0,0,.5))}
+  .prod h3{font-size:22px;margin-bottom:8px}
   .prod p{color:var(--muted);font-size:14px}
   .prod .tag{position:absolute;top:18px;right:18px;font-size:11px;font-weight:700;letter-spacing:.06em;
     text-transform:uppercase;padding:6px 12px;border-radius:20px;background:rgba(4,15,9,.6);
@@ -210,38 +217,49 @@
   .check-list li{display:flex;gap:13px;align-items:flex-start;font-size:15.5px}
   .check-list .ck{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
     background:rgba(61,255,162,.12);border:1px solid var(--line);color:var(--neon);font-size:14px;font-weight:700}
-  .visual-card{border-radius:24px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(14px);
-    padding:36px;position:relative;overflow:hidden;min-height:380px}
-  .visual-card .big-em{font-size:120px;text-align:center;filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
-  .map-pins{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px}
-  .pin{padding:16px;border-radius:14px;background:rgba(4,15,9,.5);border:1px solid var(--line)}
-  .pin b{font-size:22px;display:block;color:var(--neon-2);font-family:'Space Grotesk'}
-  .pin span{color:var(--muted);font-size:13px}
+  .about-visual{position:relative}
+  .about-visual .main-ph{border-radius:24px;overflow:hidden;border:1px solid var(--line);
+    box-shadow:0 30px 70px rgba(0,0,0,.5)}
+  .about-visual .main-ph img{width:100%;height:520px;object-fit:cover}
+  .about-visual .inset{position:absolute;right:-18px;bottom:-18px;width:46%;border-radius:18px;overflow:hidden;
+    border:2px solid rgba(8,28,18,.9);box-shadow:0 18px 40px rgba(0,0,0,.55)}
+  .about-visual .inset img{width:100%;height:150px;object-fit:cover}
+  .quote-chip{position:absolute;left:-16px;top:24px;background:var(--glass-2);backdrop-filter:blur(12px);
+    border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-family:'Space Grotesk';font-weight:700;
+    font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+  .quote-chip span{color:var(--neon)}
 
   /* ---------- Audience ---------- */
   .aud-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-  .aud{padding:42px;border-radius:var(--radius);border:1px solid var(--line);background:var(--glass);
-    backdrop-filter:blur(14px);transition:.3s;position:relative;overflow:hidden}
+  .aud{border-radius:var(--radius);border:1px solid var(--line);background:var(--glass);overflow:hidden;
+    backdrop-filter:blur(14px);transition:.3s}
   .aud:hover{transform:translateY(-6px);border-color:rgba(61,255,162,.4);box-shadow:var(--glow)}
-  .aud .ic{font-size:46px;margin-bottom:18px}
-  .aud h3{font-size:26px;margin-bottom:12px}
-  .aud p{color:var(--muted);margin-bottom:18px}
+  .aud .ph{height:200px;overflow:hidden;position:relative}
+  .aud .ph img{width:100%;height:100%;object-fit:cover;transition:.5s}
+  .aud:hover .ph img{transform:scale(1.06)}
+  .aud .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(8,28,18,.85))}
+  .aud .tx{padding:30px 34px 34px}
+  .aud .tx h3{font-size:25px;margin-bottom:12px}
+  .aud .tx p{color:var(--muted);margin-bottom:18px}
   .aud .arrow{color:var(--neon);font-weight:600;font-size:14.5px;display:inline-flex;align-items:center;gap:8px}
 
-  /* ---------- Farms ---------- */
+  /* ---------- Farms (partner logos) ---------- */
   .farms{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-  .farm{padding:30px;border-radius:var(--radius);border:1px solid var(--line);background:var(--glass);
-    backdrop-filter:blur(14px);transition:.3s}
-  .farm:hover{transform:translateY(-5px);border-color:rgba(61,255,162,.4)}
-  .farm .em{font-size:38px;margin-bottom:14px}
-  .farm h3{font-size:19px;margin-bottom:8px}
-  .farm p{color:var(--muted);font-size:14px}
+  .farm{padding:18px;border-radius:var(--radius);border:1px solid var(--line);background:var(--glass);
+    backdrop-filter:blur(14px);transition:.3s;text-align:center}
+  .farm:hover{transform:translateY(-5px);border-color:rgba(61,255,162,.4);box-shadow:0 18px 44px rgba(0,0,0,.4)}
+  .farm .plate{background:#fff;border-radius:14px;height:130px;display:grid;place-items:center;padding:18px;margin-bottom:14px}
+  .farm .plate img{max-height:94px;max-width:100%;width:auto;object-fit:contain}
+  .farm h3{font-size:16px;margin-bottom:4px}
+  .farm p{color:var(--muted);font-size:13px}
 
   /* ---------- CTA banner ---------- */
-  .cta-banner{margin:0 auto;max-width:var(--maxw);border-radius:30px;padding:70px 50px;text-align:center;
-    position:relative;overflow:hidden;border:1px solid var(--line);
-    background:radial-gradient(800px 400px at 50% -20%,rgba(61,255,162,.22),transparent 60%),var(--glass-2);
-    backdrop-filter:blur(16px)}
+  .cta-banner{margin:0 auto;max-width:var(--maxw);border-radius:30px;padding:78px 50px;text-align:center;
+    position:relative;overflow:hidden;border:1px solid var(--line)}
+  .cta-banner .cta-bg{position:absolute;inset:0;z-index:-2}
+  .cta-banner .cta-bg img{width:100%;height:100%;object-fit:cover}
+  .cta-banner::after{content:"";position:absolute;inset:0;z-index:-1;
+    background:radial-gradient(800px 400px at 50% -20%,rgba(61,255,162,.3),transparent 60%),rgba(4,13,8,.82)}
   .cta-banner h2{font-size:clamp(30px,4.4vw,52px);font-weight:800;margin-bottom:18px}
   .cta-banner p{color:var(--muted);font-size:18px;max-width:560px;margin:0 auto 32px}
   .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
@@ -264,6 +282,8 @@
   /* ---------- Footer ---------- */
   footer{border-top:1px solid var(--line);padding:60px 0 36px;margin-top:40px;background:rgba(4,12,8,.6)}
   .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px}
+  .foot-logo{background:rgba(255,255,255,.95);border-radius:16px;padding:14px 18px;display:inline-grid;place-items:center}
+  .foot-logo img{height:62px;width:auto}
   .foot-grid p{color:var(--muted);font-size:14px;margin-top:16px;max-width:300px}
   .foot-col h4{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--neon-2);margin-bottom:16px}
   .foot-col a{display:block;color:var(--muted);font-size:14.5px;padding:6px 0;transition:.2s}
@@ -282,10 +302,13 @@
   /* ---------- Responsive ---------- */
   @media(max-width:980px){
     .hero-grid,.split,.contact-grid{grid-template-columns:1fr}
-    .hero-visual{height:420px;order:-1;margin-bottom:20px}
+    .hero-visual{order:-1;margin-bottom:30px}
+    .photo-frame{transform:none}
+    .photo-frame img{height:320px}
     .stats,.process{grid-template-columns:repeat(2,1fr)}
     .prod-grid,.farms{grid-template-columns:repeat(2,1fr)}
     .aud-grid{grid-template-columns:1fr}
+    .about-visual .main-ph img{height:380px}
     .foot-grid{grid-template-columns:1fr 1fr;gap:30px}
     .nav-links{display:none}
     .hamburger{display:grid;place-items:center}
@@ -295,9 +318,11 @@
     .stats,.prod-grid,.farms{grid-template-columns:1fr}
     .process{grid-template-columns:1fr}
     .sec{padding:80px 0}
-    .cta-banner{padding:48px 26px}
+    .cta-banner{padding:54px 24px}
     .foot-grid{grid-template-columns:1fr}
     .float-chip{display:none}
+    .showcase img{height:240px}
+    .showcase .ov{padding:0 28px;background:linear-gradient(90deg,rgba(4,15,9,.9),rgba(4,15,9,.5))}
   }
   @media(prefers-reduced-motion:reduce){
     *{animation:none!important;scroll-behavior:auto}
@@ -316,7 +341,7 @@
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a href="#top" class="brand">
-      <span class="mark">🌿</span> Farm<b>Lind</b>
+      <span class="logo-chip"><img src="assets/img/logo-footer.png" alt="FarmLind Produce"></span>
     </a>
     <nav class="nav-links">
       <a href="#process">Process</a>
@@ -343,7 +368,7 @@
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="eyebrow reveal"><span class="dot"></span> Picked &lt; 24 hrs ago · River Vale, NJ</span>
+      <span class="eyebrow reveal"><span class="dot"></span> Farm Today… Yours Tomorrow</span>
       <h1 class="reveal d1">The shortest distance between the <span class="g">grower &amp; you</span>.</h1>
       <p class="lead reveal d2">FarmLind delivers just-picked fruits &amp; vegetables at peak flavor — straight from local farms to your store or kitchen, often within a single day of harvest.</p>
       <div class="hero-cta reveal d3">
@@ -358,14 +383,13 @@
     </div>
 
     <div class="hero-visual reveal d2">
-      <div class="ring r1"></div>
-      <div class="ring r2"></div>
-      <div class="ring r3"></div>
-      <div class="hero-core">🍅</div>
-      <div class="float-chip fc1"><span class="em">🥬</span><div>Just harvested<small>Gro-Rite Greenhouse</small></div></div>
+      <div class="photo-frame">
+        <img src="assets/img/aerial.jpg" alt="Aerial view of a FarmLind partner farm">
+        <div class="frame-badge">🌿 Yarnick Farm · grown for FarmLind</div>
+      </div>
+      <div class="float-chip fc1"><span class="em">🥬</span><div>Just harvested<small>local fields &amp; greenhouses</small></div></div>
       <div class="float-chip fc2"><span class="em">❄️</span><div>Cold-chain kept<small>peak freshness</small></div></div>
       <div class="float-chip fc3"><span class="em">🚛</span><div>On the road<small>arriving today</small></div></div>
-      <div class="float-chip fc4"><span class="em">✅</span><div>Quality checked<small>food-safe certified</small></div></div>
     </div>
   </div>
 </section>
@@ -399,10 +423,22 @@
       <p>We engineered the supply chain down to its essentials — so flavor never waits in a warehouse.</p>
     </div>
     <div class="process">
-      <div class="step reveal" data-n="1"><div class="ic">🌾</div><h3>Grown local</h3><p>We partner directly with trusted family farms across the Northeast and beyond — we know every grower by name.</p></div>
-      <div class="step reveal d1" data-n="2"><div class="ic">🧺</div><h3>Picked at peak</h3><p>Produce is harvested only at its flavor peak, then handled with care to lock in texture and taste.</p></div>
-      <div class="step reveal d2" data-n="3"><div class="ic">❄️</div><h3>Cold-chain rushed</h3><p>An unbroken cold chain and tight routing keep everything crisp from field to loading dock.</p></div>
-      <div class="step reveal d3" data-n="4"><div class="ic">🚚</div><h3>Delivered fast</h3><p>It reaches your shelves or kitchen — often within 24 hours, always within 48 — bursting with flavor.</p></div>
+      <div class="step reveal">
+        <div class="ph"><span class="n">1</span><img src="assets/img/farm.jpg" alt="Rows of greens growing in the field"></div>
+        <div class="tx"><h3>Grown local</h3><p>We partner directly with trusted family farms — we know every grower by name.</p></div>
+      </div>
+      <div class="step reveal d1">
+        <div class="ph"><span class="n">2</span><img src="assets/img/customer.jpg" alt="Fresh produce display"></div>
+        <div class="tx"><h3>Picked at peak</h3><p>Harvested only at peak flavor, then handled with care to lock in texture and taste.</p></div>
+      </div>
+      <div class="step reveal d2">
+        <div class="ph"><span class="n">3</span><img src="assets/img/aerial.jpg" alt="FarmLind sourcing hub"></div>
+        <div class="tx"><h3>Cold-chain rushed</h3><p>An unbroken cold chain and tight routing keep everything crisp from field to dock.</p></div>
+      </div>
+      <div class="step reveal d3">
+        <div class="ph"><span class="n">4</span><img src="assets/img/truck.jpg" alt="FarmLind delivery truck"></div>
+        <div class="tx"><h3>Delivered fast</h3><p>It reaches your shelves or kitchen — often within 24 hours, always within 48.</p></div>
+      </div>
     </div>
   </div>
 </section>
@@ -415,6 +451,15 @@
       <h2>Produce worth building a department around.</h2>
       <p>From heirloom tomatoes to the freshest cut herbs, our range turns the produce aisle into a destination.</p>
     </div>
+
+    <div class="showcase reveal">
+      <img src="assets/img/produce.jpg" alt="FarmLind Jersey Fresh produce display">
+      <div class="ov">
+        <h3>We put the PRO in produce.</h3>
+        <p>Jersey Fresh displays merchandised to sell — and built to last on the shelf.</p>
+      </div>
+    </div>
+
     <div class="prod-grid">
       <div class="prod reveal"><div class="glowbg g-tom"></div><span class="tag">Signature</span><div class="emoji">🍅</div><h3>Heirloom &amp; Field Tomatoes</h3><p>Tastier tomatoes with true flavor integrity — vine-ripened and never bland.</p></div>
       <div class="prod reveal d1"><div class="glowbg g-veg"></div><span class="tag">Everyday</span><div class="emoji">🥒</div><h3>Garden Vegetables</h3><p>Zucchini, cucumbers, eggplant, squash &amp; more — crisp, clean, consistent.</p></div>
@@ -441,14 +486,10 @@
         <li><span class="ck">✓</span> <span><b>Real relationships</b> — we know our growers, and we protect our partners.</span></li>
       </ul>
     </div>
-    <div class="visual-card reveal d1">
-      <div class="big-em">🚜</div>
-      <div class="map-pins">
-        <div class="pin"><b>New York</b><span>Field &amp; greenhouse partners</span></div>
-        <div class="pin"><b>New Jersey</b><span>Home base · River Vale</span></div>
-        <div class="pin"><b>Pennsylvania</b><span>Seasonal farm network</span></div>
-        <div class="pin"><b>Florida</b><span>Off-season sourcing</span></div>
-      </div>
+    <div class="about-visual reveal d1">
+      <div class="main-ph"><img src="assets/img/matt-store.jpg" alt="Matthew Lind of FarmLind Produce in-store"></div>
+      <div class="quote-chip">“Farm Today… <span>Yours Tomorrow.</span>”</div>
+      <div class="inset"><img src="assets/img/farm.jpg" alt="FarmLind partner field"></div>
     </div>
   </div>
 </section>
@@ -462,9 +503,15 @@
       <p>Our partners span greenhouses and open fields — each chosen for quality, care, and consistency.</p>
     </div>
     <div class="farms">
-      <div class="farm reveal"><div class="em">🏡</div><h3>Gro-Rite Greenhouse</h3><p>Greenhouse-grown excellence delivering vibrant, controlled-climate produce year-round.</p></div>
-      <div class="farm reveal d1"><div class="em">🌽</div><h3>NY · NJ · PA Farms</h3><p>A trusted network of family farms across the tri-state region, harvested in season.</p></div>
-      <div class="farm reveal d2"><div class="em">🌴</div><h3>Florida Farms</h3><p>Sun-grown sourcing that keeps quality high when northeastern fields rest.</p></div>
+      <div class="farm reveal"><div class="plate"><img src="assets/img/farm-grorite.jpg" alt="Gro-Rite Greenhouse"></div><h3>Gro-Rite Greenhouse</h3><p>Greenhouse &amp; Garden Center</p></div>
+      <div class="farm reveal d1"><div class="plate"><img src="assets/img/farm-yarnick.jpg" alt="Yarnick's Farm"></div><h3>Yarnick's Farm</h3><p>Indiana, PA</p></div>
+      <div class="farm reveal d2"><div class="plate"><img src="assets/img/farm-donaldson.jpg" alt="Donaldson Farms"></div><h3>Donaldson Farms</h3><p>Hackettstown, NJ</p></div>
+      <div class="farm reveal"><div class="plate"><img src="assets/img/farm-dagele.jpg" alt="Dagele Brothers Produce"></div><h3>Dagele Brothers</h3><p>Florida, NY</p></div>
+      <div class="farm reveal d1"><div class="plate"><img src="assets/img/farm-fralinger.jpg" alt="Fralinger Orchards"></div><h3>Fralinger Orchards</h3><p>Bridgeton, NJ</p></div>
+      <div class="farm reveal d2"><div class="plate"><img src="assets/img/farm-dottavio.jpg" alt="D'Ottavio Farms"></div><h3>D'Ottavio Farms</h3><p>Family-grown produce</p></div>
+      <div class="farm reveal"><div class="plate"><img src="assets/img/farm-ironstone.jpg" alt="Ironstone Farms"></div><h3>Ironstone Farms</h3><p>Quality field crops</p></div>
+      <div class="farm reveal d1"><div class="plate"><img src="assets/img/farm-goodness.jpg" alt="Goodness Gardens"></div><h3>Goodness Gardens</h3><p>Fresh culinary herbs</p></div>
+      <div class="farm reveal d2"><div class="plate"><img src="assets/img/farm-tranquility.jpg" alt="Tranquility Farms"></div><h3>Tranquility Farms</h3><p>Andover, NJ</p></div>
     </div>
   </div>
 </section>
@@ -478,16 +525,20 @@
     </div>
     <div class="aud-grid">
       <div class="aud reveal">
-        <div class="ic">🛒</div>
-        <h3>For Stores</h3>
-        <p>Make the produce department your differentiator. Premium, peak-flavor produce turns shoppers into regulars — and the aisle into a destination. With 75% of shoppers prioritizing produce, freshness is your edge.</p>
-        <a href="#contact" class="arrow">Stock your shelves →</a>
+        <div class="ph"><img src="assets/img/customer.jpg" alt="Supermarket produce department"></div>
+        <div class="tx">
+          <h3>For Stores</h3>
+          <p>Make the produce department your differentiator. Premium, peak-flavor produce turns shoppers into regulars — and the aisle into a destination. With 75% of shoppers prioritizing produce, freshness is your edge.</p>
+          <a href="#contact" class="arrow">Stock your shelves →</a>
+        </div>
       </div>
       <div class="aud reveal d1">
-        <div class="ic">🍽️</div>
-        <h3>For Restaurants</h3>
-        <p>Menus live or die on ingredient quality. Get chef-grade tomatoes, herbs, and vegetables at their flavor peak — delivered fast and reliably so your kitchen never compromises a plate.</p>
-        <a href="#contact" class="arrow">Source for your kitchen →</a>
+        <div class="ph"><img src="assets/img/produce.jpg" alt="Chef-grade fresh produce"></div>
+        <div class="tx">
+          <h3>For Restaurants</h3>
+          <p>Menus live or die on ingredient quality. Get chef-grade tomatoes, herbs, and vegetables at their flavor peak — delivered fast and reliably so your kitchen never compromises a plate.</p>
+          <a href="#contact" class="arrow">Source for your kitchen →</a>
+        </div>
       </div>
     </div>
   </div>
@@ -496,6 +547,7 @@
 <!-- ============ CTA BANNER ============ -->
 <section class="sec" style="padding-top:30px">
   <div class="cta-banner reveal">
+    <div class="cta-bg"><img src="assets/img/aerial.jpg" alt=""></div>
     <h2>Ready to taste the difference?</h2>
     <p>Join 150+ stores and restaurants getting just-picked produce at peak flavor. Let's get fresh on your shelves.</p>
     <div class="cta-row">
@@ -539,8 +591,8 @@
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <a href="#top" class="brand"><span class="mark">🌿</span> Farm<b>Lind</b></a>
-        <p>Preserving freshness and flavor — the shortest distance between the grower and you.</p>
+        <a href="#top" class="foot-logo"><img src="assets/img/logo-footer.png" alt="FarmLind Produce"></a>
+        <p>Preserving freshness and flavor — the shortest distance between the grower and you. Farm Today… Yours Tomorrow.</p>
       </div>
       <div class="foot-col">
         <h4>Explore</h4>
@@ -571,27 +623,21 @@
 </footer>
 
 <script>
-  // year
   document.getElementById('yr').textContent = new Date().getFullYear();
 
-  // nav scroll state
   const nav = document.getElementById('nav');
   addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 30));
 
-  // mobile menu
   const ham = document.getElementById('ham');
   const mm = document.getElementById('mobileMenu');
   ham.addEventListener('click', () => mm.classList.toggle('open'));
   mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mm.classList.remove('open')));
 
-  // reveal on scroll
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
   }, { threshold: .12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // animated counters
-  const counters = document.querySelectorAll('[data-count]');
   const cio = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (!e.isIntersecting) return;
@@ -605,25 +651,18 @@
       cio.unobserve(el);
     });
   }, { threshold: .5 });
-  counters.forEach(c => cio.observe(c));
+  document.querySelectorAll('[data-count]').forEach(c => cio.observe(c));
 
-  // cursor glow (desktop only)
   const glow = document.getElementById('cursor-glow');
   if (matchMedia('(pointer:fine)').matches){
-    addEventListener('mousemove', e => {
-      glow.style.left = e.clientX + 'px';
-      glow.style.top = e.clientY + 'px';
-    });
+    addEventListener('mousemove', e => { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
   } else { glow.style.display = 'none'; }
 
-  // contact form -> mailto fallback (works on static hosting)
   function submitForm(e){
     e.preventDefault();
     const f = e.target;
     const subj = encodeURIComponent('New produce inquiry — ' + (f.business.value || f.name.value));
-    const body = encodeURIComponent(
-      `Name: ${f.name.value}\nBusiness: ${f.business.value}\nEmail: ${f.email.value}\n\n${f.message.value}`
-    );
+    const body = encodeURIComponent(`Name: ${f.name.value}\nBusiness: ${f.business.value}\nEmail: ${f.email.value}\n\n${f.message.value}`);
     document.getElementById('formNote').style.display = 'block';
     setTimeout(() => { window.location.href = `mailto:matt@farmlindproduce.com?subject=${subj}&body=${body}`; }, 600);
     return false;
