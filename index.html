@@ -70,16 +70,16 @@
 
   /* ---------- Nav ---------- */
   header.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.35s}
-  .nav-inner{max-width:var(--maxw);margin:14px auto;padding:0 16px 0 12px;height:64px;
+  .nav-inner{max-width:var(--maxw);margin:14px auto;padding:0 16px 0 14px;height:78px;
     display:flex;align-items:center;gap:18px;
     background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.35);
     transition:.35s}
   header.nav.scrolled .nav-inner{margin-top:8px;background:rgba(7,22,15,.85);box-shadow:0 14px 50px rgba(0,0,0,.5)}
   .brand{display:flex;align-items:center;gap:11px}
-  .brand .logo-chip{background:rgba(255,255,255,.95);border-radius:12px;padding:6px 12px;display:grid;place-items:center;
-    box-shadow:0 6px 18px rgba(0,0,0,.25)}
-  .brand .logo-chip img{height:30px;width:auto}
+  .brand .logo-chip{background:rgba(255,255,255,.96);border-radius:14px;padding:8px 16px;display:grid;place-items:center;
+    box-shadow:0 8px 22px rgba(0,0,0,.3)}
+  .brand .logo-chip img{height:52px;width:auto}
   .nav-links{display:flex;gap:6px;margin-left:auto}
   .nav-links a{padding:9px 14px;border-radius:11px;font-size:14.5px;color:var(--muted);font-weight:500;transition:.2s}
   .nav-links a:hover{color:var(--ink);background:rgba(61,255,162,.08)}
@@ -218,7 +218,18 @@
   .cine{position:relative;border-radius:26px;overflow:hidden;margin-top:46px;
     border:1px solid rgba(61,255,162,.32);
     box-shadow:0 30px 70px rgba(0,0,0,.5), 0 0 54px rgba(61,255,162,.26)}
-  .cine img{width:100%;height:440px;object-fit:cover;display:block}
+  .cine img,.cine video{width:100%;height:440px;object-fit:cover;display:block;background:#0a1b12}
+  .cine video{filter:saturate(1.15) brightness(1.05)}
+
+  /* ---------- Video gallery "In Motion" ---------- */
+  .film-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .film{position:relative;border-radius:22px;overflow:hidden;border:1px solid rgba(61,255,162,.32);
+    box-shadow:0 24px 60px rgba(0,0,0,.5), 0 0 44px rgba(61,255,162,.22);transition:.3s}
+  .film:hover{transform:translateY(-5px);box-shadow:0 30px 70px rgba(0,0,0,.55), 0 0 56px rgba(61,255,162,.32)}
+  .film video{width:100%;height:330px;object-fit:cover;display:block;background:#0a1b12;filter:saturate(1.15) brightness(1.05)}
+  .film .holo-tag{position:absolute;top:14px;left:14px;transform:none;z-index:4}
+  .film-cap{position:absolute;left:16px;bottom:14px;z-index:4;font-family:'Space Grotesk';font-weight:700;
+    font-size:15px;text-shadow:0 2px 12px rgba(0,0,0,.8);pointer-events:none}
   .cine .cine-ov{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;padding:0 8%;
     background:linear-gradient(90deg,rgba(4,15,9,.85),rgba(4,15,9,.3) 68%,transparent)}
   .cine .holo-tag{position:static;transform:none;align-self:flex-start;margin-bottom:16px}
@@ -323,7 +334,7 @@
   footer{border-top:1px solid var(--line);padding:60px 0 36px;margin-top:40px;background:rgba(4,12,8,.6)}
   .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px}
   .foot-logo{background:rgba(255,255,255,.95);border-radius:16px;padding:14px 18px;display:inline-grid;place-items:center}
-  .foot-logo img{height:62px;width:auto}
+  .foot-logo img{height:92px;width:auto}
   .foot-grid p{color:var(--muted);font-size:14px;margin-top:16px;max-width:300px}
   .foot-col h4{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--neon-2);margin-bottom:16px}
   .foot-col a{display:block;color:var(--muted);font-size:14.5px;padding:6px 0;transition:.2s}
@@ -395,6 +406,7 @@
     .stats,.process{grid-template-columns:repeat(2,1fr)}
     .prod-grid,.farms{grid-template-columns:repeat(2,1fr)}
     .aud-grid{grid-template-columns:1fr}
+    .film-grid{grid-template-columns:1fr}
     .about-visual .main-ph img{height:380px}
     .foot-grid{grid-template-columns:1fr 1fr;gap:30px}
     .nav-links{display:none}
@@ -410,8 +422,9 @@
     .float-chip{display:none}
     .showcase img{height:240px}
     .showcase .ov{padding:0 28px;background:linear-gradient(90deg,rgba(4,15,9,.9),rgba(4,15,9,.5))}
-    .cine img{height:300px}
+    .cine img,.cine video{height:300px}
     .cine .cine-ov{padding:0 26px;background:linear-gradient(90deg,rgba(4,15,9,.92),rgba(4,15,9,.55))}
+    .film video{height:240px}
   }
   @media(prefers-reduced-motion:reduce){
     *{animation:none!important;scroll-behavior:auto}
@@ -437,6 +450,7 @@
       <a href="#products">Products</a>
       <a href="#about">About</a>
       <a href="#farms">Farms</a>
+      <a href="#film">Videos</a>
       <a href="#serve">Who We Serve</a>
     </nav>
     <a href="#contact" class="nav-cta desk">Get Fresh →</a>
@@ -449,6 +463,7 @@
   <a href="#products">Products</a>
   <a href="#about">About</a>
   <a href="#farms">Farms</a>
+  <a href="#film">Videos</a>
   <a href="#serve">Who We Serve</a>
   <a href="#contact" style="color:var(--neon)">Get Fresh →</a>
 </div>
@@ -555,12 +570,15 @@
     </div>
 
     <div class="cine reveal">
-      <img src="assets/img/aerial.jpg" alt="Aerial view of a FarmLind partner farm">
+      <video class="cine-media" autoplay muted loop playsinline preload="metadata" poster="assets/img/aerial.jpg">
+        <source src="https://farmlindproduce.com/wp-content/uploads/2025/03/Drone_16x9_Web-Res_049.mp4" type="video/mp4">
+        <img src="assets/img/aerial.jpg" alt="Aerial view of a FarmLind partner farm">
+      </video>
       <span class="holo-sheen"></span>
       <span class="scanline"></span>
       <span class="hud tl"></span><span class="hud tr"></span><span class="hud bl"></span><span class="hud br"></span>
       <div class="cine-ov">
-        <div class="holo-tag">◉ FARM-DIRECT NETWORK</div>
+        <div class="holo-tag">◉ LIVE DRONE · FARM-DIRECT NETWORK</div>
         <h3>From this field to your shelves — in a single day.</h3>
         <p>100% farm-direct sourcing across NY · NJ · CT · PA.</p>
       </div>
@@ -636,6 +654,35 @@
           <p>Menus live or die on ingredient quality. Get chef-grade tomatoes, herbs, and vegetables at their flavor peak — delivered fast and reliably so your kitchen never compromises a plate.</p>
           <a href="#contact" class="arrow">Source for your kitchen →</a>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ IN MOTION (videos) ============ -->
+<section class="sec" id="film">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">In motion</div>
+      <h2>See the farms come alive.</h2>
+      <p>Real drone and field footage straight from the farms we partner with.</p>
+    </div>
+    <div class="film-grid">
+      <div class="film reveal">
+        <video controls muted loop playsinline preload="metadata" poster="assets/img/aerial.jpg">
+          <source src="https://farmlindproduce.com/wp-content/uploads/2025/03/Drone_16x9_Web-Res_021.mp4" type="video/mp4">
+          <img src="assets/img/aerial.jpg" alt="Drone footage of a FarmLind partner farm">
+        </video>
+        <div class="holo-tag">◉ DRONE</div>
+        <div class="film-cap">🚁 Above the fields</div>
+      </div>
+      <div class="film reveal d1">
+        <video controls muted loop playsinline preload="metadata" poster="assets/img/farm.jpg">
+          <source src="https://farmlindproduce.com/wp-content/uploads/2025/03/Camera_16x9_Web-Res_021.mp4" type="video/mp4">
+          <img src="assets/img/farm.jpg" alt="On-the-ground field footage">
+        </video>
+        <div class="holo-tag">◉ ON THE GROUND</div>
+        <div class="film-cap">🌱 In the rows</div>
       </div>
     </div>
   </div>
