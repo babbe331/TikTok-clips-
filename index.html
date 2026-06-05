@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#103a28;
+    --bg:#15522f;
     --bg-2:#16442f;
     --ink:#f1fff7;
     --muted:#b6dcc7;
@@ -41,10 +41,10 @@
 
   /* ---------- Animated background ---------- */
   .bg-fx{position:fixed;inset:0;z-index:-2;background:
-      radial-gradient(1200px 700px at 80% -10%, rgba(61,255,162,.20), transparent 60%),
-      radial-gradient(1000px 600px at -10% 20%, rgba(46,230,200,.16), transparent 55%),
-      radial-gradient(900px 800px at 50% 120%, rgba(182,255,92,.14), transparent 60%),
-      linear-gradient(180deg,#16462f,#0f3624 60%,#16462f);
+      radial-gradient(1200px 700px at 80% -10%, rgba(61,255,162,.28), transparent 60%),
+      radial-gradient(1000px 600px at -10% 20%, rgba(46,230,200,.22), transparent 55%),
+      radial-gradient(900px 800px at 50% 120%, rgba(182,255,92,.20), transparent 60%),
+      linear-gradient(180deg,#1c6038,#155029 60%,#1c6038);
   }
   .grid-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
     background-image:
@@ -56,9 +56,9 @@
     animation:gridmove 22s linear infinite;
   }
   @keyframes gridmove{to{background-position:60px 60px,60px 60px}}
-  .orb{position:fixed;border-radius:50%;filter:blur(60px);z-index:-1;opacity:.5;pointer-events:none}
-  .orb.a{width:480px;height:480px;background:radial-gradient(circle,#1fae6e,transparent 70%);top:-120px;right:-80px;animation:float1 18s ease-in-out infinite}
-  .orb.b{width:420px;height:420px;background:radial-gradient(circle,#1f8fae,transparent 70%);bottom:10%;left:-120px;animation:float2 24s ease-in-out infinite}
+  .orb{position:fixed;border-radius:50%;filter:blur(60px);z-index:-1;opacity:.65;pointer-events:none}
+  .orb.a{width:480px;height:480px;background:radial-gradient(circle,#2fe08c,transparent 70%);top:-120px;right:-80px;animation:float1 18s ease-in-out infinite}
+  .orb.b{width:420px;height:420px;background:radial-gradient(circle,#2fc7d6,transparent 70%);bottom:10%;left:-120px;animation:float2 24s ease-in-out infinite}
   @keyframes float1{50%{transform:translate(-40px,60px) scale(1.1)}}
   @keyframes float2{50%{transform:translate(60px,-50px) scale(1.08)}}
 
@@ -190,6 +190,12 @@
   .step:hover{transform:translateY(-6px);border-color:rgba(61,255,162,.4);box-shadow:0 20px 50px rgba(0,0,0,.45)}
   .step .ph{position:relative;height:160px;overflow:hidden}
   .step .ph img{width:100%;height:100%;object-fit:cover;transition:.5s}
+  /* brighter, more vivid produce photos */
+  .photo-frame img,.step .ph img,.cine img,.aud .ph img,
+  .about-visual .main-ph img,.about-visual .inset img{
+    filter:saturate(1.22) brightness(1.08) contrast(1.05)}
+  /* keep the full person in frame for the delivery photo */
+  .step.delivered .ph img{object-position:center 22%}
   .step:hover .ph img{transform:scale(1.07)}
   .step .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,15,9,.1),rgba(8,28,18,.9))}
   .step .n{position:absolute;top:12px;left:12px;z-index:2;width:34px;height:34px;border-radius:10px;
@@ -522,7 +528,7 @@
         <div class="ph"><span class="n">3</span><img src="assets/img/produce.jpg" alt="Fresh produce kept crisp"></div>
         <div class="tx"><h3>Cold-chain rushed</h3><p>An unbroken cold chain and tight routing keep everything crisp from field to dock.</p></div>
       </div>
-      <div class="step reveal d3">
+      <div class="step delivered reveal d3">
         <div class="ph"><span class="n">4</span><img src="assets/img/truck.jpg" alt="FarmLind delivery truck"></div>
         <div class="tx"><h3>Delivered fast</h3><p>It reaches your shelves or kitchen — often within 24 hours, always within 48.</p></div>
       </div>
