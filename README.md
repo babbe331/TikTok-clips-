@@ -1,9 +1,22 @@
-# 🥬 Farmlind Produce — Sales & Inventory Portal
+# 🌿 FarmLind Produce — Website
+
+This repo now contains **two** front-end pages:
+
+| File | What it is |
+|------|------------|
+| **`index.html`** | The public **marketing website** — a fast, futuristic, easy-to-navigate landing site for FarmLind Produce (hero, process, products, farms, who-we-serve, contact). Pure HTML/CSS/JS, no build step. |
+| **`portal.html`** | The private **Sales & Inventory portal** app (documented below). Linked from the site footer and reachable at `…/portal.html`. |
+
+The two pages cross-link: the site footer/contact links to the portal, and the portal's top bar has a **🌿 Main Site** button back to the homepage.
+
+---
+
+## 🥬 Sales & Inventory Portal (`portal.html`)
 
 A private, single-file web app for managing produce sales and inventory. No internet,
 no accounts, no installs. Everything stays **on the user's own device**.
 
-The whole app is one file: **`index.html`**.
+The whole app is one file: **`portal.html`**.
 
 ---
 
@@ -13,7 +26,7 @@ The app opens to a passcode screen. The default passcode is:
 
 > **`farmlind`**
 
-To change it: open `index.html`, find the line near the top of the `<script>` that says
+To change it: open `portal.html`, find the line near the top of the `<script>` that says
 `const PASSCODE = "farmlind";`, and put your own word between the quotes.
 
 Once unlocked on a device, that device stays unlocked until you press **🔒 Lock** in the
@@ -39,9 +52,9 @@ To turn this into a normal web address you can bookmark:
 
 ## How to use it
 
-1. Download **`index.html`** (right-click → Save, or copy it to a USB stick / the
+1. Download **`portal.html`** (right-click → Save, or copy it to a USB stick / the
    computer's Desktop).
-2. **Double-click `index.html`** — it opens in any web browser (Chrome, Edge, Safari, Firefox).
+2. **Double-click `portal.html`** — it opens in any web browser (Chrome, Edge, Safari, Firefox).
 3. That's it. Start adding inventory, customers, and sales.
 
 > 💡 Tip: To make it feel like a real app, open it in the browser and choose
