@@ -11,17 +11,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#05130c;
-    --bg-2:#081c12;
-    --ink:#eafff3;
-    --muted:#9fc6b1;
-    --line:rgba(120,255,180,.12);
+    --bg:#103a28;
+    --bg-2:#16442f;
+    --ink:#f1fff7;
+    --muted:#b6dcc7;
+    --line:rgba(120,255,180,.16);
     --neon:#3dffa2;
-    --neon-2:#7cffcb;
-    --lime:#b6ff5c;
+    --neon-2:#9dffd2;
+    --lime:#c6ff6e;
     --cyan:#2ee6c8;
-    --glass:rgba(12,32,22,.55);
-    --glass-2:rgba(18,42,30,.65);
+    --glass:rgba(22,58,40,.55);
+    --glass-2:rgba(28,68,48,.66);
     --glow:0 0 40px rgba(61,255,162,.35);
     --radius:20px;
     --maxw:1200px;
@@ -41,10 +41,10 @@
 
   /* ---------- Animated background ---------- */
   .bg-fx{position:fixed;inset:0;z-index:-2;background:
-      radial-gradient(1200px 700px at 80% -10%, rgba(61,255,162,.16), transparent 60%),
-      radial-gradient(1000px 600px at -10% 20%, rgba(46,230,200,.12), transparent 55%),
-      radial-gradient(900px 800px at 50% 120%, rgba(182,255,92,.10), transparent 60%),
-      linear-gradient(180deg,#05130c,#040f09 60%,#05130c);
+      radial-gradient(1200px 700px at 80% -10%, rgba(61,255,162,.20), transparent 60%),
+      radial-gradient(1000px 600px at -10% 20%, rgba(46,230,200,.16), transparent 55%),
+      radial-gradient(900px 800px at 50% 120%, rgba(182,255,92,.14), transparent 60%),
+      linear-gradient(180deg,#16462f,#0f3624 60%,#16462f);
   }
   .grid-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
     background-image:
@@ -224,9 +224,9 @@
   .about-visual .inset{position:absolute;right:-18px;bottom:-18px;width:46%;border-radius:18px;overflow:hidden;
     border:2px solid rgba(8,28,18,.9);box-shadow:0 18px 40px rgba(0,0,0,.55)}
   .about-visual .inset img{width:100%;height:150px;object-fit:cover}
-  .quote-chip{position:absolute;left:-16px;top:24px;background:var(--glass-2);backdrop-filter:blur(12px);
+  .quote-chip{position:absolute;left:-16px;bottom:40px;background:var(--glass-2);backdrop-filter:blur(12px);
     border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-family:'Space Grotesk';font-weight:700;
-    font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+    font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.45);z-index:3}
   .quote-chip span{color:var(--neon)}
 
   /* ---------- Audience ---------- */
@@ -290,6 +290,53 @@
   .foot-col a:hover{color:var(--ink)}
   .foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
     padding-top:28px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
+
+  /* ---------- AI Help Bot ---------- */
+  #botFab{position:fixed;right:24px;bottom:24px;z-index:120;width:64px;height:64px;border-radius:20px;border:none;
+    cursor:pointer;display:grid;place-items:center;font-size:28px;
+    background:linear-gradient(135deg,var(--neon),var(--cyan));color:#04120a;
+    box-shadow:0 12px 34px rgba(61,255,162,.5);transition:.25s}
+  #botFab:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 18px 44px rgba(61,255,162,.65)}
+  #botFab .ping{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:50%;
+    background:var(--lime);border:2px solid #0f3624;box-shadow:0 0 10px var(--lime);animation:pulse 2s infinite}
+  .bot-panel{position:fixed;right:24px;bottom:100px;z-index:121;width:370px;max-width:calc(100vw - 32px);
+    height:540px;max-height:calc(100vh - 130px);border-radius:24px;overflow:hidden;display:none;flex-direction:column;
+    background:rgba(13,40,27,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+    border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.55), var(--glow);
+    transform-origin:bottom right;animation:botpop .3s cubic-bezier(.16,1,.3,1)}
+  .bot-panel.open{display:flex}
+  @keyframes botpop{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
+  .bot-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);
+    background:linear-gradient(120deg,rgba(61,255,162,.16),transparent)}
+  .bot-id{display:flex;align-items:center;gap:11px;flex:1}
+  .bot-av{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:22px;
+    background:linear-gradient(135deg,var(--neon),var(--cyan));box-shadow:var(--glow)}
+  .bot-id b{font-family:'Space Grotesk';font-size:16px}
+  .bot-id small{display:block;color:var(--neon-2);font-size:11.5px}
+  .bot-x{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--ink);width:34px;height:34px;
+    border-radius:10px;cursor:pointer;font-size:14px}
+  .bot-x:hover{background:rgba(61,255,162,.12)}
+  .bot-msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .bot-msgs::-webkit-scrollbar{width:8px}
+  .bot-msgs::-webkit-scrollbar-thumb{background:rgba(61,255,162,.2);border-radius:8px}
+  .bubble{max-width:84%;padding:12px 15px;border-radius:16px;font-size:14px;line-height:1.5;white-space:pre-line;
+    animation:fade .3s}
+  .bubble.bot{align-self:flex-start;background:rgba(255,255,255,.06);border:1px solid var(--line);border-bottom-left-radius:5px}
+  .bubble.me{align-self:flex-end;background:linear-gradient(135deg,var(--neon),var(--cyan));color:#04120a;
+    font-weight:500;border-bottom-right-radius:5px}
+  .bubble a{color:var(--neon);font-weight:600}
+  .bubble.me a{color:#04120a;text-decoration:underline}
+  .bot-chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 18px 12px}
+  .bot-chips button{background:rgba(61,255,162,.08);border:1px solid var(--line);color:var(--neon-2);
+    padding:7px 12px;border-radius:20px;font-size:12.5px;font-family:inherit;cursor:pointer;transition:.2s}
+  .bot-chips button:hover{background:rgba(61,255,162,.18);color:var(--ink)}
+  .bot-input{display:flex;gap:8px;padding:14px;border-top:1px solid var(--line)}
+  .bot-input input{flex:1;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(4,15,9,.4);color:var(--ink);font-family:inherit;font-size:14px}
+  .bot-input input:focus{outline:none;border-color:var(--neon);box-shadow:0 0 0 3px rgba(61,255,162,.15)}
+  .bot-input button{width:46px;border:none;border-radius:12px;cursor:pointer;font-size:16px;
+    background:linear-gradient(135deg,var(--neon),var(--cyan));color:#04120a}
+  @media(max-width:600px){#botFab{right:16px;bottom:16px}.bot-panel{right:16px;bottom:90px}}
 
   /* ---------- Reveal animation ---------- */
   .reveal{opacity:0;transform:translateY(34px);transition:.8s cubic-bezier(.16,1,.3,1)}
@@ -385,7 +432,7 @@
     <div class="hero-visual reveal d2">
       <div class="photo-frame">
         <img src="assets/img/aerial.jpg" alt="Aerial view of a FarmLind partner farm">
-        <div class="frame-badge">🌿 Yarnick Farm · grown for FarmLind</div>
+        <div class="frame-badge">🌿 Fresh from local farms</div>
       </div>
       <div class="float-chip fc1"><span class="em">🥬</span><div>Just harvested<small>local fields &amp; greenhouses</small></div></div>
       <div class="float-chip fc2"><span class="em">❄️</span><div>Cold-chain kept<small>peak freshness</small></div></div>
@@ -622,6 +669,21 @@
   </div>
 </footer>
 
+<!-- ============ AI HELP BOT ============ -->
+<button id="botFab" aria-label="Open the FarmLind assistant">🌱<span class="ping"></span></button>
+<div class="bot-panel" id="botPanel" role="dialog" aria-label="FarmLind assistant">
+  <div class="bot-head">
+    <div class="bot-id"><span class="bot-av">🌱</span><div><b>Sprout</b><small>● FarmLind AI assistant</small></div></div>
+    <button class="bot-x" id="botX" aria-label="Close">✕</button>
+  </div>
+  <div class="bot-msgs" id="botMsgs"></div>
+  <div class="bot-chips" id="botChips"></div>
+  <form class="bot-input" id="botForm" autocomplete="off">
+    <input id="botField" placeholder="Ask about delivery, produce, partnering…" aria-label="Message">
+    <button type="submit" aria-label="Send">➤</button>
+  </form>
+</div>
+
 <script>
   document.getElementById('yr').textContent = new Date().getFullYear();
 
@@ -667,6 +729,94 @@
     setTimeout(() => { window.location.href = `mailto:matt@farmlindproduce.com?subject=${subj}&body=${body}`; }, 600);
     return false;
   }
+
+  /* ---------- AI Help Bot "Sprout" (offline, rule-based) ---------- */
+  (function(){
+    const fab = document.getElementById('botFab');
+    const panel = document.getElementById('botPanel');
+    const msgs = document.getElementById('botMsgs');
+    const chipsBox = document.getElementById('botChips');
+    const form = document.getElementById('botForm');
+    const field = document.getElementById('botField');
+
+    const chips = ['What do you sell?','How fast is delivery?','Where do you deliver?','Become a partner','Contact'];
+
+    // knowledge base — first matching keyword set wins
+    const kb = [
+      {k:['sell','product','produce','carry','offer','have','fruit','vegetable','veggie','tomato','herb','item'],
+       a:"We carry just-picked <b>heirloom &amp; field tomatoes</b>, garden vegetables (zucchini, cucumbers, eggplant, squash), <b>leafy greens</b>, fresh <b>herbs</b>, peppers, and seasonal fruit — all delivered at peak flavor. 🍅🥬🌿"},
+      {k:['fast','quick','speed','how long','fresh','time','24','48','harvest'],
+       a:"Most produce reaches you <b>within 24 hours</b> of harvest — and always within 48. We keep an unbroken cold chain from field to your dock. ❄️🚚"},
+      {k:['where','area','deliver','location','region','state','near','serve','ny','nj','ct','pa'],
+       a:"We serve <b>150+ stores &amp; restaurants</b> across New York, New Jersey, Connecticut and Pennsylvania, from our base in <b>River Vale, NJ</b>. 📍"},
+      {k:['partner','order','buy','wholesale','account','sign up','start','supplier','become'],
+       a:"Love it! Tap <a href='#contact'>“Get Fresh”</a> at the top or fill out the <a href='#contact'>contact form</a> below — or call <a href='tel:2013211123'>201-321-1123</a>. Tell us about your store or kitchen and we'll set you up. ⚡"},
+      {k:['contact','phone','call','email','reach','number','address'],
+       a:"📞 <a href='tel:2013211123'>201-321-1123</a> (or 724-541-5786)\n✉️ <a href='mailto:matt@farmlindproduce.com'>matt@farmlindproduce.com</a>\n📍 River Vale, NJ 07675"},
+      {k:['farm','grower','source','local','where do you get'],
+       a:"We partner directly with trusted family farms and greenhouses — Gro-Rite, Donaldson Farms, Dagele Brothers, Fralinger Orchards and more. We know every grower by name. 🌾"},
+      {k:['portal','inventory','login','log in','sign in','app','sales'],
+       a:"The sales &amp; inventory portal lives here: <a href='portal.html'>open the Partner Portal →</a> (also linked in the footer). 🔐"},
+      {k:['price','cost','quote','how much','pricing'],
+       a:"Pricing depends on season and volume. Drop us a note via the <a href='#contact'>contact form</a> or call <a href='tel:2013211123'>201-321-1123</a> for a quick quote. 💲"},
+      {k:['restaurant','chef','kitchen','menu'],
+       a:"Chefs love us — chef-grade tomatoes, herbs and vegetables at peak flavor, delivered fast and reliably so your kitchen never compromises a plate. 🍽️ Ready to start? <a href='#contact'>Reach out here.</a>"},
+      {k:['store','supermarket','grocery','shelf','retail'],
+       a:"Make produce your differentiator — premium, peak-flavor produce turns shoppers into regulars. 🛒 Let's stock your shelves: <a href='#contact'>get in touch.</a>"},
+      {k:['thank','thanks','great','cool','awesome','nice'],
+       a:"Anytime! 🌱 Anything else I can help with?"},
+      {k:['hi','hello','hey','yo','help','what can you'],
+       a:"Hi! 🌱 I can help with our produce, delivery speed, where we deliver, partnering, our farms, or contact details. What would you like to know?"}
+    ];
+    const fallback = "Great question! I can help with our <b>produce</b>, <b>delivery speed</b>, <b>delivery area</b>, <b>partnering</b>, our <b>farms</b>, or <b>contact</b> info. You can also reach the team at <a href='tel:2013211123'>201-321-1123</a> or <a href='mailto:matt@farmlindproduce.com'>matt@farmlindproduce.com</a>. 🌿";
+
+    function answer(text){
+      const t = text.toLowerCase();
+      for(const e of kb){ if(e.k.some(w => t.includes(w))) return e.a; }
+      return fallback;
+    }
+    function add(html, who){
+      const b = document.createElement('div');
+      b.className = 'bubble ' + who;
+      b.innerHTML = html;
+      msgs.appendChild(b);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+    function botReply(text){
+      const typing = document.createElement('div');
+      typing.className = 'bubble bot'; typing.textContent = '…';
+      msgs.appendChild(typing); msgs.scrollTop = msgs.scrollHeight;
+      setTimeout(()=>{ typing.remove(); add(answer(text),'bot'); }, 520);
+    }
+    function ask(text){ add(text.replace(/</g,'&lt;'),'me'); botReply(text); }
+
+    let started = false;
+    function open(){
+      panel.classList.add('open');
+      if(!started){
+        started = true;
+        add("Hi, I'm <b>Sprout</b> 🌱 — your FarmLind helper. Ask me anything, or tap a question below.", 'bot');
+        chips.forEach(c=>{
+          const btn = document.createElement('button');
+          btn.textContent = c;
+          btn.onclick = ()=>ask(c);
+          chipsBox.appendChild(btn);
+        });
+      }
+      setTimeout(()=>field.focus(),120);
+    }
+    function close(){ panel.classList.remove('open'); }
+
+    fab.addEventListener('click', ()=> panel.classList.contains('open') ? close() : open());
+    document.getElementById('botX').addEventListener('click', close);
+    form.addEventListener('submit', e=>{
+      e.preventDefault();
+      const v = field.value.trim();
+      if(!v) return;
+      field.value = '';
+      ask(v);
+    });
+  })();
 </script>
 </body>
 </html>
