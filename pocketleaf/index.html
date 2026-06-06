@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1f5132" />
+<title>Pocketleaf — never kill a plant again</title>
+<style>
+  :root{
+    --forest:#1f5132; --forest-d:#163a24; --sage:#8aa873; --sage-l:#cfe0bf;
+    --cream:#f5f0dd; --cream-d:#ece4c9; --ink:#23291f; --muted:#6c7563;
+    --white:#fffdf6; --thirsty:#c4622d; --soon:#caa233; --ok:#5a8a52;
+    --shadow:0 6px 22px rgba(31,81,50,.12); --radius:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cream); color:var(--ink); line-height:1.45;
+    padding-bottom:84px; max-width:560px; margin:0 auto; min-height:100vh;
+  }
+  h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  /* ── top bar ── */
+  header{
+    position:sticky;top:0;z-index:30;background:var(--cream);
+    padding:14px 18px 10px;display:flex;align-items:center;gap:10px;
+    border-bottom:1px solid var(--cream-d);
+  }
+  .brand{display:flex;align-items:center;gap:9px}
+  .leaf{width:30px;height:30px;flex:0 0 auto}
+  .brand b{font-size:20px;color:var(--forest);letter-spacing:-.03em}
+  .brand span{color:var(--sage)}
+  .spacer{flex:1}
+  .ghost{
+    font-size:13px;font-weight:700;color:var(--forest);
+    padding:7px 12px;border-radius:99px;background:var(--white);box-shadow:var(--shadow)
+  }
+  /* ── sections ── */
+  main{padding:6px 16px 20px}
+  .hero{
+    background:linear-gradient(135deg,var(--forest),var(--forest-d));
+    color:var(--white);border-radius:var(--radius);padding:18px 18px 16px;
+    margin:10px 0 18px;box-shadow:var(--shadow);position:relative;overflow:hidden
+  }
+  .hero::after{content:"🌿";position:absolute;right:-6px;bottom:-14px;font-size:96px;opacity:.10}
+  .hero .k{font-size:13px;opacity:.85;font-weight:600}
+  .hero .big{font-size:30px;font-weight:800;margin-top:2px}
+  .hero .sub{font-size:14px;opacity:.9;margin-top:2px}
+  .sectitle{display:flex;align-items:center;gap:8px;margin:20px 4px 10px}
+  .sectitle h2{font-size:16px;color:var(--forest-d)}
+  .sectitle .count{font-size:12px;font-weight:700;color:var(--muted);background:var(--white);
+    padding:2px 9px;border-radius:99px;box-shadow:var(--shadow)}
+  /* ── plant card ── */
+  .card{
+    background:var(--white);border-radius:var(--radius);padding:14px;margin-bottom:12px;
+    box-shadow:var(--shadow);display:flex;gap:13px;align-items:center;position:relative
+  }
+  .emoji{
+    width:54px;height:54px;border-radius:14px;background:var(--sage-l);
+    display:flex;align-items:center;justify-content:center;font-size:30px;flex:0 0 auto
+  }
+  .card .info{flex:1;min-width:0}
+  .card .info h3{font-size:16px}
+  .card .info .sp{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
+    padding:4px 10px;border-radius:99px;margin-top:7px}
+  .pill.thirsty{background:#f6e0d2;color:var(--thirsty)}
+  .pill.soon{background:#f6eecd;color:#8a6d11}
+  .pill.ok{background:var(--sage-l);color:#3c6b37}
+  .water-btn{
+    background:var(--forest);color:var(--white);font-weight:800;font-size:13px;
+    padding:11px 13px;border-radius:13px;flex:0 0 auto;line-height:1;text-align:center;
+    box-shadow:0 4px 12px rgba(31,81,50,.30)
+  }
+  .water-btn small{display:block;font-weight:600;opacity:.8;font-size:10px;margin-top:3px}
+  .empty{text-align:center;color:var(--muted);padding:34px 20px;font-size:14px}
+  .empty .big{font-size:40px;margin-bottom:6px}
+  /* ── bottom nav ── */
+  nav{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:40;
+    background:var(--forest);border-radius:99px;display:flex;gap:4px;padding:6px;
+    box-shadow:0 10px 30px rgba(22,58,36,.38);width:calc(100% - 40px);max-width:420px
+  }
+  nav button{
+    flex:1;color:#cfe0bf;font-size:11px;font-weight:700;padding:8px 4px;border-radius:99px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;transition:.15s
+  }
+  nav button .ic{font-size:18px}
+  nav button.active{background:var(--white);color:var(--forest)}
+  /* ── add button ── */
+  .fab{
+    position:fixed;right:max(18px,calc(50% - 262px));bottom:84px;z-index:45;
+    width:56px;height:56px;border-radius:50%;background:var(--sage);color:var(--white);
+    font-size:30px;font-weight:300;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 22px rgba(138,168,115,.55)
+  }
+  /* ── modal / sheet ── */
+  .scrim{position:fixed;inset:0;background:rgba(22,41,31,.45);z-index:50;display:none}
+  .scrim.on{display:block}
+  .sheet{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:60;width:100%;
+    max-width:560px;background:var(--cream);border-radius:24px 24px 0 0;padding:8px 18px 28px;
+    max-height:90vh;overflow:auto;display:none;animation:up .25s ease
+  }
+  .sheet.on{display:block}
+  @keyframes up{from{transform:translate(-50%,40px);opacity:.6}to{transform:translate(-50%,0);opacity:1}}
+  .grab{width:40px;height:5px;background:var(--cream-d);border-radius:99px;margin:6px auto 12px}
+  label{display:block;font-size:13px;font-weight:700;color:var(--forest-d);margin:14px 2px 6px}
+  input,select,textarea{
+    width:100%;font-family:inherit;font-size:16px;padding:12px 14px;border-radius:13px;
+    border:1.5px solid var(--cream-d);background:var(--white);color:var(--ink)
+  }
+  textarea{min-height:70px;resize:vertical}
+  .emoji-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .emoji-row button{width:46px;height:46px;border-radius:12px;background:var(--white);
+    font-size:24px;border:1.5px solid var(--cream-d)}
+  .emoji-row button.sel{border-color:var(--forest);background:var(--sage-l)}
+  .primary{width:100%;background:var(--forest);color:var(--white);font-weight:800;font-size:16px;
+    padding:15px;border-radius:14px;margin-top:22px;box-shadow:var(--shadow)}
+  .danger{width:100%;background:none;color:var(--thirsty);font-weight:700;font-size:14px;padding:12px;margin-top:6px}
+  /* detail */
+  .detail-head{display:flex;gap:14px;align-items:center;margin:6px 2px 4px}
+  .detail-head .emoji{width:64px;height:64px;font-size:36px}
+  .care{background:var(--white);border-radius:14px;padding:14px;margin-top:12px;box-shadow:var(--shadow)}
+  .care h4{margin:0 0 6px;font-size:14px;color:var(--forest)}
+  .care p{margin:0;font-size:13.5px;color:var(--muted)}
+  .log-item{display:flex;gap:10px;font-size:13px;color:var(--muted);padding:8px 2px;border-bottom:1px solid var(--cream-d)}
+  .log-item b{color:var(--ink)}
+  .view{display:none}.view.on{display:block}
+  .guide-card{background:var(--white);border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .guide-card h3{font-size:15px;color:var(--forest);margin-bottom:4px}
+  .guide-card p{font-size:13.5px;color:var(--muted);margin:0}
+  .tag{display:inline-block;font-size:11px;font-weight:700;color:var(--sage);margin-top:2px}
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--forest-d);
+    color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:99px;z-index:80;
+    box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s}
+  .toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg class="leaf" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M52 10C30 10 16 24 16 44c0 4 1 8 3 11C24 40 36 30 48 26 38 32 28 42 24 56c4 2 9 2 13 1C53 53 56 30 52 10Z" fill="#1f5132"/>
+      <path d="M52 10C46 26 36 38 24 56" stroke="#8aa873" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+    <b>Pocket<span>leaf</span></b>
+  </div>
+  <div class="spacer"></div>
+  <button class="ghost" id="backupBtn">⬇ Backup</button>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section class="view on" id="view-home">
+    <div class="hero">
+      <div class="k">YOUR GARDEN</div>
+      <div class="big" id="heroCount">—</div>
+      <div class="sub" id="heroSub">Smart watering reminders, in your pocket.</div>
+    </div>
+
+    <div class="sectitle"><h2>💧 Needs water</h2><span class="count" id="thirstyCount">0</span></div>
+    <div id="thirstyList"></div>
+
+    <div class="sectitle"><h2>🌱 All good</h2><span class="count" id="okCount">0</span></div>
+    <div id="okList"></div>
+  </section>
+
+  <!-- GUIDE -->
+  <section class="view" id="view-guide">
+    <div class="hero" style="background:linear-gradient(135deg,#8aa873,#5a8a52)">
+      <div class="k">CARE GUIDE</div>
+      <div class="big">Keep them thriving</div>
+      <div class="sub">Quick care notes for common houseplants.</div>
+    </div>
+    <div id="guideList"></div>
+  </section>
+
+  <!-- DETAIL -->
+  <section class="view" id="view-detail"></section>
+</main>
+
+<button class="fab" id="addFab" title="Add plant">+</button>
+
+<nav>
+  <button data-go="home" class="active"><span class="ic">🪴</span>Garden</button>
+  <button data-go="guide"><span class="ic">📖</span>Guide</button>
+  <button data-go="add"><span class="ic">＋</span>Add</button>
+</nav>
+
+<!-- ADD / EDIT SHEET -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet">
+  <div class="grab"></div>
+  <h2 id="sheetTitle" style="color:var(--forest-d);margin:0 2px">Add a plant</h2>
+  <label>What is it called?</label>
+  <input id="f-name" placeholder="e.g. Mr. Monstera" />
+  <label>Type</label>
+  <select id="f-species"></select>
+  <label>Pick an icon</label>
+  <div class="emoji-row" id="emojiRow"></div>
+  <label>Water every… (days)</label>
+  <input id="f-days" type="number" min="1" max="120" value="7" />
+  <label>Last watered</label>
+  <input id="f-last" type="date" />
+  <button class="primary" id="saveBtn">Save plant</button>
+  <button class="danger" id="deleteBtn" style="display:none">Remove this plant</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ───────────────────────── data ───────────────────────── */
+const SPECIES = {
+  "Monstera":      {emoji:"🌿", water:7,  light:"Bright, indirect light. Avoid harsh midday sun.", tip:"Let the top 2–3 cm of soil dry out between waterings. Wipe leaves monthly so they can breathe."},
+  "Snake plant":   {emoji:"🪴", water:14, light:"Tolerates low light; happiest in moderate light.", tip:"Almost impossible to kill — underwater rather than over. Soggy soil rots the roots."},
+  "Pothos":        {emoji:"🍃", water:7,  light:"Low to bright indirect light.", tip:"Trails beautifully off a shelf. Yellow leaves usually mean too much water."},
+  "Fiddle-leaf fig":{emoji:"🌳", water:8, light:"Loves bright, consistent light by a window.", tip:"Hates being moved and hates drafts. Keep it in one happy spot and water on a steady rhythm."},
+  "Succulent":     {emoji:"🌵", water:14, light:"As much bright light as you can give it.", tip:"Soak fully, then let it dry completely. When in doubt, don't water."},
+  "Peace lily":    {emoji:"🌸", water:5,  light:"Medium, indirect light. No direct sun.", tip:"It droops dramatically when thirsty then perks back up within hours — a built-in reminder."},
+  "Herb (basil etc.)":{emoji:"🌱", water:2,light:"6+ hours of sun, a sunny windowsill is ideal.", tip:"Pinch the tops often to keep it bushy. Water when the surface feels dry."},
+  "Fern":          {emoji:"🌾", water:3,  light:"Indirect light; loves humidity.", tip:"Keep soil lightly moist and mist the leaves. Crispy tips mean the air is too dry."},
+  "Cactus":        {emoji:"🌵", water:21, light:"Full, bright sun.", tip:"Water sparingly — every 2–3 weeks in summer, almost never in winter."},
+  "Other":         {emoji:"🪴", water:7,  light:"Most houseplants like bright, indirect light.", tip:"Check the top of the soil with a finger — water when the top couple of centimetres feel dry."}
+};
+const EMOJIS = ["🌿","🪴","🍃","🌳","🌵","🌸","🌱","🌾","🌻","🎍"];
+const DAY = 86400000;
+
+let state = load();
+let editingId = null;
+let pickedEmoji = "🌿";
+
+function load(){
+  try{ return JSON.parse(localStorage.getItem("pocketleaf")||"") || {plants:[]}; }
+  catch(e){ return {plants:[]}; }
+}
+function save(){ localStorage.setItem("pocketleaf", JSON.stringify(state)); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function today(){ const d=new Date(); d.setHours(0,0,0,0); return d.getTime(); }
+function fmt(ts){ return new Date(ts).toLocaleDateString(undefined,{month:"short",day:"numeric"}); }
+
+/* days until next water (negative = overdue) */
+function dueIn(p){
+  const next = p.lastWatered + p.intervalDays*DAY;
+  return Math.round((next - today())/DAY);
+}
+function status(p){
+  const d = dueIn(p);
+  if(d <= 0) return "thirsty";
+  if(d <= 1) return "soon";
+  return "ok";
+}
+
+/* ───────────────────────── render ───────────────────────── */
+function render(){
+  const plants = state.plants.slice().sort((a,b)=>dueIn(a)-dueIn(b));
+  const thirsty = plants.filter(p=>status(p)!=="ok");
+  const ok = plants.filter(p=>status(p)==="ok");
+
+  document.getElementById("heroCount").textContent =
+    plants.length ? `${plants.length} plant${plants.length>1?"s":""}` : "No plants yet";
+  document.getElementById("heroSub").textContent =
+    thirsty.length ? `${thirsty.length} need${thirsty.length>1?"":"s"} attention today 💧`
+                   : plants.length ? "Everyone's happy and hydrated 🌞"
+                   : "Tap + to add your first plant.";
+
+  document.getElementById("thirstyCount").textContent = thirsty.length;
+  document.getElementById("okCount").textContent = ok.length;
+
+  const tl = document.getElementById("thirstyList");
+  const ol = document.getElementById("okList");
+  tl.innerHTML = thirsty.length ? thirsty.map(cardHTML).join("")
+    : `<div class="empty">All watered up — nothing thirsty 🌿</div>`;
+  ol.innerHTML = ok.length ? ok.map(cardHTML).join("")
+    : (plants.length ? "" : `<div class="empty"><div class="big">🪴</div>Your garden is empty.<br>Add a plant to get started.</div>`);
+
+  bindCards();
+}
+
+function cardHTML(p){
+  const st = status(p), d = dueIn(p);
+  const label = st==="thirsty" ? (d===0?"Water today":`${-d}d overdue`)
+             : st==="soon" ? "Water tomorrow"
+             : `Next in ${d}d`;
+  return `<div class="card" data-id="${p.id}">
+    <div class="emoji">${p.emoji}</div>
+    <div class="info" data-open="${p.id}">
+      <h3>${esc(p.name)}</h3>
+      <div class="sp">${esc(p.species)}</div>
+      <span class="pill ${st}">${st==="thirsty"?"💧":st==="soon"?"⏳":"✓"} ${label}</span>
+    </div>
+    <button class="water-btn" data-water="${p.id}">💧<small>Watered</small></button>
+  </div>`;
+}
+
+function bindCards(){
+  document.querySelectorAll("[data-water]").forEach(b=>b.onclick=e=>{
+    e.stopPropagation(); waterPlant(b.dataset.water);
+  });
+  document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDetail(b.dataset.open));
+}
+
+function waterPlant(id){
+  const p = state.plants.find(x=>x.id===id); if(!p) return;
+  p.lastWatered = today();
+  p.log = p.log || [];
+  p.log.unshift({t:Date.now(), a:"Watered"});
+  save(); render();
+  if(document.getElementById("view-detail").classList.contains("on")) openDetail(id);
+  toast(`${p.name} watered 💧`);
+}
+
+/* ───────────────────────── detail ───────────────────────── */
+function openDetail(id){
+  const p = state.plants.find(x=>x.id===id); if(!p) return;
+  const sp = SPECIES[p.species] || SPECIES.Other;
+  const d = dueIn(p), st = status(p);
+  const v = document.getElementById("view-detail");
+  v.innerHTML = `
+    <button class="ghost" id="detBack" style="margin:6px 0 2px">‹ Garden</button>
+    <div class="detail-head">
+      <div class="emoji">${p.emoji}</div>
+      <div><h1 style="font-size:24px;color:var(--forest-d)">${esc(p.name)}</h1>
+      <div class="sp" style="color:var(--muted)">${esc(p.species)}</div></div>
+    </div>
+    <div class="hero" style="margin:14px 0 4px;${st==="thirsty"?"background:linear-gradient(135deg,#c4622d,#9c4a1f)":""}">
+      <div class="k">${st==="thirsty"?"NEEDS WATER":"NEXT WATER"}</div>
+      <div class="big">${st==="thirsty"?(d===0?"Today":`${-d} days overdue`):`In ${d} day${d===1?"":"s"}`}</div>
+      <div class="sub">Every ${p.intervalDays} days · last watered ${fmt(p.lastWatered)}</div>
+    </div>
+    <button class="primary" id="detWater" style="margin-top:14px">💧 Mark watered today</button>
+    <div class="care"><h4>☀️ Light</h4><p>${sp.light}</p></div>
+    <div class="care"><h4>🌿 Care tip</h4><p>${sp.tip}</p></div>
+    <div class="care"><h4>📝 Notes</h4>
+      <textarea id="detNotes" placeholder="Anything you want to remember…">${esc(p.notes||"")}</textarea>
+    </div>
+    <div class="care"><h4>📜 History</h4>
+      ${(p.log&&p.log.length)? p.log.slice(0,8).map(l=>`<div class="log-item"><b>${l.a}</b><span>${fmt(l.t)}</span></div>`).join("")
+        : `<p>No history yet.</p>`}
+    </div>
+    <button class="ghost" id="detEdit" style="margin-top:14px;width:100%;text-align:center;padding:12px">✎ Edit plant</button>
+  `;
+  show("detail");
+  document.getElementById("detBack").onclick = ()=>go("home");
+  document.getElementById("detWater").onclick = ()=>waterPlant(id);
+  document.getElementById("detEdit").onclick = ()=>openSheet(id);
+  document.getElementById("detNotes").onblur = e=>{ p.notes=e.target.value; save(); };
+}
+
+/* ───────────────────────── guide ───────────────────────── */
+function renderGuide(){
+  document.getElementById("guideList").innerHTML = Object.entries(SPECIES)
+    .filter(([k])=>k!=="Other")
+    .map(([name,s])=>`<div class="guide-card">
+      <h3>${s.emoji} ${name}</h3>
+      <p>${s.tip}</p>
+      <span class="tag">☀️ ${s.light} · 💧 every ${s.water} days</span>
+    </div>`).join("");
+}
+
+/* ───────────────────────── sheet ───────────────────────── */
+function buildSheet(){
+  document.getElementById("f-species").innerHTML =
+    Object.keys(SPECIES).map(s=>`<option>${s}</option>`).join("");
+  document.getElementById("emojiRow").innerHTML =
+    EMOJIS.map(e=>`<button data-e="${e}">${e}</button>`).join("");
+  document.querySelectorAll("#emojiRow button").forEach(b=>b.onclick=()=>{
+    pickedEmoji=b.dataset.e;
+    document.querySelectorAll("#emojiRow button").forEach(x=>x.classList.toggle("sel",x===b));
+  });
+  document.getElementById("f-species").onchange = e=>{
+    const s = SPECIES[e.target.value];
+    if(s){ document.getElementById("f-days").value=s.water; selEmoji(s.emoji); }
+  };
+}
+function selEmoji(e){
+  pickedEmoji=e;
+  document.querySelectorAll("#emojiRow button").forEach(x=>x.classList.toggle("sel",x.dataset.e===e));
+}
+function openSheet(id){
+  editingId = id||null;
+  const isEdit = !!id;
+  document.getElementById("sheetTitle").textContent = isEdit ? "Edit plant" : "Add a plant";
+  document.getElementById("deleteBtn").style.display = isEdit ? "block" : "none";
+  if(isEdit){
+    const p = state.plants.find(x=>x.id===id);
+    document.getElementById("f-name").value = p.name;
+    document.getElementById("f-species").value = p.species;
+    document.getElementById("f-days").value = p.intervalDays;
+    document.getElementById("f-last").value = new Date(p.lastWatered).toISOString().slice(0,10);
+    selEmoji(p.emoji);
+  }else{
+    document.getElementById("f-name").value="";
+    document.getElementById("f-species").value="Monstera";
+    document.getElementById("f-days").value=SPECIES.Monstera.water;
+    document.getElementById("f-last").value=new Date().toISOString().slice(0,10);
+    selEmoji("🌿");
+  }
+  document.getElementById("scrim").classList.add("on");
+  document.getElementById("sheet").classList.add("on");
+}
+function closeSheet(){
+  document.getElementById("scrim").classList.remove("on");
+  document.getElementById("sheet").classList.remove("on");
+}
+function saveSheet(){
+  const name = document.getElementById("f-name").value.trim() || "My plant";
+  const species = document.getElementById("f-species").value;
+  const days = Math.max(1, parseInt(document.getElementById("f-days").value)||7);
+  const last = new Date(document.getElementById("f-last").value||Date.now());
+  last.setHours(0,0,0,0);
+  if(editingId){
+    const p = state.plants.find(x=>x.id===editingId);
+    Object.assign(p,{name,species,intervalDays:days,lastWatered:last.getTime(),emoji:pickedEmoji});
+  }else{
+    state.plants.push({id:uid(),name,species,intervalDays:days,
+      lastWatered:last.getTime(),emoji:pickedEmoji,notes:"",
+      log:[{t:Date.now(),a:"Added to garden"}]});
+  }
+  save(); closeSheet(); go("home"); toast(editingId?"Saved ✓":`${name} added 🌱`);
+  editingId=null;
+}
+function deletePlant(){
+  if(!editingId) return;
+  if(!confirm("Remove this plant from your garden?")) return;
+  state.plants = state.plants.filter(p=>p.id!==editingId);
+  save(); closeSheet(); go("home"); toast("Removed");
+  editingId=null;
+}
+
+/* ───────────────────────── nav ───────────────────────── */
+function show(name){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  document.getElementById("view-"+name).classList.add("on");
+  window.scrollTo(0,0);
+}
+function go(name){
+  if(name==="add"){ openSheet(); return; }
+  show(name);
+  if(name==="guide") renderGuide();
+  if(name==="home") render();
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.go===name));
+}
+
+/* ───────────────────────── misc ───────────────────────── */
+function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+let toastT;
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("on");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("on"),1900);
+}
+function backup(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="pocketleaf-backup.json"; a.click();
+  toast("Backup saved ⬇");
+}
+
+/* seed a few plants on very first open so it doesn't look empty */
+function seedIfEmpty(){
+  if(state.plants.length || localStorage.getItem("pocketleaf_seeded")) return;
+  const mk=(name,sp,offset)=>({id:uid(),name,species:sp,emoji:SPECIES[sp].emoji,
+    intervalDays:SPECIES[sp].water,lastWatered:today()-offset*DAY,notes:"",
+    log:[{t:Date.now(),a:"Added to garden"}]});
+  state.plants=[ mk("Mr. Monstera","Monstera",8), mk("Spike","Snake plant",3), mk("Trailing Pixie","Pothos",6) ];
+  localStorage.setItem("pocketleaf_seeded","1"); save();
+}
+
+/* ───────────────────────── boot ───────────────────────── */
+buildSheet();
+seedIfEmpty();
+render();
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.go));
+document.getElementById("addFab").onclick=()=>openSheet();
+document.getElementById("saveBtn").onclick=saveSheet;
+document.getElementById("deleteBtn").onclick=deletePlant;
+document.getElementById("scrim").onclick=closeSheet;
+document.getElementById("backupBtn").onclick=backup;
+</script>
+</body>
+</html>
