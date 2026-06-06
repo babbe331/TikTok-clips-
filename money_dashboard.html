@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>$1M Engine — Progress Dashboard</title>
+<style>
+  :root{--bg:#0b0e14;--card:#141a24;--ink:#e6edf3;--mut:#8b98a5;
+        --grn:#3fb950;--amber:#d29922;--blu:#58a6ff;--pur:#bc8cff;--line:#222b38}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:15px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 18px 60px}
+  h1{font-size:26px;margin:0 0 4px}
+  .sub{color:var(--mut);margin:0 0 24px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+        padding:20px;margin-bottom:18px}
+  .big{font-size:40px;font-weight:700;letter-spacing:-1px}
+  .grn{color:var(--grn)} .amber{color:var(--amber)} .blu{color:var(--blu)} .pur{color:var(--pur)}
+  .mut{color:var(--mut)}
+  .bar{height:26px;background:#0c1118;border-radius:13px;overflow:hidden;margin:14px 0;border:1px solid var(--line)}
+  .fill{height:100%;background:linear-gradient(90deg,#238636,#3fb950);width:0;
+        transition:width .8s ease;display:flex;align-items:center;justify-content:flex-end;
+        padding-right:10px;font-size:12px;font-weight:600;color:#04210b}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .stat{background:#0c1118;border:1px solid var(--line);border-radius:10px;padding:14px}
+  .stat .n{font-size:22px;font-weight:700}
+  .stat .l{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  canvas{width:100%;height:auto;display:block}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--mut)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .action{border-left:3px solid var(--blu);padding:12px 16px;background:#0c1118;border-radius:0 10px 10px 0}
+  .row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border:0}
+  h2{font-size:16px;margin:0 0 14px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+  code{background:#0c1118;padding:2px 6px;border-radius:5px;color:var(--blu);font-size:13px}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:#0c1118;border:1px solid var(--line);color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>💰 The $1,000,000 Engine</h1>
+  <p class="sub">Faceless short-form content portfolio · target: <b>$1,000,000 in under 3 years</b></p>
+
+  <div class="card">
+    <div class="mut" style="font-size:13px">GENERATED SO FAR</div>
+    <div class="big grn" id="generated">$0</div>
+    <div class="bar"><div class="fill" id="fill">0%</div></div>
+    <div class="grid" style="margin-top:6px">
+      <div class="stat"><div class="n" id="pct">0.00%</div><div class="l">of $1M goal</div></div>
+      <div class="stat"><div class="n" id="elapsed">0.0</div><div class="l">months elapsed / 36</div></div>
+      <div class="stat"><div class="n" id="channels">0</div><div class="l">active channels</div></div>
+      <div class="stat"><div class="n" id="queue">0</div><div class="l">clips queued</div></div>
+      <div class="stat"><div class="n" id="pace">—</div><div class="l">vs. trajectory</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Next Action</h2>
+    <div class="action" id="action">Launch your first 2 channels, connect payouts, then start the loop.</div>
+  </div>
+
+  <div class="card">
+    <h2>Trajectory to $1M (cumulative revenue)</h2>
+    <canvas id="chart" width="940" height="360"></canvas>
+    <div class="legend">
+      <span><span class="dot" style="background:#8b98a5"></span>Conservative</span>
+      <span><span class="dot" style="background:#58a6ff"></span>Base</span>
+      <span><span class="dot" style="background:#bc8cff"></span>Aggressive</span>
+      <span><span class="dot" style="background:#3fb950"></span>Actual (logged)</span>
+      <span><span class="dot" style="background:#d29922"></span>$1M target line</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Revenue by Stream</h2>
+      <div id="streams"><div class="mut">No revenue logged yet.</div></div>
+    </div>
+    <div class="card">
+      <h2>How to use</h2>
+      <div class="row"><span>Run one daily cycle</span><code>money_engine.py tick</code></div>
+      <div class="row"><span>Log income</span><code>log-revenue 250 affiliate</code></div>
+      <div class="row"><span>Add a channel</span><code>add-channel name tiktok</code></div>
+      <div class="row"><span>Refresh this page</span><span class="tag">reads money_state.json</span></div>
+    </div>
+  </div>
+
+  <p class="mut" style="font-size:12px;margin-top:18px">
+    Projections are illustrative expected-value models, not guarantees. Most channels
+    underperform; the portfolio + affiliate + owned-product backend are what carry the
+    plan. See <code>MONEY_PLAYBOOK.md</code>. Anchor on the <b>conservative</b> line.
+  </p>
+</div>
+
+<script>
+const TARGET = 1_000_000, HORIZON = 36;
+
+// Fallback projections if money_state.json isn't present (e.g. opened directly).
+const FALLBACK = {
+  conservative: cumLine(0.30),
+  base: cumLine(1.0),
+  aggressive: cumLine(3.2)
+};
+// crude illustrative curves only used when no state file is found
+function cumLine(k){
+  let out=[],c=0;
+  for(let m=1;m<=HORIZON;m++){c += k*1500*Math.pow(m,1.9); out.push(Math.round(c));}
+  return out;
+}
+
+function fmt(x){return '$'+Math.round(x).toLocaleString();}
+
+async function load(){
+  let state=null;
+  try{ const r=await fetch('money_state.json',{cache:'no-store'}); if(r.ok) state=await r.json(); }catch(e){}
+  render(state);
+}
+
+function projFrom(state){
+  // money_state.json carries one "projection" (base). Build the trio for the chart.
+  if(state && state.projection && state.projection.months){
+    const base = state.projection.months.map(m=>m.cumulative);
+    // derive rough conservative/aggressive envelopes around the real base curve
+    return {
+      base,
+      conservative: base.map(v=>Math.round(v*0.18)),
+      aggressive: base.map(v=>Math.round(v*8))
+    };
+  }
+  return FALLBACK;
+}
+
+function render(state){
+  const eng = state && state.engine ? state.engine : null;
+  const revLog = eng ? eng.revenue_log : [];
+  const total = revLog.reduce((a,r)=>a+r.amount,0);
+  const started = eng ? new Date(eng.started) : new Date();
+  const elapsed = Math.max(0,(Date.now()-started.getTime())/(1000*60*60*24*30.4375));
+
+  document.getElementById('generated').textContent = fmt(total);
+  const pct = total/TARGET*100;
+  document.getElementById('pct').textContent = pct.toFixed(2)+'%';
+  const fill=document.getElementById('fill');
+  fill.style.width=Math.min(pct,100)+'%';
+  fill.textContent = pct>=4 ? pct.toFixed(1)+'%' : '';
+  document.getElementById('elapsed').textContent = elapsed.toFixed(1);
+  document.getElementById('channels').textContent = eng ? eng.channels.length : 0;
+  document.getElementById('queue').textContent = eng ? eng.post_queue.length : 0;
+
+  const proj = projFrom(state);
+  const idx = Math.min(Math.floor(elapsed), proj.conservative.length-1);
+  const expected = elapsed>=1 ? proj.conservative[idx] : 0;
+  const pace=document.getElementById('pace');
+  if(total>=expected){pace.textContent='✅ ahead';pace.className='n grn';}
+  else{pace.textContent='⏳ behind';pace.className='n amber';}
+
+  // revenue by stream
+  const by={};
+  revLog.forEach(r=>by[r.stream]=(by[r.stream]||0)+r.amount);
+  const sdiv=document.getElementById('streams');
+  const keys=Object.keys(by);
+  if(keys.length){
+    sdiv.innerHTML=keys.sort((a,b)=>by[b]-by[a]).map(k=>
+      `<div class="row"><span>${k}</span><b>${fmt(by[k])}</b></div>`).join('');
+  }
+
+  // build actual cumulative-by-month series
+  const actual=new Array(HORIZON).fill(null);
+  if(revLog.length){
+    let c=0;
+    const byMonth={};
+    revLog.forEach(r=>{
+      const mo=Math.min(HORIZON-1,Math.floor((new Date(r.date)-started)/(1000*60*60*24*30.4375)));
+      byMonth[mo]=(byMonth[mo]||0)+r.amount;
+    });
+    for(let m=0;m<HORIZON;m++){ if(byMonth[m]!==undefined||m<=idx){c+=byMonth[m]||0; actual[m]=c;} }
+  }
+
+  drawChart(proj, actual);
+  // next action heuristic mirrors money_engine.next_action
+  document.getElementById('action').innerHTML = nextAction(eng,by);
+}
+
+function nextAction(eng,by){
+  const n = eng?eng.channels.length:0;
+  const total = eng?eng.revenue_log.reduce((a,r)=>a+r.amount,0):0;
+  if(n===0) return "Launch your first 2 channels (create accounts + payouts), then <code>add-channel</code>. The clip pipeline already makes the content.";
+  if(!by.affiliate) return "Highest leverage: add affiliate links to every bio/pinned comment (TikTok Shop / Amazon / niche). Affiliate RPM dwarfs creator-fund RPM.";
+  if(n<8) return `Scale to ~8 channels (you have ${n}). The plan compounds on the portfolio, not one viral hit.`;
+  if(!by.product) return "Build the backend product — a $27 digital product/service is the highest-margin stream and the real road to $1M.";
+  if(!by.sponsor && total>2000) return "Pitch sponsors: ~$200-600/mo per mature channel.";
+  return "Stay on the loop: post daily, reinvest profit into new channels, protect the product funnel. Compounding does the rest.";
+}
+
+function drawChart(proj, actual){
+  const cv=document.getElementById('chart'), ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height,PL=64,PR=16,PT=16,PB=28;
+  const maxY=Math.max(TARGET*1.1, ...proj.base.slice(0,HORIZON));
+  ctx.clearRect(0,0,W,H);
+  const X=m=>PL+(m/(HORIZON-1))*(W-PL-PR);
+  const Y=v=>H-PB-(v/maxY)*(H-PT-PB);
+  // grid + y labels
+  ctx.strokeStyle='#222b38';ctx.fillStyle='#8b98a5';ctx.font='11px sans-serif';
+  for(let i=0;i<=4;i++){const v=maxY*i/4,y=Y(v);
+    ctx.beginPath();ctx.moveTo(PL,y);ctx.lineTo(W-PR,y);ctx.stroke();
+    ctx.fillText('$'+(v/1e6).toFixed(1)+'M',6,y+4);}
+  for(let m=0;m<HORIZON;m+=6){ctx.fillText('m'+(m||1),X(m)-6,H-8);}
+  // $1M target line
+  ctx.setLineDash([6,5]);ctx.strokeStyle='#d29922';ctx.beginPath();
+  ctx.moveTo(PL,Y(TARGET));ctx.lineTo(W-PR,Y(TARGET));ctx.stroke();ctx.setLineDash([]);
+  const line=(arr,color,wd)=>{ctx.strokeStyle=color;ctx.lineWidth=wd;ctx.beginPath();
+    let started=false;
+    arr.forEach((v,m)=>{if(v==null)return;const x=X(m),y=Y(Math.min(v,maxY));
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);});ctx.stroke();};
+  line(proj.aggressive,'#bc8cff',1.5);
+  line(proj.base,'#58a6ff',1.5);
+  line(proj.conservative,'#8b98a5',2);
+  line(actual,'#3fb950',3);
+}
+load();
+</script>
+</body>
+</html>
