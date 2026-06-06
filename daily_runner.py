@@ -8,6 +8,9 @@ Runs every 24 hours in a loop.
 
 import os, re, json, time, subprocess, glob, textwrap, datetime
 import urllib.request, urllib.parse
+from env_setup import load_env
+
+load_env()  # pull keys from a .env file (if present) before reading os.environ
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 TWITCH_CLIENT_ID     = os.environ.get("TWITCH_CLIENT_ID",     "PASTE_TWITCH_CLIENT_ID")
@@ -423,6 +426,9 @@ if __name__ == "__main__":
 
     print("TikTok Daily Clipping Agent")
     print("Twitch: automatic | YouTube/Rumble: set USE_YOUTUBE=true (run locally)\n")
+
+    from env_setup import require_keys
+    require_keys("TWITCH_CLIENT_ID", "TWITCH_CLIENT_SECRET", "GOOGLE_API_KEY")
 
     while True:
         try:
