@@ -7,3 +7,7 @@ tiktok_clips/
 kai_clips/
 *.mp4
 *.srt
+
+# Python
+__pycache__/
+*.pyc
