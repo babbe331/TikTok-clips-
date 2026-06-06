@@ -11,3 +11,6 @@ kai_clips/
 # Python
 __pycache__/
 *.pyc
+
+# Secrets — never commit real keys
+.env
