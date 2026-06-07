@@ -1,0 +1,129 @@
+{
+  "name": "RealtyFlow — 02 Follow-Up Engine",
+  "_comment": "Blueprint (n8n node format). 12-20 touch multi-channel nurture. Honors STOP / unsubscribe before every send. Replace credentials.",
+  "settings": { "executionOrder": "v1" },
+  "nodes": [
+    {
+      "parameters": { "httpMethod": "POST", "path": "realtyflow-enroll", "responseMode": "lastNode" },
+      "name": "Enroll Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 400],
+      "_comment": "Called by the Lead Qualifier for WARM/COLD leads. Payload includes contact + tier."
+    },
+    {
+      "parameters": {
+        "_comment": "Pull the sequence definition: which step, channel, and delay. Stored in a data table / CRM custom field so non-devs can edit cadence.",
+        "dataTable": "followup_sequence",
+        "operation": "getAll"
+      },
+      "name": "Load Sequence",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [520, 400]
+    },
+    {
+      "parameters": {
+        "_comment": "Loop over sequence steps. Each step waits, checks opt-out, personalizes, sends. See templates/ for the actual copy.",
+        "batchSize": 1
+      },
+      "name": "For Each Step",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [800, 400]
+    },
+    {
+      "parameters": {
+        "unit": "hours",
+        "amount": "={{$json.delay_hours}}",
+        "_comment": "Cadence example: 0h, 1h, 24h, 72h, day7, day10, day14, day21, day30, day45, day60, day90. Front-loaded — most replies happen in week 1."
+      },
+      "name": "Wait (Step Delay)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1060, 400]
+    },
+    {
+      "parameters": {
+        "_comment": "GUARD: stop the sequence if the lead replied, booked, converted, or opted out. This protects deliverability and TCPA compliance.",
+        "conditions": {
+          "boolean": [
+            { "value1": "={{$json.unsubscribed}}", "value2": false },
+            { "value1": "={{$json.booked}}", "value2": false },
+            { "value1": "={{$json.replied}}", "value2": false }
+          ]
+        }
+      },
+      "name": "Still Active?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1320, 400]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "_comment": "Personalize this step's message to the lead's context (area, budget, timeline) and the client's brand voice. Prompt in PROMPTS.md (#follow-up).",
+        "systemPrompt": "={{ $vars.FOLLOWUP_SYSTEM_PROMPT }}",
+        "userPrompt": "=Step: {{$json.step_name}}\nChannel: {{$json.channel}}\nLead context: {{$json.summary}}\nBase template: {{$json.template}}",
+        "responseFormat": "json",
+        "jsonSchema": "{\"subject\":\"string|null\",\"body\":\"string\"}"
+      },
+      "name": "AI Personalize",
+      "type": "n8n-nodes-base.anthropic",
+      "typeVersion": 1,
+      "position": [1580, 320]
+    },
+    {
+      "parameters": {
+        "rules": { "values": [ { "conditions": { "string": [ { "value1": "={{$json.channel}}", "value2": "sms" } ] }, "outputKey": "sms" } ] },
+        "fallbackOutput": "email"
+      },
+      "name": "SMS or Email?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [1820, 320]
+    },
+    {
+      "parameters": { "channel": "sms", "to": "={{$json.phone}}", "message": "={{$json.body}}" },
+      "name": "Send SMS",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [2080, 220]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$vars.CLIENT_FROM_EMAIL}}",
+        "toEmail": "={{$json.email}}",
+        "subject": "={{$json.subject}}",
+        "text": "={{$json.body}}"
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [2080, 420]
+    },
+    {
+      "parameters": {
+        "resource": "contact",
+        "operation": "update",
+        "additionalFields": { "lastTouch": "={{$now}}", "touchCount": "={{$json.step_index}}" }
+      },
+      "name": "Log Touch to CRM",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [2340, 320]
+    }
+  ],
+  "connections": {
+    "Enroll Webhook": { "main": [[{ "node": "Load Sequence", "type": "main", "index": 0 }]] },
+    "Load Sequence": { "main": [[{ "node": "For Each Step", "type": "main", "index": 0 }]] },
+    "For Each Step": { "main": [[{ "node": "Wait (Step Delay)", "type": "main", "index": 0 }]] },
+    "Wait (Step Delay)": { "main": [[{ "node": "Still Active?", "type": "main", "index": 0 }]] },
+    "Still Active?": { "main": [[{ "node": "AI Personalize", "type": "main", "index": 0 }], []] },
+    "AI Personalize": { "main": [[{ "node": "SMS or Email?", "type": "main", "index": 0 }]] },
+    "SMS or Email?": { "main": [[{ "node": "Send SMS", "type": "main", "index": 0 }], [{ "node": "Send Email", "type": "main", "index": 0 }]] },
+    "Send SMS": { "main": [[{ "node": "Log Touch to CRM", "type": "main", "index": 0 }]] },
+    "Send Email": { "main": [[{ "node": "Log Touch to CRM", "type": "main", "index": 0 }]] },
+    "Log Touch to CRM": { "main": [[{ "node": "For Each Step", "type": "main", "index": 0 }]] }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "name": "RealtyFlow — 03 Client Onboarding",
+  "_comment": "Blueprint (n8n node format). Fires when a lead becomes a signed client. Sends welcome packet, e-sign agreement, intake form, and creates the deal record + document folder. Replace credentials.",
+  "settings": { "executionOrder": "v1" },
+  "nodes": [
+    {
+      "parameters": { "httpMethod": "POST", "path": "realtyflow-onboard", "responseMode": "lastNode" },
+      "name": "Deal Won Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 400],
+      "_comment": "Trigger from CRM automation when deal stage = Won / Buyer Signed. Payload: client name, email, phone, agent, type (buyer|seller)."
+    },
+    {
+      "parameters": {
+        "_comment": "Idempotency guard so a deal that bounces between stages can't double-onboard.",
+        "conditions": { "boolean": [ { "value1": "={{$json.already_onboarded}}", "value2": false } ] }
+      },
+      "name": "Not Already Onboarded?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [520, 400]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "_comment": "Compose a warm, on-brand welcome email + a tailored checklist for buyer vs seller. Prompt in PROMPTS.md (#onboarding).",
+        "systemPrompt": "={{ $vars.ONBOARDING_SYSTEM_PROMPT }}",
+        "userPrompt": "=New client: {{$json.name}} ({{$json.type}}). Agent: {{$json.agent}}. Compose welcome email + next-steps checklist.",
+        "responseFormat": "json",
+        "jsonSchema": "{\"welcome_subject\":\"string\",\"welcome_body\":\"string\",\"checklist\":\"string\"}"
+      },
+      "name": "AI Compose Welcome",
+      "type": "n8n-nodes-base.anthropic",
+      "typeVersion": 1,
+      "position": [800, 400]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$vars.CLIENT_FROM_EMAIL}}",
+        "toEmail": "={{$json.email}}",
+        "subject": "={{$json.welcome_subject}}",
+        "text": "={{$json.welcome_body}}"
+      },
+      "name": "Send Welcome Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1080, 260]
+    },
+    {
+      "parameters": {
+        "_comment": "Send the representation agreement for e-signature (DocuSign/PandaDoc). Template per buyer/seller.",
+        "resource": "envelope",
+        "operation": "create",
+        "templateId": "={{$json.type === 'seller' ? $vars.LISTING_AGREEMENT_TEMPLATE : $vars.BUYER_AGREEMENT_TEMPLATE }}",
+        "signerEmail": "={{$json.email}}",
+        "signerName": "={{$json.name}}"
+      },
+      "name": "Send E-Sign Agreement",
+      "type": "n8n-nodes-base.docusign",
+      "typeVersion": 1,
+      "position": [1080, 400]
+    },
+    {
+      "parameters": {
+        "_comment": "Send the intake form (Tally/Typeform) to capture must-haves, budget, pre-approval, timeline.",
+        "fromEmail": "={{$vars.CLIENT_FROM_EMAIL}}",
+        "toEmail": "={{$json.email}}",
+        "subject": "Quick intake form so we can hit the ground running",
+        "text": "=Hi {{$json.name}}, please take 3 minutes to fill this out so {{$json.agent}} can tailor your search: {{$vars.INTAKE_FORM_URL}}?client={{$json.email}}"
+      },
+      "name": "Send Intake Form",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1080, 540]
+    },
+    {
+      "parameters": {
+        "_comment": "Create the client's document folder in Drive/Dropbox.",
+        "operation": "create",
+        "resource": "folder",
+        "name": "=Client - {{$json.name}} ({{$now.format('yyyy-MM-dd')}})"
+      },
+      "name": "Create Client Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1360, 400]
+    },
+    {
+      "parameters": {
+        "resource": "deal",
+        "operation": "update",
+        "additionalFields": { "stage": "Onboarding", "onboarded": true, "checklist": "={{$json.checklist}}" }
+      },
+      "name": "Update Deal Record",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [1640, 400]
+    },
+    {
+      "parameters": {
+        "_comment": "Notify the agent in Slack/email that the client is fully onboarded and what's pending.",
+        "channel": "={{$vars.AGENT_SLACK_CHANNEL}}",
+        "text": "=✅ {{$json.name}} onboarded. Agreement sent, intake sent, folder created. Agent: {{$json.agent}}."
+      },
+      "name": "Notify Agent",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [1920, 400]
+    }
+  ],
+  "connections": {
+    "Deal Won Webhook": { "main": [[{ "node": "Not Already Onboarded?", "type": "main", "index": 0 }]] },
+    "Not Already Onboarded?": { "main": [[{ "node": "AI Compose Welcome", "type": "main", "index": 0 }], []] },
+    "AI Compose Welcome": {
+      "main": [[
+        { "node": "Send Welcome Email", "type": "main", "index": 0 },
+        { "node": "Send E-Sign Agreement", "type": "main", "index": 0 },
+        { "node": "Send Intake Form", "type": "main", "index": 0 }
+      ]]
+    },
+    "Send Welcome Email": { "main": [[{ "node": "Create Client Folder", "type": "main", "index": 0 }]] },
+    "Send E-Sign Agreement": { "main": [[{ "node": "Create Client Folder", "type": "main", "index": 0 }]] },
+    "Send Intake Form": { "main": [[{ "node": "Create Client Folder", "type": "main", "index": 0 }]] },
+    "Create Client Folder": { "main": [[{ "node": "Update Deal Record", "type": "main", "index": 0 }]] },
+    "Update Deal Record": { "main": [[{ "node": "Notify Agent", "type": "main", "index": 0 }]] }
+  }
+}

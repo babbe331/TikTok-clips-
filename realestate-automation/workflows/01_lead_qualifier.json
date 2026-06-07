@@ -1,0 +1,127 @@
+{
+  "name": "RealtyFlow — 01 Lead Qualifier",
+  "_comment": "Blueprint (n8n node format). Add credentials before use. Maps 1:1 to a Make scenario.",
+  "settings": { "executionOrder": "v1" },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "realtyflow-new-lead",
+        "responseMode": "lastNode"
+      },
+      "name": "New Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 400],
+      "_comment": "Point Zillow / FB Lead Ads / website form here. Expected payload: name, email, phone, message, source, property_interest."
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "_comment": "Sonnet 4.6: fast + cheap for high-volume per-lead scoring. System+user prompts live in PROMPTS.md (#lead-qualifier).",
+        "systemPrompt": "={{ $vars.QUALIFIER_SYSTEM_PROMPT }}",
+        "userPrompt": "=Lead:\nName: {{$json.name}}\nEmail: {{$json.email}}\nPhone: {{$json.phone}}\nSource: {{$json.source}}\nMessage: {{$json.message}}\nProperty: {{$json.property_interest}}",
+        "responseFormat": "json",
+        "jsonSchema": "{\"intent_score\":\"0-100\",\"budget\":\"string|null\",\"timeline\":\"string|null\",\"area\":\"string|null\",\"financing\":\"pre-approved|cash|needs-lender|unknown\",\"tier\":\"HOT|WARM|COLD\",\"summary\":\"string\",\"suggested_reply\":\"string\"}"
+      },
+      "name": "AI Qualify Lead",
+      "type": "n8n-nodes-base.anthropic",
+      "typeVersion": 1,
+      "position": [520, 400]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            { "conditions": { "string": [ { "value1": "={{$json.tier}}", "value2": "HOT" } ] }, "outputKey": "HOT" },
+            { "conditions": { "string": [ { "value1": "={{$json.tier}}", "value2": "WARM" } ] }, "outputKey": "WARM" }
+          ]
+        },
+        "fallbackOutput": "COLD"
+      },
+      "name": "Route by Tier",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [800, 400]
+    },
+    {
+      "parameters": {
+        "_comment": "HOT path: text the lead immediately with a booking link + hold a slot. This is the speed-to-lead money moment.",
+        "channel": "sms",
+        "to": "={{$json.phone}}",
+        "message": "=Hi {{$json.name}}, this is {{$vars.AGENT_NAME}} with {{$vars.BROKERAGE}}. Saw your interest in {{$json.property_interest}} — I have a couple times open today to chat. Grab one here: {{$vars.BOOKING_LINK}}"
+      },
+      "name": "HOT: Text Booking Link",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [1080, 220]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "event",
+        "_comment": "Optional: pre-create a held slot / notify the on-call agent via the client's calendar."
+      },
+      "name": "HOT: Notify On-Call Agent",
+      "type": "n8n-nodes-base.calendly",
+      "typeVersion": 1,
+      "position": [1080, 360]
+    },
+    {
+      "parameters": {
+        "_comment": "WARM path: personalized email now, then drop into the nurture engine.",
+        "fromEmail": "={{$vars.CLIENT_FROM_EMAIL}}",
+        "toEmail": "={{$json.email}}",
+        "subject": "=Quick question about your {{$json.area}} search",
+        "text": "={{$json.suggested_reply}}"
+      },
+      "name": "WARM: Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1080, 520]
+    },
+    {
+      "parameters": {
+        "_comment": "All tiers: write the AI's qualification notes + score back to the CRM contact.",
+        "resource": "contact",
+        "operation": "upsert",
+        "additionalFields": {
+          "leadScore": "={{$json.intent_score}}",
+          "notes": "={{$json.summary}}",
+          "tags": "=realtyflow,{{$json.tier}}"
+        }
+      },
+      "name": "Upsert to CRM",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [1360, 400],
+      "_comment": "Swap node for Follow Up Boss / GoHighLevel per client."
+    },
+    {
+      "parameters": {
+        "_comment": "Hand WARM + COLD leads to the Follow-Up Engine (workflow 02) by calling its webhook.",
+        "url": "={{$vars.FOLLOWUP_ENGINE_WEBHOOK}}",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": { "parameters": [ { "name": "contact", "value": "={{ $json }}" } ] }
+      },
+      "name": "Enroll in Follow-Up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1360, 560]
+    }
+  ],
+  "connections": {
+    "New Lead Webhook": { "main": [[{ "node": "AI Qualify Lead", "type": "main", "index": 0 }]] },
+    "AI Qualify Lead": { "main": [[{ "node": "Route by Tier", "type": "main", "index": 0 }]] },
+    "Route by Tier": {
+      "main": [
+        [{ "node": "HOT: Text Booking Link", "type": "main", "index": 0 }, { "node": "HOT: Notify On-Call Agent", "type": "main", "index": 0 }],
+        [{ "node": "WARM: Send Email", "type": "main", "index": 0 }, { "node": "Enroll in Follow-Up", "type": "main", "index": 0 }],
+        [{ "node": "Enroll in Follow-Up", "type": "main", "index": 0 }]
+      ]
+    },
+    "HOT: Text Booking Link": { "main": [[{ "node": "Upsert to CRM", "type": "main", "index": 0 }]] },
+    "WARM: Send Email": { "main": [[{ "node": "Upsert to CRM", "type": "main", "index": 0 }]] }
+  }
+}
