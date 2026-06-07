@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RealtyFlow — Client ROI Dashboard</title>
+<style>
+  :root{--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--brand:#1d4ed8;--good:#16a34a;--soft:#f8fafc;--amber:#d97706}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--soft)}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 22px 60px}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+  .logo{font-weight:800;font-size:20px}.logo span{color:var(--brand)}
+  h1{font-size:26px;letter-spacing:-.02em;margin-top:18px}
+  .sub{color:var(--muted);margin-top:4px}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 24px}
+  .controls input,.controls select{padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit}
+  .hero-num{background:linear-gradient(135deg,var(--brand),#0ea5e9);color:#fff;border-radius:18px;padding:30px;margin-bottom:22px}
+  .hero-num .l{opacity:.85;font-size:15px;font-weight:600}
+  .hero-num .v{font-size:46px;font-weight:800;letter-spacing:-.02em;margin-top:6px}
+  .hero-num .note{opacity:.9;font-size:14px;margin-top:8px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card .l{color:var(--muted);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .card .v{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-top:6px}
+  .card .d{font-size:13px;margin-top:6px;font-weight:600}
+  .up{color:var(--good)}.down{color:#dc2626}
+  .bars{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:22px}
+  .bars h3{font-size:16px;margin-bottom:18px}
+  .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .bar-row .lab{width:130px;font-size:13px;color:var(--muted);flex-shrink:0}
+  .bar-track{flex:1;background:#eef2f7;border-radius:8px;height:26px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:8px;background:var(--brand);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-size:12px;font-weight:700}
+  .funnel .bar-fill{background:linear-gradient(90deg,#1d4ed8,#0ea5e9)}
+  .note-box{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px 18px;color:#92400e;font-size:14px;margin-bottom:22px}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  th,td{text-align:left;padding:12px 16px;font-size:14px;border-bottom:1px solid var(--line)}
+  th{background:#f1f5f9;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  tr:last-child td{border-bottom:0}
+  .foot{color:var(--muted);font-size:13px;margin-top:26px;text-align:center}
+  .recommend{background:#fff;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;padding:18px 20px;margin:22px 0}
+  .recommend h3{font-size:15px;margin-bottom:6px;color:var(--brand)}
+  @media(max-width:780px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media print{.controls{display:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">Realty<span>Flow</span></div>
+    <div style="color:var(--muted);font-size:14px">Monthly Results Report</div>
+  </div>
+  <h1 id="title">Results for <span id="client">Smith Group Realty</span></h1>
+  <div class="sub" id="period">Reporting period: this month</div>
+
+  <!-- Editable inputs — fill these from your CRM each month, numbers recompute live -->
+  <div class="controls">
+    <input id="in-client" placeholder="Client name" value="Smith Group Realty">
+    <input id="in-period" placeholder="Period (e.g. May 2026)" value="May 2026">
+    <label style="font-size:13px;color:var(--muted);align-self:center">Leads <input id="in-leads" type="number" value="142" style="width:80px"></label>
+    <label style="font-size:13px;color:var(--muted);align-self:center">Booked <input id="in-booked" type="number" value="38" style="width:70px"></label>
+    <label style="font-size:13px;color:var(--muted);align-self:center">Deals infl. <input id="in-deals" type="number" value="3" style="width:60px"></label>
+    <label style="font-size:13px;color:var(--muted);align-self:center">Avg commission $ <input id="in-comm" type="number" value="9000" style="width:90px"></label>
+    <label style="font-size:13px;color:var(--muted);align-self:center">% in &lt;5min <input id="in-fast" type="number" value="100" style="width:60px"></label>
+  </div>
+
+  <div class="hero-num">
+    <div class="l">Estimated pipeline value influenced this month</div>
+    <div class="v" id="roi-value">$27,000</div>
+    <div class="note" id="roi-note">3 deals influenced × $9,000 avg commission — vs. a $3,000 retainer.</div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="l">Leads handled</div><div class="v" id="m-leads">142</div><div class="d up">100% responded to</div></div>
+    <div class="card"><div class="l">Responded in &lt;5 min</div><div class="v" id="m-fast">100%</div><div class="d up">▲ from ~3 hrs manual</div></div>
+    <div class="card"><div class="l">Appointments booked</div><div class="v" id="m-booked">38</div><div class="d up">▲ vs last month</div></div>
+    <div class="card"><div class="l">Follow-up touches sent</div><div class="v" id="m-touches">1,704</div><div class="d up">0 forgotten</div></div>
+  </div>
+
+  <div class="bars funnel">
+    <h3>Lead funnel this month</h3>
+    <div class="bar-row"><div class="lab">Leads received</div><div class="bar-track"><div class="bar-fill" id="f-leads" style="width:100%">142</div></div></div>
+    <div class="bar-row"><div class="lab">Engaged (replied)</div><div class="bar-track"><div class="bar-fill" id="f-eng" style="width:62%">88</div></div></div>
+    <div class="bar-row"><div class="lab">Appointments booked</div><div class="bar-track"><div class="bar-fill" id="f-book" style="width:27%">38</div></div></div>
+    <div class="bar-row"><div class="lab">Deals influenced</div><div class="bar-track"><div class="bar-fill" id="f-deal" style="width:9%">3</div></div></div>
+  </div>
+
+  <div class="recommend">
+    <h3>Recommendation for next month</h3>
+    <p id="reco">Your Zillow leads convert 30% better than Facebook — let's shift more follow-up intensity there and test a new day-3 SMS angle. Target: 42 booked appointments.</p>
+  </div>
+
+  <div class="note-box" id="callout">
+    💡 This month the system responded to <strong>100%</strong> of your leads within 60 seconds and sent <strong>1,704</strong> follow-up touches your team never had to think about. That's roughly <strong>$27,000</strong> in influenced pipeline against your $3,000 retainer — about <strong>9×</strong> return.
+  </div>
+
+  <table>
+    <thead><tr><th>Source</th><th>Leads</th><th>Booked</th><th>Conv.</th></tr></thead>
+    <tbody>
+      <tr><td>Zillow</td><td>61</td><td>21</td><td>34%</td></tr>
+      <tr><td>Facebook / IG</td><td>48</td><td>10</td><td>21%</td></tr>
+      <tr><td>Website form</td><td>22</td><td>5</td><td>23%</td></tr>
+      <tr><td>Open house</td><td>11</td><td>2</td><td>18%</td></tr>
+    </tbody>
+  </table>
+
+  <p class="foot">Generated by RealtyFlow • Replace the figures above each month, then print to PDF (Ctrl/Cmd+P) and send. See <code>onboarding/retention_sop.md</code>.</p>
+</div>
+
+<script>
+  // Live-recompute the headline numbers from the editable inputs.
+  function fmt(n){return '$'+Math.round(n).toLocaleString();}
+  function update(){
+    const leads=+v('in-leads'),booked=+v('in-booked'),deals=+v('in-deals'),comm=+v('in-comm'),fast=+v('in-fast');
+    const roi=deals*comm, touches=leads*12;
+    set('client',t('in-client')); set('period','Reporting period: '+t('in-period'));
+    set('roi-value',fmt(roi));
+    set('roi-note',deals+' deals influenced × '+fmt(comm)+' avg commission — vs. a $3,000 retainer.');
+    set('m-leads',leads); set('m-fast',fast+'%'); set('m-booked',booked);
+    set('m-touches',touches.toLocaleString());
+    set('f-leads',leads); set('f-book',booked); set('f-deal',deals);
+    const eng=Math.round(leads*0.62); set('f-eng',eng);
+    document.getElementById('f-leads').style.width='100%';
+    document.getElementById('f-eng').style.width=(eng/leads*100)+'%';
+    document.getElementById('f-book').style.width=(booked/leads*100)+'%';
+    document.getElementById('f-deal').style.width=Math.max(deals/leads*100,6)+'%';
+    const mult=(roi/3000).toFixed(1);
+    document.getElementById('callout').innerHTML='💡 This month the system responded to <strong>'+fast+'%</strong> of your leads within 60 seconds and sent <strong>'+touches.toLocaleString()+'</strong> follow-up touches your team never had to think about. That’s roughly <strong>'+fmt(roi)+'</strong> in influenced pipeline against your $3,000 retainer — about <strong>'+mult+'×</strong> return.';
+  }
+  function v(id){return document.getElementById(id).value;}
+  function t(id){return document.getElementById(id).value;}
+  function set(id,val){const e=document.getElementById(id); if(e) e.textContent=val;}
+  document.querySelectorAll('.controls input').forEach(el=>el.addEventListener('input',update));
+  update();
+</script>
+</body>
+</html>

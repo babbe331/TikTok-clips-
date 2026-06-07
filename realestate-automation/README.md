@@ -28,11 +28,18 @@ Every one of those is a **no-code automation**. Agencies will happily pay a
 recurring retainer to never think about it again — because the system pays
 for itself with **one saved deal** (a single commission is $5k–$15k+).
 
+## 👉 New here? Open [`START_HERE.md`](START_HERE.md)
+
+It's the short checklist of the only steps that require *you* — everything else
+in this repo is already built.
+
 ## What's in this repository
 
 | Folder | What it is |
 | --- | --- |
+| [`START_HERE.md`](START_HERE.md) | The human-only launch checklist, in order |
 | [`BUSINESS_PLAN.md`](BUSINESS_PLAN.md) | The full strategy: niche, offer, pricing, path to $45k |
+| [`site/`](site/) | Deployable marketing site (`index.html`) + client ROI dashboard (`dashboard.html`) |
 | [`financial_model.py`](financial_model.py) | Runnable model that projects MRR → $45k/month |
 | [`workflows/`](workflows/) | Importable no-code blueprints (n8n / Make) for the 3 core systems |
 | [`templates/`](templates/) | Email + SMS follow-up sequences you deploy for clients |
