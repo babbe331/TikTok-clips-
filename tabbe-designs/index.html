@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TABBE Designs — Wear Your Feelings | Sculptural Fashion Handmade in NYC</title>
+<meta name="description" content="TABBE Designs challenges mental health stigma with sculptural, inflatable fashion that encourages self-expression, emotional release, and freedom. Handmade to order in NYC.">
+<link rel="icon" href="https://tabbedesigns.com/cdn/shop/files/3D_logo.jpg?v=1771610113">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ███ INTRO LOADER ███ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-bubble"></div>
+  <div class="loader-text">TABBE</div>
+</div>
+
+<!-- ███ AMBIENT LAYERS ███ -->
+<canvas id="bubbleCanvas" aria-hidden="true"></canvas>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor-trail" id="cursorTrail" aria-hidden="true"></div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<!-- ███ NAVIGATION ███ -->
+<header class="nav" id="nav">
+  <a class="nav-logo" href="#top" data-magnet>
+    <img src="https://tabbedesigns.com/cdn/shop/files/new_logo.png?height=73&v=1758743385" alt="TABBE Designs logo">
+  </a>
+  <nav class="nav-links" id="navLinks" aria-label="Main">
+    <a href="#shop" data-magnet>Shop</a>
+    <a href="#collections" data-magnet>Collections</a>
+    <a href="#story" data-magnet>Brand Story</a>
+    <a href="#press" data-magnet>Press</a>
+    <a href="#contact" data-magnet>Contact</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="wish-btn" id="wishBtn" data-magnet aria-label="Open wishlist">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      <span class="wish-count" id="wishCount">0</span>
+    </button>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ███ HERO ███ -->
+<section class="hero" id="hero">
+  <div class="hero-float hf-1" data-depth="0.06"><img src="https://tabbedesigns.com/cdn/shop/files/Screenshot2026-02-27at3.03.43PM.png?v=1772222630&width=600" alt="Big Stuffy Pod Purse floating"></div>
+  <div class="hero-float hf-2" data-depth="0.10"><img src="https://tabbedesigns.com/cdn/shop/files/4M2A6705.jpg?v=1758740312&width=600" alt="Cotton Candy collection look"></div>
+  <div class="hero-float hf-3" data-depth="0.045"><img src="https://tabbedesigns.com/cdn/shop/files/IMG_9920.jpg?v=1758742392&width=600" alt="Cotton Candy dress look"></div>
+
+  <p class="hero-kicker reveal">NYC&nbsp;·&nbsp;Sculptural&nbsp;·&nbsp;Made&nbsp;to&nbsp;Order</p>
+  <h1 class="hero-title">
+    <span class="line"><span class="word">WEAR</span></span>
+    <span class="line"><span class="word">YOUR</span></span>
+    <span class="line"><span class="word holo">FEELINGS</span></span>
+  </h1>
+  <p class="hero-sub reveal">Inflatable silhouettes &amp; emotional armor — fashion that challenges mental-health
+  stigma and celebrates self-expression, emotional release, and freedom.</p>
+  <div class="hero-cta reveal">
+    <a href="#shop" class="btn btn-fill" data-magnet>Enter the Shop</a>
+    <a href="#collections" class="btn btn-ghost" data-magnet>Explore Collections</a>
+  </div>
+  <div class="hero-scroll" aria-hidden="true"><span></span></div>
+</section>
+
+<!-- ███ TICKER ███ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span>EMOTIONAL ARMOR</span><i>✦</i><span>HANDMADE IN NYC</span><i>✦</i><span>INFLATED FASHION</span><i>✦</i><span>END THE STIGMA</span><i>✦</i><span>WEARABLE SCULPTURE</span><i>✦</i><span>MADE TO ORDER</span><i>✦</i><span>AS SEEN AT THE MACY’S THANKSGIVING DAY PARADE</span><i>✦</i>
+  </div>
+</div>
+
+<!-- ███ COLLECTIONS ███ -->
+<section class="collections section" id="collections">
+  <h2 class="section-title reveal"><span class="holo">Collections</span></h2>
+  <p class="section-sub reveal">Four chapters of one story — each collection translates an emotional state into shape, color, and air.</p>
+
+  <div class="collection-tabs reveal" role="tablist" aria-label="Collections">
+    <button class="ctab active" data-col="inplay" role="tab" aria-selected="true">In Play · FW26</button>
+    <button class="ctab" data-col="butterfly" role="tab" aria-selected="false">The Butterfly Effect · SS25</button>
+    <button class="ctab" data-col="cottoncandy" role="tab" aria-selected="false">Cotton Candy Capsule</button>
+    <button class="ctab" data-col="bubblewrap" role="tab" aria-selected="false">Bubble Wrap</button>
+  </div>
+
+  <div class="collection-panel" id="collectionPanel">
+    <div class="collection-info">
+      <h3 id="colTitle">In Play — FW26</h3>
+      <p id="colDesc">Movement and adaptation. Drawing from the butterfly’s migration toward the winter months,
+      In Play mirrors how people respond to change together — refining TABBE’s sculptural, inflatable language
+      into bold, playful pieces built for everyday wear.</p>
+      <a class="btn btn-ghost btn-sm" id="colLink" href="#shop" data-magnet>Shop the pieces</a>
+    </div>
+    <div class="lookbook" id="lookbook" tabindex="0" aria-label="Collection lookbook, scroll horizontally"></div>
+    <div class="lookbook-hint" aria-hidden="true">⟵ drag to explore ⟶</div>
+  </div>
+</section>
+
+<!-- ███ SHOP ███ -->
+<section class="shop section" id="shop">
+  <h2 class="section-title reveal">The <span class="holo">Shop</span></h2>
+  <p class="section-sub reveal">Every piece, every price — exactly as it lives in the TABBE atelier. Ready-to-wear ships now; sculptural pieces are handmade to order in NYC.</p>
+
+  <div class="shop-controls reveal">
+    <div class="filter-chips" id="filterChips" role="group" aria-label="Filter products">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="made-to-order">Made to Order</button>
+      <button class="chip" data-filter="ready-to-wear">Ready to Wear</button>
+      <button class="chip" data-filter="inflatable-latex">Inflatable Latex Capsule</button>
+      <button class="chip" data-filter="dresses">Dresses</button>
+      <button class="chip" data-filter="tops">Tops</button>
+      <button class="chip" data-filter="matching-sets">Matching Sets</button>
+      <button class="chip" data-filter="bodysuits">Bodysuits</button>
+      <button class="chip" data-filter="accessories">Accessories</button>
+    </div>
+    <div class="shop-tools">
+      <input type="search" id="shopSearch" class="shop-search" placeholder="Search pieces…" aria-label="Search products">
+      <select id="shopSort" class="shop-sort" aria-label="Sort products">
+        <option value="featured">Featured</option>
+        <option value="low">Price · Low → High</option>
+        <option value="high">Price · High → Low</option>
+        <option value="az">Name · A → Z</option>
+      </select>
+    </div>
+  </div>
+
+  <p class="shop-count" id="shopCount" aria-live="polite"></p>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- ███ BRAND STORY ███ -->
+<section class="story section" id="story">
+  <div class="story-grid">
+    <div class="story-media reveal">
+      <div class="story-img tilt-card"><img src="https://tabbedesigns.com/cdn/shop/files/4M2A6837.jpg?v=1758741353&width=900" alt="TABBE Designs sculptural look from the Cotton Candy capsule" loading="lazy"></div>
+      <div class="story-img story-img-b tilt-card"><img src="https://tabbedesigns.com/cdn/shop/collections/658A3964.jpg?v=1717432275&width=900" alt="TABBE Designs Bubble Wrap collection look" loading="lazy"></div>
+    </div>
+    <div class="story-text">
+      <h2 class="section-title reveal">Brand <span class="holo">Story</span></h2>
+      <p class="reveal"><strong>TABBE Designs</strong> was founded in 2024 by <strong>Talia Abbe</strong>, a New York
+      native with a BS in Textile &amp; Fashion Design (and an Entrepreneurship certificate) from the University of
+      Wisconsin–Madison and an MFA in Fashion Design from the Fashion Institute of Technology.</p>
+      <p class="reveal">The brand was born out of the pandemic, when Talia faced her own mental-health struggles in
+      isolation. TABBE exists to <em>end the stigma around mental health</em> — exploring how positive and negative
+      stimuli shape us internally and externally, and turning that tension into clothing.</p>
+      <p class="reveal">Prints influenced by cognitive abstraction meet voluminous, inflated silhouettes and vibrant,
+      child-like color — an inclusive, welcoming world where every piece encourages self-expression, emotional
+      release, and freedom.</p>
+      <blockquote class="reveal">“Our mission is to challenge mental health stigma while creating clothing that
+      encourages self-expression, emotional release, and freedom.”</blockquote>
+      <div class="stats reveal">
+        <div class="stat"><span class="stat-num" data-count="2024">0</span><span class="stat-label">Founded NYC</span></div>
+        <div class="stat"><span class="stat-num" data-count="27">0</span><span class="stat-label">Unique pieces</span></div>
+        <div class="stat"><span class="stat-num" data-count="4">0</span><span class="stat-label">Collections</span></div>
+        <div class="stat"><span class="stat-num" data-count="6">0</span><span class="stat-label">Macy’s Parade looks</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ███ PRESS ███ -->
+<section class="press section" id="press">
+  <h2 class="section-title reveal"><span class="holo">Press</span> &amp; Moments</h2>
+
+  <div class="press-feature reveal tilt-card">
+    <div class="press-feature-media">
+      <img src="https://tabbedesigns.com/cdn/shop/files/macys_parade_photo.jpg?v=1779467424&width=1600" alt="TABBE Designs looks on the Labubu Pop Mart float at the Macy's Thanksgiving Day Parade 2025" loading="lazy">
+    </div>
+    <div class="press-feature-text">
+      <p class="press-kicker">Macy’s Thanksgiving Day Parade · 2025</p>
+      <h3>Six custom looks. One iconic float.</h3>
+      <p>TABBE Designs partnered with Macy’s and Pop Mart’s Labubu to create six custom looks featured on the
+      Labubu Pop Mart float at the 2025 Macy’s Thanksgiving Day Parade — sculptural joy, broadcast to millions.</p>
+      <img class="press-collage" src="https://tabbedesigns.com/cdn/shop/files/macys_collage.png?v=1779467425&width=1600" alt="Collage of the six custom TABBE looks created for the Labubu Pop Mart float" loading="lazy">
+    </div>
+  </div>
+
+  <h3 class="press-sub reveal">Publications</h3>
+  <p class="section-sub reveal">Editorials and features from the TABBE press archive.</p>
+  <div class="press-marquee reveal" aria-label="Publication features gallery">
+    <div class="press-track" id="pressTrack"></div>
+  </div>
+</section>
+
+<!-- ███ CONTACT ███ -->
+<section class="contact section" id="contact">
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h2 class="section-title reveal">Get in <span class="holo">Touch</span></h2>
+      <p class="reveal">Custom orders, made-to-order inquiries, press, or just to say hi — the studio answers everything.</p>
+      <a class="contact-insta reveal" href="https://www.instagram.com/tabbe_designs" target="_blank" rel="noopener" data-magnet>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        @tabbe_designs
+      </a>
+    </div>
+    <form class="contact-form reveal" id="contactForm" action="https://tabbedesigns.com/pages/contact" method="get">
+      <div class="form-row">
+        <label class="field"><span>Name</span><input type="text" name="name" autocomplete="name"></label>
+        <label class="field"><span>Email *</span><input type="email" name="email" required autocomplete="email"></label>
+      </div>
+      <label class="field"><span>Phone</span><input type="tel" name="phone" autocomplete="tel"></label>
+      <label class="field"><span>Comment</span><textarea name="comment" rows="4" placeholder="Tell us what you’re dreaming up…"></textarea></label>
+      <button type="submit" class="btn btn-fill" data-magnet>Send →</button>
+      <p class="form-note">Submitting continues on the official tabbedesigns.com contact page.</p>
+    </form>
+  </div>
+
+  <div class="newsletter reveal">
+    <h3>Join the bubble.</h3>
+    <p>Subscribe for exclusive deals and early access to new TABBE products.</p>
+    <form class="newsletter-form" id="newsletterForm">
+      <input type="email" placeholder="your@email.com" required aria-label="Email for newsletter">
+      <button type="submit" class="btn btn-fill btn-sm" data-magnet>Subscribe</button>
+    </form>
+    <p class="newsletter-msg" id="newsletterMsg" aria-live="polite"></p>
+  </div>
+</section>
+
+</main>
+
+<!-- ███ FOOTER ███ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="https://tabbedesigns.com/cdn/shop/files/new_logo.png?height=73&v=1758743385" alt="TABBE Designs">
+      <p>Challenging mental-health stigma through clothing that encourages self-expression, emotional release, and freedom. Handmade in NYC.</p>
+    </div>
+    <nav class="footer-col" aria-label="Shop links">
+      <h4>Shop</h4>
+      <a href="#shop" data-filter-link="made-to-order">Made to Order</a>
+      <a href="#shop" data-filter-link="ready-to-wear">Ready to Wear</a>
+      <a href="#shop" data-filter-link="inflatable-latex">Inflatable Latex Capsule</a>
+      <a href="#shop" data-filter-link="accessories">Accessories</a>
+    </nav>
+    <nav class="footer-col" aria-label="Brand links">
+      <h4>World of TABBE</h4>
+      <a href="#collections">Collections</a>
+      <a href="#story">Brand Story</a>
+      <a href="#press">Press</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <nav class="footer-col" aria-label="Policies">
+      <h4>Info</h4>
+      <a href="https://tabbedesigns.com/pages/shipping-policy" target="_blank" rel="noopener">Shipping Policy</a>
+      <a href="https://tabbedesigns.com/pages/refund-policy" target="_blank" rel="noopener">Refund Policy</a>
+      <a href="https://tabbedesigns.com/pages/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>
+      <a href="https://tabbedesigns.com/pages/terms-of-service" target="_blank" rel="noopener">Terms of Service</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>© <span id="year"></span> TABBE Designs · New York City</p>
+    <p class="footer-heart">made with air &amp; feelings ✦</p>
+  </div>
+</footer>
+
+<!-- ███ PRODUCT MODAL ███ -->
+<div class="modal" id="productModal" role="dialog" aria-modal="true" aria-label="Product details" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card">
+    <button class="modal-close" data-close aria-label="Close product">✕</button>
+    <div class="modal-gallery">
+      <div class="modal-main-img"><img id="modalImg" src="" alt=""></div>
+      <div class="modal-thumbs" id="modalThumbs"></div>
+    </div>
+    <div class="modal-info">
+      <p class="modal-type" id="modalType"></p>
+      <h3 id="modalTitle"></h3>
+      <p class="modal-price" id="modalPrice"></p>
+      <div class="modal-variants" id="modalVariants"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-actions">
+        <a class="btn btn-fill" id="modalBuy" href="#" target="_blank" rel="noopener" data-magnet>Buy on TABBE Official Store →</a>
+        <button class="btn btn-ghost" id="modalWish" data-magnet>♡ Wishlist</button>
+      </div>
+      <div class="modal-tags" id="modalTags"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ███ WISHLIST DRAWER ███ -->
+<div class="drawer" id="wishDrawer" hidden>
+  <div class="drawer-backdrop" data-close-drawer></div>
+  <aside class="drawer-panel" role="dialog" aria-label="Wishlist">
+    <header><h3>Your Wishlist <span class="holo">✦</span></h3><button class="modal-close" data-close-drawer aria-label="Close wishlist">✕</button></header>
+    <div class="drawer-items" id="drawerItems"></div>
+    <p class="drawer-empty" id="drawerEmpty">Nothing here yet — tap ♡ on a piece you love.</p>
+  </aside>
+</div>
+
+<button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
