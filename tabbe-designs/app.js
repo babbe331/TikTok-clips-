@@ -46,18 +46,35 @@ const PUBLICATIONS = [
   '1_bc7b90fd-a4a6-4929-bba3-b66b7a99ada7.jpg','2_40cc79a8-aadb-4a72-a5eb-6496fb64a5b9.jpg','3_a920a59f-332f-49d6-b8ff-3e1300f0bf10.jpg','4_128153e8-cddc-4462-857c-207fdb36a089.jpg','5_f1534f4f-c9a5-4c2c-8f36-a3b3be6efc8c.jpg','6_64569a1d-bed9-4d4a-af29-0a5d823fff50.jpg','7_5dafcc54-ca92-464a-af3c-3d509d2dbe97.jpg','8_0fdec581-5095-475b-925a-0cc1bcb73751.jpg','9_6b523058-5312-4015-8646-4f912a784632.jpg','10_2b81a360-4edf-450c-8762-dad56fe156e8.jpg','11_b071d0c6-c8f4-4c9c-8ed5-0a58614b7cab.jpg','12_77703b1b-644a-4c87-bbc6-9a0bac17005a.jpg','13.jpg','14.jpg','15.jpg','16.jpg','17.png','18.jpg','19_67e0ef65-3ab9-42df-965c-f93e5fa3e66b.jpg','20.jpg','21.jpg','22.jpg','23.jpg','24.jpg','25.jpg','27.jpg','28.png','29.png','30.png','31.png','32.png','33.png','34.png','35.png','36.png','37.png','38.png','39.png','40.png','41.jpg','42.jpg',
 ];
 
-/* ════════ loader ════════ */
-addEventListener('load', () => {
-  setTimeout(() => $('#loader').classList.add('done'), 600);
-});
-setTimeout(() => $('#loader').classList.add('done'), 3000); // safety net
+/* ════════ loader: counter + bar ════════ */
+(() => {
+  const loader = $('#loader'), pct = $('#loaderPct'), bar = $('#loaderBar');
+  let p = 0, finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    pct.textContent = '100';
+    bar.style.width = '100%';
+    setTimeout(() => loader.classList.add('done'), 350);
+  };
+  const tick = () => {
+    if (finished) return;
+    p = Math.min(p + 4 + Math.random() * 12, 96);
+    pct.textContent = String(Math.round(p)).padStart(3, '0');
+    bar.style.width = p + '%';
+    setTimeout(tick, 70 + Math.random() * 90);
+  };
+  tick();
+  addEventListener('load', () => setTimeout(finish, 300));
+  setTimeout(finish, 3200); // safety net
+})();
 
-/* ════════ bubble canvas ════════ */
+/* ════════ bubble canvas (subtle ambient, click to pop) ════════ */
 (() => {
   if (reducedMotion) return;
   const cv = $('#bubbleCanvas'), ctx = cv.getContext('2d');
   let W, H, bubbles = [];
-  const COLORS = ['255,143,206', '197,179,255', '168,225,255', '189,243,223'];
+  const COLORS = ['255,62,165', '26,10,20', '205,180,255'];
 
   const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
   resize(); addEventListener('resize', resize);
@@ -65,16 +82,15 @@ setTimeout(() => $('#loader').classList.add('done'), 3000); // safety net
   const spawn = (x, y, burst) => ({
     x: x ?? Math.random() * W,
     y: y ?? H + 30,
-    r: 4 + Math.random() * (burst ? 10 : 16),
-    vy: -(0.3 + Math.random() * (burst ? 2.2 : 0.9)),
-    vx: (Math.random() - 0.5) * (burst ? 3 : 0.4),
+    r: 3 + Math.random() * (burst ? 8 : 13),
+    vy: -(0.25 + Math.random() * (burst ? 2.2 : 0.7)),
+    vx: (Math.random() - 0.5) * (burst ? 3 : 0.3),
     c: COLORS[Math.random() * COLORS.length | 0],
-    a: 0.25 + Math.random() * 0.35,
+    a: 0.12 + Math.random() * 0.2,
     wob: Math.random() * Math.PI * 2,
   });
-  for (let i = 0; i < 26; i++) bubbles.push({ ...spawn(), y: Math.random() * H });
+  for (let i = 0; i < 18; i++) bubbles.push({ ...spawn(), y: Math.random() * H });
 
-  // pop bubbles where the user clicks: tiny burst of new ones
   addEventListener('pointerdown', e => {
     if (e.target.closest('a,button,input,select,textarea,.modal,.drawer')) return;
     for (let i = 0; i < 7; i++) bubbles.push(spawn(e.clientX, e.clientY, true));
@@ -83,41 +99,38 @@ setTimeout(() => $('#loader').classList.add('done'), 3000); // safety net
   (function tick() {
     ctx.clearRect(0, 0, W, H);
     bubbles = bubbles.filter(b => b.y + b.r > -40);
-    if (bubbles.length < 26) bubbles.push(spawn());
+    if (bubbles.length < 18) bubbles.push(spawn());
     for (const b of bubbles) {
       b.wob += 0.02;
-      b.x += b.vx + Math.sin(b.wob) * 0.3;
+      b.x += b.vx + Math.sin(b.wob) * 0.25;
       b.y += b.vy;
       ctx.beginPath();
       ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(${b.c},${b.a})`;
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1;
       ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.18, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${b.a})`;
-      ctx.fill();
     }
     requestAnimationFrame(tick);
   })();
 })();
 
-/* ════════ custom cursor + magnetic elements ════════ */
+/* ════════ crosshair cursor + magnetic elements ════════ */
 (() => {
-  const dot = $('#cursor'), ring = $('#cursorTrail');
   if (!matchMedia('(hover:hover) and (pointer:fine)').matches || reducedMotion) return;
-  let mx = 0, my = 0, rx = 0, ry = 0;
+  const dot = $('#cursor'), tag = $('#cursorTag');
+  const xv = $('#xhairV'), xh = $('#xhairH');
+
   addEventListener('pointermove', e => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+    const { clientX: x, clientY: y } = e;
+    dot.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`;
+    tag.style.left = x + 'px'; tag.style.top = y + 'px';
+    xv.style.transform = `translateX(${x}px)`;
+    xh.style.transform = `translateY(${y}px)`;
     const t = e.target.closest('a,button,.product-card,.look,input,select,textarea');
-    ring.classList.toggle('grow', !!t);
-  });
-  (function follow() {
-    rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
-    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
-    requestAnimationFrame(follow);
-  })();
+    document.body.classList.toggle('cursor-hover', !!t);
+    tag.textContent = e.target.closest('.product-card') ? 'VIEW' :
+                      e.target.closest('.look') ? 'DRAG' : '';
+  }, { passive: true });
 
   // magnetic pull on tagged elements
   document.addEventListener('pointermove', e => {
@@ -126,9 +139,22 @@ setTimeout(() => $('#loader').classList.add('done'), 3000); // safety net
       const dx = e.clientX - (r.left + r.width / 2);
       const dy = e.clientY - (r.top + r.height / 2);
       const d = Math.hypot(dx, dy);
-      el.style.translate = d < 90 ? `${dx * 0.18}px ${dy * 0.18}px` : '';
+      el.style.translate = d < 90 ? `${dx * 0.15}px ${dy * 0.15}px` : '';
     });
   }, { passive: true });
+})();
+
+/* ════════ live NYC clock ════════ */
+(() => {
+  const el = $('#clock');
+  if (!el) return;
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York', hour12: false,
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+  });
+  const tick = () => { el.textContent = fmt.format(new Date()); };
+  tick();
+  setInterval(tick, 1000);
 })();
 
 /* ════════ nav / scroll chrome ════════ */
@@ -154,26 +180,47 @@ setTimeout(() => $('#loader').classList.add('done'), 3000); // safety net
 /* ════════ hero parallax ════════ */
 (() => {
   if (reducedMotion) return;
-  const floats = $$('.hero-float');
+  const floats = $$('.hero-photo');
   addEventListener('pointermove', e => {
     const cx = e.clientX / innerWidth - 0.5, cy = e.clientY / innerHeight - 0.5;
     floats.forEach(f => {
-      const d = +f.dataset.depth * 400;
+      const d = +f.dataset.depth * 360;
       f.style.transform = `translate(${cx * d}px,${cy * d}px)`;
     });
   }, { passive: true });
 })();
 
-/* ════════ scroll reveal + stat count-up ════════ */
+/* ════════ scroll reveal + scramble + count-up ════════ */
 (() => {
+  const SCRAMBLE = '█▓▒░TABE◦×+—01';
+  const scramble = el => {
+    if (reducedMotion) return;
+    const final = el.dataset.final || (el.dataset.final = el.textContent);
+    let frame = 0;
+    const total = 22;
+    (function step() {
+      frame++;
+      el.textContent = [...final].map((ch, i) =>
+        ch === ' ' ? ' ' :
+        i < (frame / total) * final.length ? ch :
+        SCRAMBLE[Math.random() * SCRAMBLE.length | 0]
+      ).join('');
+      if (frame < total) requestAnimationFrame(step);
+      else el.textContent = final;
+    })();
+  };
+
   const io = new IntersectionObserver(entries => {
     for (const en of entries) {
       if (!en.isIntersecting) continue;
       en.target.classList.add('in');
+      $$('[data-scramble]', en.target).forEach(scramble);
+      if (en.target.matches('[data-scramble]')) scramble(en.target);
       io.unobserve(en.target);
     }
   }, { threshold: 0.12 });
   $$('.reveal').forEach(el => io.observe(el));
+  $$('[data-scramble]').forEach(el => { if (!el.closest('.reveal')) io.observe(el); });
 
   const counters = new IntersectionObserver(entries => {
     for (const en of entries) {
@@ -207,8 +254,8 @@ setTimeout(() => $('#loader').classList.add('done'), 3000); // safety net
     title.textContent = c.title;
     desc.textContent = c.desc;
     link.dataset.filterLink = c.filter;
-    book.innerHTML = c.imgs.map(f =>
-      `<figure class="look"><img src="${CDN}${f}?width=600" alt="${c.title} look" loading="lazy" draggable="false"></figure>`
+    book.innerHTML = c.imgs.map((f, i) =>
+      `<figure class="look" data-n="LOOK ${String(i + 1).padStart(2, '0')} / ${String(c.imgs.length).padStart(2, '0')}"><img src="${CDN}${f}?width=600" alt="${c.title} look ${i + 1}" loading="lazy" draggable="false"></figure>`
     ).join('');
     book.scrollLeft = 0;
   };
@@ -266,7 +313,7 @@ const Wish = {
       return `<div class="drawer-item">
         <img src="${p.images[0]}&width=200" alt="${p.title}">
         <div><h4>${p.title}</h4><p>${p.multiPrice ? 'from ' : ''}${money(p.minPrice)}</p>
-        <a href="https://tabbedesigns.com/products/${p.handle}" target="_blank" rel="noopener">View on store →</a></div>
+        <a href="https://tabbedesigns.com/products/${p.handle}" target="_blank" rel="noopener">View on store ↗</a></div>
         <button class="drawer-remove" data-remove="${h}" aria-label="Remove ${p.title}">✕</button>
       </div>`;
     }).join('');
@@ -300,22 +347,23 @@ const Shop = {
 
   render() {
     const list = this.list();
-    $('#shopCount').textContent = `${list.length} piece${list.length === 1 ? '' : 's'}`;
+    $('#shopCount').textContent = `[ ${String(list.length).padStart(2, '0')} PIECE${list.length === 1 ? '' : 'S'} — CATALOGUE COMPLETE ]`;
     this.grid.innerHTML = list.map((p, i) => {
       const mto = p.cats.includes('made-to-order');
       const wished = Wish.has(p.handle);
-      return `<article class="product-card tilt-card" data-handle="${p.handle}" style="animation-delay:${Math.min(i * 55, 500)}ms" tabindex="0" role="button" aria-label="${p.title}, ${money(p.minPrice)}">
+      const idx = PRODUCTS.indexOf(p) + 1;
+      return `<article class="product-card" data-handle="${p.handle}" style="animation-delay:${Math.min(i * 45, 450)}ms" tabindex="0" role="button" aria-label="${p.title}, ${money(p.minPrice)}">
+        <div class="pc-head"><span>№ ${String(idx).padStart(2, '0')}</span><span>${mto ? 'MADE TO ORDER' : 'READY TO WEAR'}</span></div>
         <div class="pc-img">
           <img src="${p.images[0]}&width=600" alt="${p.title}" loading="lazy">
           ${p.images[1] ? `<img class="img-b" src="${p.images[1]}&width=600" alt="" loading="lazy">` : ''}
-          <span class="pc-badge ${mto ? 'mto' : ''}">${mto ? 'Made to Order' : 'Ready to Wear'}</span>
-          <button class="pc-wish ${wished ? 'active' : ''}" data-handle="${p.handle}" aria-label="Toggle wishlist for ${p.title}">${wished ? '♥' : '♡'}</button>
+          <button class="pc-wish" data-handle="${p.handle}" aria-label="Toggle wishlist for ${p.title}">${wished ? '♥' : '♡'}</button>
         </div>
         <div class="pc-body">
           <h3 class="pc-title">${p.title}</h3>
           <p class="pc-price">${p.multiPrice ? '<small>from </small>' : ''}${money(p.minPrice)}</p>
-          <p class="pc-quick">Quick view <span>→</span></p>
         </div>
+        <p class="pc-foot">QUICK VIEW</p>
       </article>`;
     }).join('');
   },
@@ -363,19 +411,6 @@ const Shop = {
     const card = e.target.closest('.product-card');
     if (card) { e.preventDefault(); Modal.open(card.dataset.handle); }
   });
-
-  // 3D tilt on cards (event delegation, desktop only)
-  if (matchMedia('(hover:hover)').matches && !reducedMotion) {
-    document.addEventListener('pointermove', e => {
-      const card = e.target.closest('.product-card');
-      $$('.product-card').forEach(c => { if (c !== card) c.style.transform = ''; });
-      if (!card) return;
-      const r = card.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      card.style.transform = `perspective(800px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateY(-6px)`;
-    }, { passive: true });
-  }
 })();
 
 /* ════════ product modal ════════ */
@@ -386,7 +421,8 @@ const Modal = {
     const p = PRODUCTS.find(x => x.handle === handle);
     if (!p) return;
     this.product = p;
-    $('#modalType').textContent = p.type || (p.cats.includes('made-to-order') ? 'Made to Order' : 'Ready to Wear');
+    const idx = PRODUCTS.indexOf(p) + 1;
+    $('#modalType').textContent = `№ ${String(idx).padStart(2, '0')} — ${p.type || (p.cats.includes('made-to-order') ? 'Made to Order' : 'Ready to Wear')}`;
     $('#modalTitle').textContent = p.title;
     $('#modalPrice').textContent = (p.multiPrice ? 'from ' : '') + money(p.minPrice);
     $('#modalDesc').textContent = p.desc;
@@ -458,7 +494,7 @@ const Modal = {
   $('#newsletterForm').addEventListener('submit', e => {
     e.preventDefault();
     const input = $('input', e.target);
-    $('#newsletterMsg').textContent = `You’re in the bubble, ${input.value}! ✦ Welcome to TABBE.`;
+    $('#newsletterMsg').textContent = `[ CONFIRMED ] WELCOME TO THE BUBBLE — ${input.value.toUpperCase()}`;
     input.value = '';
   });
 })();
