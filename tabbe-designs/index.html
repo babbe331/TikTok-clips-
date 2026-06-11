@@ -16,6 +16,7 @@
 
 <!-- ███ INTRO LOADER ███ -->
 <div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-bubble" id="loaderBubble"></div>
   <div class="loader-row mono"><span>TABBE®</span><span id="loaderPct">000</span></div>
   <div class="loader-bar"><span id="loaderBar"></span></div>
   <p class="loader-note mono">INFLATING ATMOSPHERE — NYC</p>
@@ -24,8 +25,6 @@
 <!-- ███ AMBIENT LAYERS ███ -->
 <canvas id="bubbleCanvas" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
-<div class="xhair xhair-v" id="xhairV" aria-hidden="true"></div>
-<div class="xhair xhair-h" id="xhairH" aria-hidden="true"></div>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 <div class="cursor-tag mono" id="cursorTag" aria-hidden="true"></div>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -57,6 +56,10 @@
 
 <!-- ███ HERO ███ -->
 <section class="hero" id="hero">
+  <span class="bub bub-1" aria-hidden="true"></span>
+  <span class="bub bub-2" aria-hidden="true"></span>
+  <span class="bub bub-3" aria-hidden="true"></span>
+  <span class="bub bub-4" aria-hidden="true"></span>
   <div class="hero-grid">
     <div class="hero-left">
       <p class="hero-meta-top mono reveal" data-scramble>EST. 2024 — SCULPTURAL FASHION, HANDMADE TO ORDER</p>
@@ -260,6 +263,9 @@
   </div>
 
   <div class="newsletter reveal">
+    <span class="bub bub-n1" aria-hidden="true"></span>
+    <span class="bub bub-n2" aria-hidden="true"></span>
+    <span class="bub bub-n3" aria-hidden="true"></span>
     <div class="newsletter-inner">
       <h3>Join the <span class="serif">bubble</span></h3>
       <p>Exclusive deals &amp; early access to new TABBE products.</p>

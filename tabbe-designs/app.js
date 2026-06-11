@@ -46,22 +46,26 @@ const PUBLICATIONS = [
   '1_bc7b90fd-a4a6-4929-bba3-b66b7a99ada7.jpg','2_40cc79a8-aadb-4a72-a5eb-6496fb64a5b9.jpg','3_a920a59f-332f-49d6-b8ff-3e1300f0bf10.jpg','4_128153e8-cddc-4462-857c-207fdb36a089.jpg','5_f1534f4f-c9a5-4c2c-8f36-a3b3be6efc8c.jpg','6_64569a1d-bed9-4d4a-af29-0a5d823fff50.jpg','7_5dafcc54-ca92-464a-af3c-3d509d2dbe97.jpg','8_0fdec581-5095-475b-925a-0cc1bcb73751.jpg','9_6b523058-5312-4015-8646-4f912a784632.jpg','10_2b81a360-4edf-450c-8762-dad56fe156e8.jpg','11_b071d0c6-c8f4-4c9c-8ed5-0a58614b7cab.jpg','12_77703b1b-644a-4c87-bbc6-9a0bac17005a.jpg','13.jpg','14.jpg','15.jpg','16.jpg','17.png','18.jpg','19_67e0ef65-3ab9-42df-965c-f93e5fa3e66b.jpg','20.jpg','21.jpg','22.jpg','23.jpg','24.jpg','25.jpg','27.jpg','28.png','29.png','30.png','31.png','32.png','33.png','34.png','35.png','36.png','37.png','38.png','39.png','40.png','41.jpg','42.jpg',
 ];
 
-/* ════════ loader: counter + bar ════════ */
+/* ════════ loader: bubble inflates with progress, then pops ════════ */
 (() => {
   const loader = $('#loader'), pct = $('#loaderPct'), bar = $('#loaderBar');
+  const bubble = $('#loaderBubble');
   let p = 0, finished = false;
   const finish = () => {
     if (finished) return;
     finished = true;
     pct.textContent = '100';
     bar.style.width = '100%';
-    setTimeout(() => loader.classList.add('done'), 350);
+    bubble.style.transform = '';
+    bubble.classList.add('pop');
+    setTimeout(() => loader.classList.add('done'), 420);
   };
   const tick = () => {
     if (finished) return;
     p = Math.min(p + 4 + Math.random() * 12, 96);
     pct.textContent = String(Math.round(p)).padStart(3, '0');
     bar.style.width = p + '%';
+    bubble.style.transform = `scale(${0.3 + (p / 100) * 0.7})`;
     setTimeout(tick, 70 + Math.random() * 90);
   };
   tick();
@@ -69,68 +73,114 @@ const PUBLICATIONS = [
   setTimeout(finish, 3200); // safety net
 })();
 
-/* ════════ bubble canvas (subtle ambient, click to pop) ════════ */
+/* ════════ glossy bubble canvas — click/tap a bubble to pop it ════════ */
 (() => {
   if (reducedMotion) return;
   const cv = $('#bubbleCanvas'), ctx = cv.getContext('2d');
-  let W, H, bubbles = [];
-  const COLORS = ['255,62,165', '26,10,20', '205,180,255'];
+  let W, H, bubbles = [], frags = [];
+  const COLORS = ['255,62,165', '205,180,255', '174,227,255', '255,210,232'];
 
   const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
   resize(); addEventListener('resize', resize);
 
-  const spawn = (x, y, burst) => ({
+  const spawn = (x, y) => ({
     x: x ?? Math.random() * W,
-    y: y ?? H + 30,
-    r: 3 + Math.random() * (burst ? 8 : 13),
-    vy: -(0.25 + Math.random() * (burst ? 2.2 : 0.7)),
-    vx: (Math.random() - 0.5) * (burst ? 3 : 0.3),
+    y: y ?? H + 40,
+    r: 6 + Math.random() * 22,
+    vy: -(0.25 + Math.random() * 0.7),
+    vx: (Math.random() - 0.5) * 0.3,
     c: COLORS[Math.random() * COLORS.length | 0],
-    a: 0.12 + Math.random() * 0.2,
+    a: 0.25 + Math.random() * 0.3,
     wob: Math.random() * Math.PI * 2,
   });
-  for (let i = 0; i < 18; i++) bubbles.push({ ...spawn(), y: Math.random() * H });
+  for (let i = 0; i < 22; i++) bubbles.push({ ...spawn(), y: Math.random() * H });
+
+  const pop = b => {
+    // burst into glossy fragments
+    for (let i = 0; i < 8; i++) {
+      const ang = (i / 8) * Math.PI * 2;
+      frags.push({
+        x: b.x, y: b.y, r: 1.5 + Math.random() * 3,
+        vx: Math.cos(ang) * (1.5 + Math.random() * 2),
+        vy: Math.sin(ang) * (1.5 + Math.random() * 2),
+        c: b.c, life: 1,
+      });
+    }
+  };
 
   addEventListener('pointerdown', e => {
     if (e.target.closest('a,button,input,select,textarea,.modal,.drawer')) return;
-    for (let i = 0; i < 7; i++) bubbles.push(spawn(e.clientX, e.clientY, true));
+    const { clientX: x, clientY: y } = e;
+    let hit = false;
+    bubbles = bubbles.filter(b => {
+      if (Math.hypot(b.x - x, b.y - y) < b.r + 22) { pop(b); hit = true; return false; }
+      return true;
+    });
+    if (!hit) bubbles.push({ ...spawn(x, y), r: 10 + Math.random() * 16, vy: -1.2 });
   });
+
+  const drawBubble = b => {
+    const g = ctx.createRadialGradient(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.1, b.x, b.y, b.r);
+    g.addColorStop(0, `rgba(255,255,255,${b.a * 0.9})`);
+    g.addColorStop(0.5, `rgba(${b.c},${b.a * 0.25})`);
+    g.addColorStop(1, `rgba(${b.c},${b.a * 0.55})`);
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = `rgba(${b.c},${b.a * 0.7})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // specular highlight
+    ctx.beginPath();
+    ctx.ellipse(b.x - b.r * 0.35, b.y - b.r * 0.4, b.r * 0.22, b.r * 0.12, -0.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${Math.min(b.a * 2.4, 0.85)})`;
+    ctx.fill();
+  };
 
   (function tick() {
     ctx.clearRect(0, 0, W, H);
     bubbles = bubbles.filter(b => b.y + b.r > -40);
-    if (bubbles.length < 18) bubbles.push(spawn());
+    if (bubbles.length < 22) bubbles.push(spawn());
     for (const b of bubbles) {
       b.wob += 0.02;
       b.x += b.vx + Math.sin(b.wob) * 0.25;
       b.y += b.vy;
+      drawBubble(b);
+    }
+    frags = frags.filter(f => f.life > 0);
+    for (const f of frags) {
+      f.x += f.vx; f.y += f.vy; f.vy += 0.05; f.life -= 0.03;
       ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(${b.c},${b.a})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
+      ctx.arc(f.x, f.y, f.r * f.life, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${f.c},${f.life * 0.7})`;
+      ctx.fill();
     }
     requestAnimationFrame(tick);
   })();
 })();
 
-/* ════════ crosshair cursor + magnetic elements ════════ */
+/* ════════ bubble cursor + magnetic elements ════════ */
 (() => {
   if (!matchMedia('(hover:hover) and (pointer:fine)').matches || reducedMotion) return;
   const dot = $('#cursor'), tag = $('#cursorTag');
-  const xv = $('#xhairV'), xh = $('#xhairH');
 
   addEventListener('pointermove', e => {
     const { clientX: x, clientY: y } = e;
-    dot.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`;
+    dot.style.left = x + 'px'; dot.style.top = y + 'px';
     tag.style.left = x + 'px'; tag.style.top = y + 'px';
-    xv.style.transform = `translateX(${x}px)`;
-    xh.style.transform = `translateY(${y}px)`;
     const t = e.target.closest('a,button,.product-card,.look,input,select,textarea');
     document.body.classList.toggle('cursor-hover', !!t);
     tag.textContent = e.target.closest('.product-card') ? 'VIEW' :
-                      e.target.closest('.look') ? 'DRAG' : '';
+                      e.target.closest('.look') ? 'DRAG' :
+                      e.target.closest('a,button,input,select,textarea') ? '' : 'POP';
   }, { passive: true });
+
+  // the cursor itself pops like a bubble on click
+  addEventListener('pointerdown', () => {
+    dot.classList.add('popping');
+    setTimeout(() => dot.classList.remove('popping'), 240);
+  });
 
   // magnetic pull on tagged elements
   document.addEventListener('pointermove', e => {
