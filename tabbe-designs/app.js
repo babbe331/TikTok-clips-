@@ -240,37 +240,16 @@ const PUBLICATIONS = [
   }, { passive: true });
 })();
 
-/* ════════ scroll reveal + scramble + count-up ════════ */
+/* ════════ scroll reveal + count-up ════════ */
 (() => {
-  const SCRAMBLE = '█▓▒░TABE◦×+—01';
-  const scramble = el => {
-    if (reducedMotion) return;
-    const final = el.dataset.final || (el.dataset.final = el.textContent);
-    let frame = 0;
-    const total = 22;
-    (function step() {
-      frame++;
-      el.textContent = [...final].map((ch, i) =>
-        ch === ' ' ? ' ' :
-        i < (frame / total) * final.length ? ch :
-        SCRAMBLE[Math.random() * SCRAMBLE.length | 0]
-      ).join('');
-      if (frame < total) requestAnimationFrame(step);
-      else el.textContent = final;
-    })();
-  };
-
   const io = new IntersectionObserver(entries => {
     for (const en of entries) {
       if (!en.isIntersecting) continue;
       en.target.classList.add('in');
-      $$('[data-scramble]', en.target).forEach(scramble);
-      if (en.target.matches('[data-scramble]')) scramble(en.target);
       io.unobserve(en.target);
     }
   }, { threshold: 0.12 });
   $$('.reveal').forEach(el => io.observe(el));
-  $$('[data-scramble]').forEach(el => { if (!el.closest('.reveal')) io.observe(el); });
 
   const counters = new IntersectionObserver(entries => {
     for (const en of entries) {
@@ -381,11 +360,12 @@ const Wish = {
 
 /* ════════ shop ════════ */
 const Shop = {
-  filter: 'all', query: '', sort: 'featured',
+  mode: 'all', filter: 'all', query: '', sort: 'featured',
   grid: $('#productGrid'),
 
   list() {
     let list = PRODUCTS.filter(p =>
+      (this.mode === 'all' || p.cats.includes(this.mode)) &&
       (this.filter === 'all' || p.cats.includes(this.filter)) &&
       (!this.query || (p.title + ' ' + p.type + ' ' + p.tags.join(' ')).toLowerCase().includes(this.query))
     );
@@ -395,15 +375,21 @@ const Shop = {
     return list;
   },
 
+  countLabel(n) {
+    if (this.mode === 'made-to-order') return `${n} piece${n === 1 ? '' : 's'}, each one handmade for you in New York`;
+    if (this.mode === 'ready-to-wear') return `${n} piece${n === 1 ? '' : 's'} in stock — ready to ship to your door`;
+    return `${n} little works of art to fall in love with`;
+  },
+
   render() {
     const list = this.list();
-    $('#shopCount').textContent = `[ ${String(list.length).padStart(2, '0')} PIECE${list.length === 1 ? '' : 'S'} — CATALOGUE COMPLETE ]`;
+    $('#shopCount').textContent = list.length ? this.countLabel(list.length) : 'nothing matches — try another word or filter ✦';
     this.grid.innerHTML = list.map((p, i) => {
       const mto = p.cats.includes('made-to-order');
       const wished = Wish.has(p.handle);
       const idx = PRODUCTS.indexOf(p) + 1;
-      return `<article class="product-card" data-handle="${p.handle}" style="animation-delay:${Math.min(i * 45, 450)}ms" tabindex="0" role="button" aria-label="${p.title}, ${money(p.minPrice)}">
-        <div class="pc-head"><span>№ ${String(idx).padStart(2, '0')}</span><span>${mto ? 'MADE TO ORDER' : 'READY TO WEAR'}</span></div>
+      return `<article class="product-card" data-handle="${p.handle}" style="animation-delay:${Math.min(i * 45, 450)}ms" tabindex="0" role="button" aria-label="${p.title}, ${money(p.minPrice)}, ${mto ? 'made to order' : 'in stock'}">
+        <div class="pc-head"><span class="mono">№ ${String(idx).padStart(2, '0')}</span><span class="pc-tag ${mto ? 'tag-mto' : 'tag-stock'}">${mto ? 'made to order' : 'in stock'}</span></div>
         <div class="pc-img">
           <img src="${p.images[0]}&width=600" alt="${p.title}" loading="lazy">
           ${p.images[1] ? `<img class="img-b" src="${p.images[1]}&width=600" alt="" loading="lazy">` : ''}
@@ -413,7 +399,7 @@ const Shop = {
           <h3 class="pc-title">${p.title}</h3>
           <p class="pc-price">${p.multiPrice ? '<small>from </small>' : ''}${money(p.minPrice)}</p>
         </div>
-        <p class="pc-foot">QUICK VIEW</p>
+        <p class="pc-foot">take a closer look</p>
       </article>`;
     }).join('');
   },
@@ -422,6 +408,13 @@ const Shop = {
 (() => {
   Shop.render();
   Wish.refresh();
+
+  $$('.mode-tab').forEach(tab => tab.addEventListener('click', () => {
+    $$('.mode-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    Shop.mode = tab.dataset.mode;
+    Shop.render(); Wish.refresh();
+  }));
 
   $('#filterChips').addEventListener('click', e => {
     const chip = e.target.closest('.chip');
@@ -440,12 +433,20 @@ const Shop = {
     Shop.render(); Wish.refresh();
   });
 
-  // footer / collection links that pre-apply a filter
+  // footer / collection links that pre-apply a mode or filter
   document.addEventListener('click', e => {
     const link = e.target.closest('[data-filter-link]');
     if (!link) return;
-    const chip = $(`.chip[data-filter="${link.dataset.filterLink}"]`);
-    if (chip) chip.click();
+    const target = link.dataset.filterLink;
+    const modeTab = $(`.mode-tab[data-mode="${target}"]`);
+    const chip = $(`.chip[data-filter="${target}"]`);
+    if (modeTab) {
+      $(`.chip[data-filter="all"]`).click();
+      modeTab.click();
+    } else if (chip) {
+      $(`.mode-tab[data-mode="all"]`).click();
+      chip.click();
+    }
     $('#shop').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
     e.preventDefault();
   });
@@ -472,7 +473,8 @@ const Modal = {
     if (!p) return;
     this.product = p;
     const idx = PRODUCTS.indexOf(p) + 1;
-    $('#modalType').textContent = `№ ${String(idx).padStart(2, '0')} — ${p.type || (p.cats.includes('made-to-order') ? 'Made to Order' : 'Ready to Wear')}`;
+    const status = p.cats.includes('made-to-order') ? 'made to order, just for you' : 'in stock — ready to ship';
+    $('#modalType').textContent = `№ ${String(idx).padStart(2, '0')} ✦ ${status}${p.type ? ' ✦ ' + p.type : ''}`;
     $('#modalTitle').textContent = p.title;
     $('#modalPrice').textContent = (p.multiPrice ? 'from ' : '') + money(p.minPrice);
     $('#modalDesc').textContent = p.desc;
@@ -544,7 +546,7 @@ const Modal = {
   $('#newsletterForm').addEventListener('submit', e => {
     e.preventDefault();
     const input = $('input', e.target);
-    $('#newsletterMsg').textContent = `[ CONFIRMED ] WELCOME TO THE BUBBLE — ${input.value.toUpperCase()}`;
+    $('#newsletterMsg').textContent = `you’re in the bubble, ${input.value} ✦ welcome to TABBE`;
     input.value = '';
   });
 })();
