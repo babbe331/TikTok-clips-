@@ -202,6 +202,18 @@
   }
   .book-steps h4 { font-size: 1.05rem; margin-bottom: 4px; }
   .book-steps p { font-size: .92rem; color: var(--text-soft); }
+  .quick-contact {
+    background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: var(--radius); padding: 22px; margin-top: 6px;
+  }
+  .quick-contact p { font-weight: 600; font-size: .92rem; margin-bottom: 12px; font-family: 'Space Grotesk', sans-serif; }
+  .quick-contact a {
+    display: block; text-decoration: none; color: var(--cyan); font-weight: 500;
+    font-size: .95rem; padding: 9px 12px; border: 1px solid var(--panel-border);
+    border-radius: 12px; margin-bottom: 8px; transition: border-color .15s ease, background .15s ease;
+  }
+  .quick-contact a:hover { border-color: var(--cyan); background: rgba(46, 230, 214, .08); }
+  .quick-contact a:last-child { margin-bottom: 0; }
 
   form#booking-form {
     background: var(--panel); border: 1px solid var(--panel-border);
@@ -493,6 +505,13 @@
         </li>
       </ul>
 
+      <div class="quick-contact">
+        <p>Prefer to skip the form?</p>
+        <a href="tel:+19145885431">📞 Call (914) 588-5431</a>
+        <a href="sms:+19145885431">💬 Text (914) 588-5431</a>
+        <a href="mailto:mabbe@verizon.net">✉️ mabbe@verizon.net</a>
+      </div>
+
       <form id="booking-form">
         <div class="field">
           <label>Session type</label>
@@ -556,6 +575,7 @@
   <a class="logo" href="#top">MERAV<b>ABBE</b></a>
   <p>Personal Training · Assisted Stretching · Recovery</p>
   <p>New York (spring–fall) · Florida (winter)</p>
+  <p><a href="tel:+19145885431" style="color:var(--cyan);text-decoration:none">(914) 588-5431</a> · <a href="mailto:mabbe@verizon.net" style="color:var(--cyan);text-decoration:none">mabbe@verizon.net</a></p>
   <p>© <span id="year"></span> Merav Abbe. All rights reserved.</p>
 </footer>
 
@@ -617,7 +637,7 @@
       'Preferred time: ' + f.time.value + '\n' +
       (f.notes.value ? 'Notes: ' + f.notes.value + '\n' : '') +
       '\nThank you!';
-    window.location.href = 'mailto:babbe331@gmail.com?subject=' +
+    window.location.href = 'mailto:mabbe@verizon.net?subject=' +
       encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     document.getElementById('confirm-msg').style.display = 'block';
   });
@@ -629,7 +649,7 @@
   var inputEl = document.getElementById('ai-input');
   var botStarted = false;
 
-  var defaultChips = ['Book a session', 'Where is Merav?', 'What does a session cost?', 'Which session is right for me?'];
+  var defaultChips = ['Book a session', 'Where is Merav?', 'Which session is right for me?', 'Call or text Merav'];
 
   function toggleBot() {
     panel.classList.toggle('open');
@@ -698,7 +718,9 @@
     var winter = (m === 11 || m <= 2);
     var nowLoc = winter ? 'Florida ☀️ (winter season)' : 'New York 🗽';
 
-    if (/(book|schedule|appointment|sign ?up|reserve)/.test(q)) {
+    if (/(call|phone|text|contact|email|reach|number)/.test(q)) {
+      botSay("You can reach Merav directly:\n\n📞 Call or text: (914) 588-5431\n✉️ Email: mabbe@verizon.net\n\nOr use the booking form and she'll get back to you within the day!", ['Book a session', 'Where is Merav?']);
+    } else if (/(book|schedule|appointment|sign ?up|reserve)/.test(q)) {
       botSay("Easy! 🎉 I'm taking you to the booking form — pick your session type, choose a date and time, and Merav will confirm within the day.");
       goToBooking();
       setChips(defaultChips);
