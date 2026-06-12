@@ -497,7 +497,7 @@
         </li>
         <li>
           <span class="step-num">2</span>
-          <div><h4>Choose a day &amp; time</h4><p>Flexible scheduling, including mornings, evenings, and weekends. NY in the warmer months, FL in winter.</p></div>
+          <div><h4>Choose a day &amp; time</h4><p>Sessions are one hour. Pick any hour slot that works — mornings, evenings, and weekends available. NY in the warmer months, FL in winter.</p></div>
         </li>
         <li>
           <span class="step-num">3</span>
@@ -551,11 +551,20 @@
           <div class="field">
             <label for="time">Preferred time</label>
             <select id="time" name="time" required>
-              <option value="" disabled selected>Select a time</option>
-              <option>Morning (7–10am)</option>
-              <option>Late morning (10am–12pm)</option>
-              <option>Afternoon (12–4pm)</option>
-              <option>Evening (4–8pm)</option>
+              <option value="" disabled selected>Select a 1-hour slot</option>
+              <option>7:00 – 8:00 am</option>
+              <option>8:00 – 9:00 am</option>
+              <option>9:00 – 10:00 am</option>
+              <option>10:00 – 11:00 am</option>
+              <option>11:00 am – 12:00 pm</option>
+              <option>12:00 – 1:00 pm</option>
+              <option>1:00 – 2:00 pm</option>
+              <option>2:00 – 3:00 pm</option>
+              <option>3:00 – 4:00 pm</option>
+              <option>4:00 – 5:00 pm</option>
+              <option>5:00 – 6:00 pm</option>
+              <option>6:00 – 7:00 pm</option>
+              <option>7:00 – 8:00 pm</option>
             </select>
           </div>
         </div>
@@ -742,7 +751,7 @@
     } else if (/(which|right for me|recommend|not sure|help me (choose|pick)|don'?t know)/.test(q)) {
       botSay("Let's find your fit! Quick guide:\n\n🧘 Assisted Stretching — feeling tight, stiff, or limited\n💆 Recovery — sore muscles, post-workout, need a reset\n🌟 Full-Body Session — the complete head-to-toe experience\n\nWhich sounds most like you right now?", ["I'm feeling tight & stiff", "I'm sore & need recovery", 'Give me the full-body session']);
     } else if (/(hour|time|when|available|schedule\b|weekend|morning|evening)/.test(q)) {
-      botSay("Merav offers flexible scheduling — mornings, evenings, and weekends. Pick your preferred window in the booking form and she'll confirm the exact time with you directly. ⏰", ['Book a session']);
+      botSay("Sessions are one hour long, and Merav offers flexible scheduling — mornings, evenings, and weekends. Pick your preferred hour slot in the booking form and she'll confirm it with you directly. ⏰", ['Book a session']);
     } else if (/(home|house|come to me|on.?site|gym|studio)/.test(q)) {
       botSay("Yes! Merav comes to you — in-home and on-site sessions are her specialty. She brings the table and all the equipment. You just bring you. 🏠", ['Book a session', 'Where is Merav?']);
     } else if (/(hi|hello|hey|shalom)/.test(q)) {
