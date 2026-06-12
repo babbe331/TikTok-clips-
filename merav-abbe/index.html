@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merav Abbe — Personal Trainer &amp; Stretch Therapist</title>
+<meta name="description" content="Merav Abbe offers one-on-one personal training, assisted stretching, and recovery sessions in New York and Florida. Book a session in seconds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06080f;
+    --bg-2: #0b0f1c;
+    --panel: rgba(255, 255, 255, .045);
+    --panel-border: rgba(255, 255, 255, .1);
+    --text: #eef2ff;
+    --text-soft: #9aa3bd;
+    --cyan: #2ee6d6;
+    --violet: #8b7bff;
+    --pink: #ff6ec7;
+    --grad: linear-gradient(100deg, var(--cyan), var(--violet) 55%, var(--pink));
+    --radius: 20px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(700px 500px at 85% -5%, rgba(139, 123, 255, .18), transparent 65%),
+      radial-gradient(600px 450px at -10% 30%, rgba(46, 230, 214, .12), transparent 65%),
+      radial-gradient(700px 500px at 70% 100%, rgba(255, 110, 199, .1), transparent 65%);
+  }
+  img { display: block; max-width: 100%; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; line-height: 1.12; }
+  .wrap { width: min(1120px, 92%); margin: 0 auto; }
+  .grad-text {
+    background: var(--grad);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: .78rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 18px;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--cyan); }
+
+  /* ---------- nav ---------- */
+  header {
+    position: sticky; top: 0; z-index: 90;
+    background: rgba(6, 8, 15, .75);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; }
+  .logo {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.2rem;
+    text-decoration: none; color: var(--text); letter-spacing: .02em;
+  }
+  .logo b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a { text-decoration: none; font-size: .92rem; font-weight: 500; color: var(--text-soft); transition: color .15s; }
+  .nav-links a:hover { color: var(--text); }
+  .btn {
+    display: inline-block; text-decoration: none; font-weight: 600; font-family: 'Space Grotesk', sans-serif;
+    padding: 13px 30px; border-radius: 999px; border: none; cursor: pointer;
+    font-size: 1rem; transition: transform .15s ease, box-shadow .15s ease; color: #041110;
+    background: var(--grad);
+    box-shadow: 0 0 24px rgba(46, 230, 214, .35);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(139, 123, 255, .5); }
+  .btn-small { padding: 10px 22px; font-size: .88rem; }
+  .btn-ghost {
+    background: transparent; color: var(--text); box-shadow: none;
+    border: 1px solid var(--panel-border);
+  }
+  .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 18px rgba(46, 230, 214, .25); }
+  @media (max-width: 760px) { .nav-links a:not(.btn) { display: none; } }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 90px 0 70px; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: center; }
+  .hero h1 { font-size: clamp(2.4rem, 5.4vw, 3.9rem); margin-bottom: 22px; letter-spacing: -.01em; }
+  .hero p.lead { font-size: 1.1rem; color: var(--text-soft); margin-bottom: 32px; max-width: 33rem; }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-photo { position: relative; border-radius: var(--radius); aspect-ratio: 4 / 5; }
+  .hero-photo::before {
+    content: ""; position: absolute; inset: -2px; border-radius: 22px;
+    background: var(--grad); filter: blur(18px); opacity: .45; z-index: 0;
+  }
+  .hero-photo img {
+    position: relative; z-index: 1; width: 100%; height: 100%; object-fit: cover;
+    border-radius: var(--radius); border: 1px solid var(--panel-border);
+  }
+  .hero-badge {
+    position: absolute; z-index: 2; bottom: 18px; left: 18px; right: 18px;
+    background: rgba(6, 8, 15, .8); backdrop-filter: blur(10px);
+    border: 1px solid var(--panel-border); border-radius: 14px;
+    padding: 12px 16px; font-size: .85rem; color: var(--text-soft);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pulse {
+    width: 9px; height: 9px; border-radius: 50%; background: var(--cyan); flex: none;
+    box-shadow: 0 0 0 0 rgba(46, 230, 214, .6); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(46, 230, 214, .55); }
+    70% { box-shadow: 0 0 0 11px rgba(46, 230, 214, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 230, 214, 0); }
+  }
+  @media (max-width: 880px) {
+    .hero { padding-top: 50px; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-photo { aspect-ratio: 4 / 3; order: -1; }
+  }
+
+  /* ---------- strip ---------- */
+  .strip { border-top: 1px solid var(--panel-border); border-bottom: 1px solid var(--panel-border); padding: 20px 0; background: rgba(255,255,255,.02); }
+  .strip .wrap { display: flex; gap: 16px 42px; flex-wrap: wrap; justify-content: center; }
+  .strip span { font-size: .92rem; color: var(--text-soft); }
+  .strip span::before { content: "◆ "; color: var(--violet); font-size: .7rem; }
+
+  /* ---------- sections ---------- */
+  section { padding: 90px 0; }
+  .section-head { max-width: 40rem; margin-bottom: 50px; }
+  .section-head h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); margin-bottom: 14px; }
+  .section-head p { color: var(--text-soft); font-size: 1.04rem; }
+
+  /* services */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .card:hover { transform: translateY(-5px); border-color: rgba(46, 230, 214, .45); box-shadow: 0 18px 40px rgba(0,0,0,.45), 0 0 24px rgba(46,230,214,.12); }
+  .card img { height: 230px; width: 100%; object-fit: cover; }
+  .card-body { padding: 26px; display: flex; flex-direction: column; flex: 1; }
+  .card-body h3 { font-size: 1.28rem; margin-bottom: 10px; }
+  .card-body p { color: var(--text-soft); font-size: .95rem; flex: 1; }
+  .card-link { margin-top: 18px; font-weight: 600; color: var(--cyan); text-decoration: none; font-size: .93rem; }
+  .card-link:hover { text-decoration: underline; }
+  @media (max-width: 880px) { .cards { grid-template-columns: 1fr; } }
+
+  /* why */
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .why-box {
+    background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: var(--radius); padding: 36px; position: relative; overflow: hidden;
+  }
+  .why-box::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--grad);
+  }
+  .why-box h3 { font-size: 1.35rem; margin-bottom: 14px; }
+  .why-box p { color: var(--text-soft); font-size: .96rem; margin-bottom: 14px; }
+  .why-box ul { list-style: none; }
+  .why-box li { padding-left: 24px; position: relative; margin-bottom: 10px; color: var(--text-soft); font-size: .95rem; }
+  .why-box li::before { content: "▹"; position: absolute; left: 4px; color: var(--cyan); }
+  @media (max-width: 880px) { .why-grid { grid-template-columns: 1fr; } }
+
+  /* locations */
+  .loc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .loc-card {
+    border-radius: var(--radius); padding: 38px; border: 1px solid var(--panel-border);
+    background: var(--panel); position: relative; overflow: hidden;
+  }
+  .loc-card .loc-season {
+    display: inline-block; font-size: .75rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; padding: 6px 14px; border-radius: 999px; margin-bottom: 16px;
+  }
+  .loc-ny .loc-season { background: rgba(139, 123, 255, .15); color: var(--violet); border: 1px solid rgba(139,123,255,.4); }
+  .loc-fl .loc-season { background: rgba(255, 110, 199, .12); color: var(--pink); border: 1px solid rgba(255,110,199,.4); }
+  .loc-card h3 { font-size: 1.6rem; margin-bottom: 10px; }
+  .loc-card p { color: var(--text-soft); font-size: .96rem; }
+  .loc-card .loc-icon { font-size: 2rem; position: absolute; top: 30px; right: 30px; opacity: .9; }
+  @media (max-width: 760px) { .loc-grid { grid-template-columns: 1fr; } }
+
+  /* gallery */
+  .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .gallery-grid img {
+    border-radius: 16px; aspect-ratio: 3 / 4; object-fit: cover; width: 100%;
+    border: 1px solid var(--panel-border); transition: transform .2s ease;
+  }
+  .gallery-grid img:hover { transform: scale(1.025); }
+  @media (max-width: 880px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ---------- booking ---------- */
+  .booking { position: relative; }
+  .book-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 54px; align-items: start; }
+  .book-steps { list-style: none; }
+  .book-steps li { display: flex; gap: 16px; margin-bottom: 28px; }
+  .step-num {
+    flex: 0 0 40px; height: 40px; border-radius: 12px; background: var(--grad);
+    display: grid; place-items: center; font-weight: 700; color: #041110; font-family: 'Space Grotesk', sans-serif;
+  }
+  .book-steps h4 { font-size: 1.05rem; margin-bottom: 4px; }
+  .book-steps p { font-size: .92rem; color: var(--text-soft); }
+
+  form#booking-form {
+    background: var(--panel); border: 1px solid var(--panel-border);
+    border-radius: var(--radius); padding: 36px; backdrop-filter: blur(8px);
+  }
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-weight: 600; font-size: .88rem; margin-bottom: 7px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 13px 15px; border: 1px solid var(--panel-border); border-radius: 12px;
+    font-family: inherit; font-size: .98rem; background: rgba(6, 8, 15, .6); color: var(--text);
+  }
+  .field input::placeholder, .field textarea::placeholder { color: #5d6580; }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(46, 230, 214, .15);
+  }
+  .field select option { background: var(--bg-2); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .pill-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pill-group input { position: absolute; opacity: 0; pointer-events: none; }
+  .pill-group label {
+    border: 1px solid var(--panel-border); border-radius: 999px; padding: 9px 18px;
+    cursor: pointer; font-size: .9rem; font-weight: 500; color: var(--text-soft);
+    transition: all .12s ease; margin-bottom: 0;
+  }
+  .pill-group input:checked + label {
+    background: var(--grad); color: #041110; border-color: transparent; font-weight: 600;
+  }
+  form#booking-form .btn { width: 100%; margin-top: 8px; }
+  .form-note { font-size: .8rem; color: var(--text-soft); text-align: center; margin-top: 14px; }
+  #confirm-msg {
+    display: none; margin-top: 16px; background: rgba(46, 230, 214, .1);
+    border: 1px solid rgba(46, 230, 214, .4); color: var(--cyan);
+    padding: 14px; border-radius: 12px; font-size: .92rem; font-weight: 500;
+  }
+  @media (max-width: 880px) {
+    .book-grid { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- footer ---------- */
+  footer { padding: 50px 0 110px; text-align: center; color: var(--text-soft); font-size: .88rem; border-top: 1px solid var(--panel-border); }
+  footer .logo { display: inline-block; margin-bottom: 10px; font-size: 1.15rem; }
+
+  /* ---------- AI assistant ---------- */
+  #ai-fab {
+    position: fixed; bottom: 22px; right: 22px; z-index: 200;
+    width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--grad); color: #041110; font-size: 1.7rem;
+    box-shadow: 0 0 30px rgba(139, 123, 255, .55);
+    display: grid; place-items: center; transition: transform .15s ease;
+  }
+  #ai-fab:hover { transform: scale(1.08); }
+  #ai-fab .fab-dot {
+    position: absolute; top: 4px; right: 4px; width: 13px; height: 13px; border-radius: 50%;
+    background: var(--cyan); border: 2px solid var(--bg); animation: pulse 2s infinite;
+  }
+  #ai-panel {
+    position: fixed; bottom: 100px; right: 22px; z-index: 200;
+    width: min(380px, calc(100vw - 32px)); height: min(540px, calc(100vh - 140px));
+    background: rgba(11, 15, 28, .97); border: 1px solid var(--panel-border);
+    border-radius: 22px; box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 40px rgba(139,123,255,.18);
+    display: none; flex-direction: column; overflow: hidden; backdrop-filter: blur(14px);
+  }
+  #ai-panel.open { display: flex; }
+  .ai-head {
+    padding: 16px 18px; border-bottom: 1px solid var(--panel-border);
+    display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.03);
+  }
+  .ai-avatar {
+    width: 38px; height: 38px; border-radius: 12px; background: var(--grad);
+    display: grid; place-items: center; font-size: 1.2rem; flex: none;
+  }
+  .ai-head h4 { font-size: .98rem; }
+  .ai-head p { font-size: .76rem; color: var(--cyan); display: flex; align-items: center; gap: 6px; }
+  .ai-head .pulse { width: 7px; height: 7px; }
+  .ai-close { margin-left: auto; background: none; border: none; color: var(--text-soft); font-size: 1.3rem; cursor: pointer; }
+  .ai-close:hover { color: var(--text); }
+  #ai-msgs { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: 85%; padding: 11px 15px; border-radius: 16px; font-size: .9rem; white-space: pre-line; }
+  .msg.bot { background: rgba(255,255,255,.07); border: 1px solid var(--panel-border); border-bottom-left-radius: 5px; align-self: flex-start; }
+  .msg.user { background: var(--grad); color: #041110; font-weight: 500; border-bottom-right-radius: 5px; align-self: flex-end; }
+  .msg.bot a { color: var(--cyan); }
+  .typing { display: inline-flex; gap: 5px; padding: 4px 2px; }
+  .typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--text-soft); animation: blink 1.2s infinite; }
+  .typing i:nth-child(2) { animation-delay: .2s; }
+  .typing i:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+  #ai-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 18px 12px; }
+  .chip {
+    border: 1px solid rgba(46, 230, 214, .4); color: var(--cyan); background: transparent;
+    border-radius: 999px; padding: 7px 14px; font-size: .8rem; cursor: pointer; font-family: inherit;
+    transition: background .12s ease;
+  }
+  .chip:hover { background: rgba(46, 230, 214, .12); }
+  .ai-input-row { display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--panel-border); }
+  #ai-input {
+    flex: 1; padding: 12px 15px; border-radius: 999px; border: 1px solid var(--panel-border);
+    background: rgba(6, 8, 15, .7); color: var(--text); font-family: inherit; font-size: .9rem;
+  }
+  #ai-input:focus { outline: none; border-color: var(--cyan); }
+  #ai-send {
+    width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--grad); color: #041110; font-size: 1.1rem; flex: none;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top">MERAV<b>ABBE</b></a>
+    <nav class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#why">Why It Works</a>
+      <a href="#locations">Locations</a>
+      <a href="#gallery">Gallery</a>
+      <a class="btn btn-small" href="#book">Book Now</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Personal Trainer · Stretch Therapist</span>
+      <h1>Move better.<br>Feel stronger.<br><span class="grad-text">Live looser.</span></h1>
+      <p class="lead">
+        One-on-one personal training and hands-on assisted stretching with Merav Abbe —
+        sessions built around your body, your goals, and your schedule. In-home and on-site,
+        in New York and Florida.
+      </p>
+      <div class="hero-cta">
+        <a class="btn" href="#book">Book a Session</a>
+        <button class="btn btn-ghost" onclick="openBot()">💬 Ask the AI Assistant</button>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <img src="images/assisted-stretch.jpeg" alt="Merav Abbe guiding a client through an assisted hamstring stretch">
+      <div class="hero-badge"><span class="pulse"></span><span id="hero-loc-text">Now booking sessions</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="wrap">
+    <span>One-on-one attention, every session</span>
+    <span>In-home &amp; on-site sessions</span>
+    <span>NY · spring–fall &nbsp;|&nbsp; FL · winter</span>
+    <span>All ages and fitness levels</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Services</span>
+      <h2>Sessions designed <span class="grad-text">around you</span></h2>
+      <p>Every body is different. Pick the session that fits — or mix and match. Merav tailors each one to where you are today.</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <img src="images/back-work.jpeg" alt="Merav working hands-on with a client on a treatment table">
+        <div class="card-body">
+          <h3>Personal Training</h3>
+          <p>Full-body strength and conditioning, one-on-one. Build muscle, protect your joints, and boost your energy with a program that meets you at your level and grows with you.</p>
+          <a class="card-link" href="#book" data-service="Personal Training">Book this →</a>
+        </div>
+      </article>
+      <article class="card">
+        <img src="images/stretch-table.jpeg" alt="Merav assisting a client with a deep supported leg stretch">
+        <div class="card-body">
+          <h3>Assisted Stretching</h3>
+          <p>Table-based, therapist-assisted stretching that takes you safely past what you can reach on your own. Release tight hips, hamstrings, and shoulders — and stand up taller.</p>
+          <a class="card-link" href="#book" data-service="Assisted Stretching">Book this →</a>
+        </div>
+      </article>
+      <article class="card">
+        <img src="images/percussion.jpeg" alt="Merav using percussion therapy on a client's legs">
+        <div class="card-body">
+          <h3>Recovery &amp; Percussion</h3>
+          <p>Targeted muscle release with percussion tools and hands-on work. Perfect after hard training weeks, long travel, or whenever your body just needs a reset.</p>
+          <a class="card-link" href="#book" data-service="Recovery & Percussion Therapy">Book this →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">The Science</span>
+      <h2>Why stretching &amp; strength <span class="grad-text">matter</span></h2>
+      <p>You don't need to be an athlete to benefit. A little consistency goes a remarkably long way.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-box">
+        <h3>🧘 The case for stretching</h3>
+        <p>Tight muscles quietly change how you move — they tug on your posture, limit your range of motion, and load your joints in ways they weren't built for.</p>
+        <ul>
+          <li>Improves flexibility and range of motion, so everyday movement feels easier</li>
+          <li>Eases stiffness from sitting, driving, and desk work</li>
+          <li>Supports better posture and reduces nagging aches in the back, hips, and neck</li>
+          <li>Helps muscles recover faster between workouts</li>
+          <li>Assisted stretching reaches depths you simply can't get to on your own</li>
+        </ul>
+      </div>
+      <div class="why-box">
+        <h3>💪 The case for strength</h3>
+        <p>Muscle is your body's engine and its armor. Strength training is one of the most studied, most reliable things you can do for long-term health.</p>
+        <ul>
+          <li>Builds and preserves muscle and bone — which we naturally lose with age</li>
+          <li>Boosts metabolism and supports healthy weight</li>
+          <li>Protects joints and reduces injury risk in daily life</li>
+          <li>Improves balance, energy, sleep, and mood</li>
+          <li>Just two or three sessions a week makes a measurable difference</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATIONS -->
+<section id="locations">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Locations</span>
+      <h2>Two coasts. <span class="grad-text">One trainer.</span></h2>
+      <p>Merav splits the year between New York and Florida — so wherever the season finds you, your training doesn't have to stop.</p>
+    </div>
+    <div class="loc-grid">
+      <div class="loc-card loc-ny">
+        <span class="loc-icon">🗽</span>
+        <span class="loc-season">Spring · Summer · Fall</span>
+        <h3>New York</h3>
+        <p>Merav's home base for most of the year. In-home and on-site sessions available roughly April through November.</p>
+      </div>
+      <div class="loc-card loc-fl">
+        <span class="loc-icon">🌴</span>
+        <span class="loc-season">Winter</span>
+        <h3>Florida</h3>
+        <p>When the temperature drops, Merav heads south. Winter-season sessions available in Florida, roughly December through March.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Gallery</span>
+      <h2>In <span class="grad-text">session</span></h2>
+      <p>Real sessions, real clients — hands-on work that meets you wherever you are.</p>
+    </div>
+    <div class="gallery-grid">
+      <img src="images/assisted-stretch.jpeg" alt="Assisted stretch session with a client lying on a table">
+      <img src="images/stretch-table.jpeg" alt="Supported leg stretch on the treatment table">
+      <img src="images/percussion.jpeg" alt="Percussion therapy recovery session">
+      <img src="images/back-work.jpeg" alt="Hands-on back and shoulder work">
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section class="booking" id="book">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Booking</span>
+      <h2>Book your session in <span class="grad-text">under a minute</span></h2>
+      <p>Three quick fields and you're done. Merav will confirm your time within the day.</p>
+    </div>
+    <div class="book-grid">
+      <ul class="book-steps">
+        <li>
+          <span class="step-num">1</span>
+          <div><h4>Pick your session</h4><p>Training, stretching, recovery — or ask the AI assistant and it'll point you to the right one.</p></div>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <div><h4>Choose a day &amp; time</h4><p>Flexible scheduling, including mornings, evenings, and weekends. NY in the warmer months, FL in winter.</p></div>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <div><h4>Get confirmed</h4><p>Your request goes straight to Merav. She'll confirm your spot and answer any questions.</p></div>
+        </li>
+      </ul>
+
+      <form id="booking-form">
+        <div class="field">
+          <label>Session type</label>
+          <div class="pill-group">
+            <input type="radio" name="service" id="svc-train" value="Personal Training" checked>
+            <label for="svc-train">Personal Training</label>
+            <input type="radio" name="service" id="svc-stretch" value="Assisted Stretching">
+            <label for="svc-stretch">Assisted Stretching</label>
+            <input type="radio" name="service" id="svc-recovery" value="Recovery & Percussion Therapy">
+            <label for="svc-recovery">Recovery</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <div class="pill-group">
+            <input type="radio" name="location" id="loc-ny-r" value="New York" checked>
+            <label for="loc-ny-r">🗽 New York</label>
+            <input type="radio" name="location" id="loc-fl-r" value="Florida">
+            <label for="loc-fl-r">🌴 Florida (winter)</label>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input type="text" id="name" name="name" placeholder="Full name" required>
+          </div>
+          <div class="field">
+            <label for="phone">Phone or email</label>
+            <input type="text" id="phone" name="phone" placeholder="So Merav can confirm" required>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="date">Preferred date</label>
+            <input type="date" id="date" name="date" required>
+          </div>
+          <div class="field">
+            <label for="time">Preferred time</label>
+            <select id="time" name="time" required>
+              <option value="" disabled selected>Select a time</option>
+              <option>Morning (7–10am)</option>
+              <option>Late morning (10am–12pm)</option>
+              <option>Afternoon (12–4pm)</option>
+              <option>Evening (4–8pm)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="notes">Anything Merav should know? <span style="font-weight:400;color:var(--text-soft)">(optional)</span></label>
+          <textarea id="notes" name="notes" rows="3" placeholder="Goals, injuries, tight spots, questions…"></textarea>
+        </div>
+        <button type="submit" class="btn">Request My Session ⚡</button>
+        <p class="form-note">Submitting opens a pre-filled email to Merav — just hit send.</p>
+        <div id="confirm-msg">✓ Almost there! Your email app opened with the request pre-filled. Just press send and Merav will get back to you shortly.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a class="logo" href="#top">MERAV<b>ABBE</b></a>
+  <p>Personal Training · Assisted Stretching · Recovery</p>
+  <p>New York (spring–fall) · Florida (winter)</p>
+  <p>© <span id="year"></span> Merav Abbe. All rights reserved.</p>
+</footer>
+
+<!-- AI ASSISTANT -->
+<button id="ai-fab" aria-label="Open AI assistant" onclick="toggleBot()">🤖<span class="fab-dot"></span></button>
+<div id="ai-panel" role="dialog" aria-label="AI assistant chat">
+  <div class="ai-head">
+    <div class="ai-avatar">🤖</div>
+    <div>
+      <h4>Merav's AI Assistant</h4>
+      <p><span class="pulse"></span>Online · answers instantly</p>
+    </div>
+    <button class="ai-close" onclick="toggleBot()" aria-label="Close chat">✕</button>
+  </div>
+  <div id="ai-msgs"></div>
+  <div id="ai-chips"></div>
+  <div class="ai-input-row">
+    <input id="ai-input" type="text" placeholder="Ask me anything…" autocomplete="off">
+    <button id="ai-send" aria-label="Send message">➤</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Hero badge reflects current season's location
+  (function () {
+    var m = new Date().getMonth(); // 0=Jan
+    var winter = (m === 11 || m <= 2);
+    document.getElementById('hero-loc-text').textContent = winter
+      ? 'Now booking · Florida (winter season)'
+      : 'Now booking · New York';
+  })();
+
+  // "Book this" links pre-select the matching service in the form
+  document.querySelectorAll('.card-link').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var service = link.dataset.service;
+      document.querySelectorAll('input[name="service"]').forEach(function (r) {
+        if (r.value === service) r.checked = true;
+      });
+    });
+  });
+
+  document.getElementById('booking-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target;
+    var service = f.querySelector('input[name="service"]:checked').value;
+    var location = f.querySelector('input[name="location"]:checked').value;
+    var subject = 'Booking request: ' + service + ' — ' + f.name.value;
+    var body =
+      'Hi Merav,\n\n' +
+      'I\'d like to book a session.\n\n' +
+      'Session: ' + service + '\n' +
+      'Location: ' + location + '\n' +
+      'Name: ' + f.name.value + '\n' +
+      'Contact: ' + f.phone.value + '\n' +
+      'Preferred date: ' + f.date.value + '\n' +
+      'Preferred time: ' + f.time.value + '\n' +
+      (f.notes.value ? 'Notes: ' + f.notes.value + '\n' : '') +
+      '\nThank you!';
+    window.location.href = 'mailto:babbe331@gmail.com?subject=' +
+      encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    document.getElementById('confirm-msg').style.display = 'block';
+  });
+
+  /* ================= AI ASSISTANT ================= */
+  var panel = document.getElementById('ai-panel');
+  var msgsEl = document.getElementById('ai-msgs');
+  var chipsEl = document.getElementById('ai-chips');
+  var inputEl = document.getElementById('ai-input');
+  var botStarted = false;
+
+  var defaultChips = ['Book a session', 'Where is Merav?', 'What does a session cost?', 'Which session is right for me?'];
+
+  function toggleBot() {
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+      if (!botStarted) {
+        botStarted = true;
+        botSay("Hey! 👋 I'm Merav's AI assistant. I can help you pick a session, check where Merav is this season, or get you booked in under a minute.\n\nWhat can I help with?");
+        setChips(defaultChips);
+      }
+      inputEl.focus();
+    }
+  }
+  function openBot() {
+    if (!panel.classList.contains('open')) toggleBot();
+  }
+
+  function addMsg(text, who) {
+    var div = document.createElement('div');
+    div.className = 'msg ' + who;
+    div.textContent = text;
+    msgsEl.appendChild(div);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+    return div;
+  }
+
+  function botSay(text, chips) {
+    var t = document.createElement('div');
+    t.className = 'msg bot';
+    t.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
+    msgsEl.appendChild(t);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+    setTimeout(function () {
+      t.textContent = text;
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+      if (chips) setChips(chips);
+    }, 600 + Math.random() * 500);
+  }
+
+  function setChips(labels) {
+    chipsEl.innerHTML = '';
+    labels.forEach(function (label) {
+      var b = document.createElement('button');
+      b.className = 'chip';
+      b.textContent = label;
+      b.onclick = function () { handleUser(label); };
+      chipsEl.appendChild(b);
+    });
+  }
+
+  function selectService(value) {
+    document.querySelectorAll('input[name="service"]').forEach(function (r) {
+      if (r.value === value) r.checked = true;
+    });
+  }
+
+  function goToBooking() {
+    setTimeout(function () {
+      panel.classList.remove('open');
+      document.getElementById('book').scrollIntoView({ behavior: 'smooth' });
+    }, 1400);
+  }
+
+  function reply(raw) {
+    var q = raw.toLowerCase();
+    var m = new Date().getMonth();
+    var winter = (m === 11 || m <= 2);
+    var nowLoc = winter ? 'Florida ☀️ (winter season)' : 'New York 🗽';
+
+    if (/(book|schedule|appointment|sign ?up|reserve)/.test(q)) {
+      botSay("Easy! 🎉 I'm taking you to the booking form — pick your session type, choose a date and time, and Merav will confirm within the day.");
+      goToBooking();
+      setChips(defaultChips);
+    } else if (/(where|location|florida|new york|ny\b|fl\b|winter|summer|travel|area)/.test(q)) {
+      botSay("Merav splits the year between two home bases:\n\n🗽 New York — spring, summer & fall (roughly April–November)\n🌴 Florida — winter (roughly December–March)\n\nRight now she's in " + nowLoc + ". Want me to take you to booking?", ['Book a session', 'Which session is right for me?']);
+    } else if (/(price|cost|rate|how much|fee|pay)/.test(q)) {
+      botSay("Pricing depends on the session type, length, and whether it's a single session or a package. The best move: send a booking request with what you're interested in, and Merav will reply with exact rates — no obligation. 👍", ['Book a session', 'Where is Merav?']);
+    } else if (/(stretch|flexib|tight|stiff|mobility|range of motion)/.test(q)) {
+      selectService('Assisted Stretching');
+      botSay("Sounds like Assisted Stretching is your match. 🧘 It's table-based, hands-on stretching that safely takes you deeper than you can go on your own — great for tight hips, hamstrings, shoulders, and desk-job stiffness.\n\nI've pre-selected it in the booking form for you!", ['Book a session', 'What does a session cost?']);
+    } else if (/(sore|recover|massage|percussion|gun|pain|ache|relief)/.test(q)) {
+      selectService('Recovery & Percussion Therapy');
+      botSay("Recovery & Percussion Therapy sounds like the one. 💆 Targeted muscle release with percussion tools and hands-on work — ideal after hard training weeks, travel, or general soreness.\n\nI've pre-selected it in the booking form for you!", ['Book a session', 'What does a session cost?']);
+    } else if (/(train|strength|muscle|weight|fit|workout|tone|exercise|cardio)/.test(q)) {
+      selectService('Personal Training');
+      botSay("Personal Training it is. 💪 One-on-one strength and conditioning built around your level and goals — building muscle, protecting joints, and boosting energy.\n\nI've pre-selected it in the booking form for you!", ['Book a session', 'What does a session cost?']);
+    } else if (/(which|right for me|recommend|not sure|help me (choose|pick)|don'?t know)/.test(q)) {
+      botSay("Let's find your fit! Quick guide:\n\n💪 Personal Training — get stronger, build muscle, more energy\n🧘 Assisted Stretching — feeling tight, stiff, or limited\n💆 Recovery — sore muscles, post-workout, need a reset\n\nWhich sounds most like you right now?", ['I want to get stronger', "I'm feeling tight & stiff", "I'm sore & need recovery"]);
+    } else if (/(stronger)/.test(q)) {
+      reply('training');
+      return;
+    } else if (/(hour|time|when|available|schedule\b|weekend|morning|evening)/.test(q)) {
+      botSay("Merav offers flexible scheduling — mornings, evenings, and weekends. Pick your preferred window in the booking form and she'll confirm the exact time with you directly. ⏰", ['Book a session']);
+    } else if (/(home|house|come to me|on.?site|gym|studio)/.test(q)) {
+      botSay("Yes! Merav comes to you — in-home and on-site sessions are her specialty. She brings the table and all the equipment. You just bring you. 🏠", ['Book a session', 'Where is Merav?']);
+    } else if (/(hi|hello|hey|shalom)/.test(q)) {
+      botSay("Hey there! 👋 Great to see you. I can help you pick the right session, check Merav's location this season, or get you booked fast. What would you like to do?", defaultChips);
+    } else if (/(thank|thanks|great|awesome|cool)/.test(q)) {
+      botSay("You're so welcome! 🙌 Anything else I can help with?", defaultChips);
+    } else {
+      botSay("Good question! I'm best at helping with booking, session types, pricing, and Merav's NY/FL schedule. For anything else, drop it in the notes of your booking request and Merav will answer personally. 😊", defaultChips);
+    }
+  }
+
+  function handleUser(text) {
+    if (!text.trim()) return;
+    addMsg(text, 'user');
+    chipsEl.innerHTML = '';
+    reply(text);
+  }
+
+  document.getElementById('ai-send').onclick = function () {
+    handleUser(inputEl.value);
+    inputEl.value = '';
+  };
+  inputEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      handleUser(inputEl.value);
+      inputEl.value = '';
+    }
+  });
+</script>
+
+</body>
+</html>
