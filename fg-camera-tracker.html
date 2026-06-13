@@ -318,24 +318,28 @@ $('fileIn').onchange = e=>{
   try{ video.pause(); }catch(_){}
   video.srcObject=null;
   video.src=URL.createObjectURL(f); video.muted=true; video.playsInline=true; video.preload='auto';
-  $('toast').textContent='Loading "'+f.name+'"…';
+  $('toast').textContent='Reading "'+f.name+'"…';
 
-  let started=false;
+  let started=false, poll, timeout;
+  const cleanup=()=>{ clearInterval(poll); clearTimeout(timeout); };
   const proceed=()=>{
-    if(started || !video.videoWidth) return;   // wait until we actually have a frame size
-    started=true;
+    if(started || !video.videoWidth) return;   // need real frame dimensions first
+    started=true; cleanup();
     $('toast').textContent='';
     $('emptyState').style.display='none';
-    try{ video.currentTime=0.05; }catch(_){}    // nudge a visible frame onto the canvas
     onSourceReady();
     goTo('angle');
+    // coax a still frame onto the screen to tap on (play briefly, then pause)
+    video.play().then(()=>{ setTimeout(()=>{ try{ video.pause(); video.currentTime=0; }catch(_){} }, 60); })
+                .catch(()=>{ try{ video.currentTime=0.05; }catch(_){} });
   };
-  video.onloadedmetadata=proceed;
-  video.onloadeddata=proceed;
-  video.oncanplay=proceed;
-  // safety net: if no event fires (some browsers), poll briefly
-  let tries=0;
-  const poll=setInterval(()=>{ tries++; if(video.videoWidth){ proceed(); } if(started||tries>40) clearInterval(poll); }, 100);
+  video.onloadedmetadata=proceed; video.onloadeddata=proceed; video.oncanplay=proceed;
+  poll=setInterval(()=>{ if(video.videoWidth) proceed(); }, 100);   // safety net for browsers that skip events
+  timeout=setTimeout(()=>{
+    if(started) return; cleanup();
+    $('cUp').classList.remove('sel');
+    $('toast').textContent='Couldn\'t read that clip in the browser. iPhone videos are often .mov / HEVC, which most browsers can\'t open — try an MP4 (H.264), or use the live camera.';
+  }, 6000);
   video.load();
 };
 function onSourceReady(){ sizeBuffers(); startLoop(); }
