@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Field Goal Tracker — Camera</title>
+<title>Kick Track — Camera</title>
 <style>
   :root{
     --bg:#070b12; --panel:#0e1420; --panel2:#141d2e; --line:#22304d;
@@ -38,8 +38,8 @@
 
   /* video stage */
   .stage{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#02040a;line-height:0;
-    box-shadow:0 12px 40px rgba(0,0,0,.4)}
-  video{width:100%;display:block;background:#000;max-height:62vh;object-fit:cover}
+    box-shadow:0 12px 40px rgba(0,0,0,.4);min-height:260px}
+  video{width:100%;height:auto;display:block;background:#000}
   #overlay{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
   .stage.aiming #overlay{cursor:crosshair}
   .emptyState{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -123,7 +123,7 @@
 </head>
 <body>
 <header>
-  <div class="logo"><span class="dot"></span>FIELD&nbsp;GOAL&nbsp;TRACKER <small>CAMERA</small></div>
+  <div class="logo"><span class="dot"></span>KICK&nbsp;TRACK <small>CAMERA</small></div>
   <a class="back" href="field-goal-tracker.html">Simulator →</a>
 </header>
 
@@ -330,6 +330,7 @@ function beginCalibration(){
     ? 'Tap the <b>left goalpost</b>, then the <b>right goalpost</b> on the video above.'
     : 'Tap <b>two points</b> on the video that you know the real distance between (the goalposts = 18.5 ft works great).';
   coach('👆 Tap point 1 of 2','Tap '+(view==='behind'?'the left upright':'your first reference point'));
+  drawOverlay(null);   // clear any old markers even while the video is paused
 }
 $('scaleRedo').onclick=()=>beginCalibration();
 $('scaleBack').onclick=()=>goTo('angle');
@@ -338,6 +339,7 @@ overlay.addEventListener('click', ev=>{
   const r=overlay.getBoundingClientRect();
   const x=(ev.clientX-r.left)/r.width, y=(ev.clientY-r.top)/r.height;
   calPts.push({x,y});
+  drawOverlay(null);   // render pins immediately (video may be paused on uploads)
   if(calPts.length===1){
     coach('👆 Tap point 2 of 2','Now tap '+(view==='behind'?'the right upright':'the second point'));
   }else if(calPts.length===2){
@@ -395,8 +397,13 @@ function startLoop(){
   if(useRVFC) video.requestVideoFrameCallback(rvfcLoop);
   else requestAnimationFrame(rafLoop);
 }
-function rvfcLoop(now,meta){ if(!running) return; process(meta&&meta.mediaTime!=null?meta.mediaTime:performance.now()/1000); video.requestVideoFrameCallback(rvfcLoop); }
-function rafLoop(){ if(!running) return; process(performance.now()/1000); requestAnimationFrame(rafLoop); }
+function rvfcLoop(now,meta){ if(!running) return; process(meta&&meta.mediaTime!=null?meta.mediaTime:nowSec()); video.requestVideoFrameCallback(rvfcLoop); }
+function rafLoop(){ if(!running) return; process(nowSec()); requestAnimationFrame(rafLoop); }
+function nowSec(){ return mode==='upload' ? video.currentTime : performance.now()/1000; }
+// uploaded clip reaching its end should finish the track, not hang
+video.addEventListener('ended', ()=>{ if(tracking) finishTrack(); });
+video.addEventListener('error', ()=>{ if(mode==='upload'){ $('emptyState').style.display='flex';
+  $('toast').textContent='That video format wouldn\'t play in the browser. Try an MP4 (H.264), or use the live camera.'; goTo('source'); } });
 
 function process(tNow){
   if(video.readyState<2) return;
