@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Kick Track — Camera</title>
+<style>
+  :root{
+    --bg:#070b12; --panel:#0e1420; --panel2:#141d2e; --line:#22304d;
+    --txt:#eaf1ff; --dim:#8a99ba; --accent:#19e58f; --accent2:#3bb6ff;
+    --warn:#ff5d6c; --gold:#ffd166; --mono:'SFMono-Regular',Consolas,Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:radial-gradient(1100px 600px at 75% -8%,#13202f 0%,var(--bg) 58%);
+    color:var(--txt);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;min-height:100vh;
+    -webkit-font-smoothing:antialiased}
+  header{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(20,30,50,.55),rgba(8,11,18,.15));position:sticky;top:0;z-index:20;backdrop-filter:blur(8px)}
+  .logo{font-weight:800;font-size:18px;display:flex;align-items:center;gap:9px}
+  .logo .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}
+  .logo small{color:var(--dim);font-weight:600;font-size:11px;letter-spacing:2px}
+  .back{margin-left:auto;color:var(--accent2);font-size:13px;text-decoration:none;font-weight:600}
+
+  .wrap{max-width:680px;margin:0 auto;padding:16px}
+
+  /* progress stepper */
+  .stepper{display:flex;align-items:center;gap:6px;margin:4px 2px 16px}
+  .step{display:flex;align-items:center;gap:8px;flex:1}
+  .step .num{width:26px;height:26px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--dim);flex-shrink:0;transition:.2s}
+  .step .lbl{font-size:12px;color:var(--dim);font-weight:600;white-space:nowrap}
+  .step.active .num{background:var(--accent2);color:#04101f;border-color:transparent}
+  .step.done .num{background:var(--accent);color:#04130b;border-color:transparent}
+  .step.active .lbl,.step.done .lbl{color:var(--txt)}
+  .step .bar{flex:1;height:2px;background:var(--line);border-radius:2px;min-width:8px}
+  .step.done .bar{background:var(--accent)}
+  @media(max-width:560px){.step .lbl{display:none}.step{flex:0}.step .bar{flex:1;min-width:18px}}
+
+  /* video stage */
+  .stage{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#02040a;line-height:0;
+    box-shadow:0 12px 40px rgba(0,0,0,.4);min-height:260px}
+  video{width:100%;height:auto;display:block;background:#000}
+  #overlay{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+  .stage.aiming #overlay{cursor:crosshair}
+  .emptyState{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--dim);gap:10px;text-align:center;padding:24px;line-height:1.5;font-size:14px}
+  .emptyState .big{font-size:44px}
+  .coach{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font-size:14.5px;font-weight:600;line-height:1.4;
+    background:linear-gradient(0deg,rgba(4,8,15,.92),rgba(4,8,15,0));color:#fff;display:none;pointer-events:none}
+  .coach.show{display:block}
+  .coach .sub{font-size:12.5px;color:var(--dim);font-weight:500;margin-top:3px}
+  .pulse{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:7px;background:rgba(255,93,108,.18);
+    border:1px solid var(--warn);color:#ffd2d6;padding:5px 11px;border-radius:20px;font-size:12.5px;font-weight:700}
+  .pulse.show{display:flex}
+  .pulse .rec{width:9px;height:9px;border-radius:50%;background:var(--warn);animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .pulse{pointer-events:none}
+  .verdict{position:absolute;top:12px;right:12px;font-weight:900;font-size:20px;padding:6px 14px;border-radius:10px;opacity:0;transition:.3s;line-height:1;pointer-events:none}
+  .verdict.good{background:rgba(25,229,143,.18);color:var(--accent);border:1px solid var(--accent);opacity:1}
+  .verdict.miss{background:rgba(255,93,108,.18);color:var(--warn);border:1px solid var(--warn);opacity:1}
+
+  /* dock (current action) */
+  .dock{margin-top:16px}
+  .panel{display:none}.panel.show{display:block;animation:fade .25s}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .h{font-size:18px;font-weight:800;margin-bottom:3px}
+  .hsub{font-size:13.5px;color:var(--dim);margin-bottom:14px;line-height:1.45}
+
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .choice{background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:18px 16px;cursor:pointer;
+    transition:.15s;text-align:left}
+  .choice:hover{border-color:var(--accent2);transform:translateY(-2px)}
+  .choice.sel{border-color:var(--accent);background:linear-gradient(180deg,rgba(25,229,143,.08),var(--panel))}
+  .choice .ico{font-size:30px;margin-bottom:8px}
+  .choice .t{font-weight:800;font-size:15px}
+  .choice .d{font-size:12.5px;color:var(--dim);margin-top:4px;line-height:1.4}
+
+  .primary{width:100%;background:linear-gradient(180deg,var(--accent),#0fb874);color:#04130b;border:none;border-radius:14px;
+    padding:18px;font-size:17px;font-weight:800;cursor:pointer;font-family:inherit;transition:.15s;
+    box-shadow:0 8px 22px rgba(25,229,143,.28)}
+  .primary:hover{filter:brightness(1.06)}.primary:active{transform:translateY(1px)}
+  .primary.rec{background:linear-gradient(180deg,#ff5d6c,#d8434f);box-shadow:0 8px 22px rgba(255,93,108,.3);color:#fff}
+  .linkrow{display:flex;gap:18px;justify-content:center;margin-top:14px}
+  .link{background:none;border:none;color:var(--accent2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;padding:4px}
+  .link:hover{text-decoration:underline}
+  .link.muted{color:var(--dim)}
+
+  .distbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:14px}
+  .distbox summary{cursor:pointer;font-size:13px;color:var(--dim);font-weight:600;list-style:none}
+  .distbox summary::-webkit-details-marker{display:none}
+  .distbox[open] summary{margin-bottom:10px;color:var(--txt)}
+  .row{display:flex;gap:10px;align-items:flex-end}.row>*{flex:1}
+  .row label{font-size:11.5px;color:var(--dim);display:block;margin-bottom:5px}
+  input[type=number],select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+    border-radius:9px;padding:10px;font-family:inherit;font-size:14px}
+
+  /* results */
+  .resultHead{font-size:19px;font-weight:800;margin-bottom:14px;line-height:1.35}
+  .resultHead .em{color:var(--accent)}
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:480px){.metrics{grid-template-columns:repeat(2,1fr)}}
+  .tile{background:linear-gradient(180deg,var(--panel2),#0b1018);border:1px solid var(--line);border-radius:13px;padding:13px}
+  .tile .k{font-size:10px;letter-spacing:1.2px;color:var(--dim);text-transform:uppercase;font-weight:700}
+  .tile .v{font-family:var(--mono);font-size:25px;font-weight:700;margin-top:5px;line-height:1}
+  .tile .u{font-size:12px;color:var(--dim);margin-left:2px}
+  .tile.hi .v{color:var(--accent)}.tile.b .v{color:var(--accent2)}.tile.g .v{color:var(--gold)}
+
+  /* extras */
+  details.box{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin-top:14px}
+  details.box summary{cursor:pointer;font-weight:700;font-size:13.5px;list-style:none;display:flex;justify-content:space-between}
+  details.box summary::-webkit-details-marker{display:none}
+  details.box summary::after{content:'⌄';color:var(--dim)}
+  details.box[open] summary::after{content:'⌃'}
+  .seg{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);margin:14px 0 6px}
+  .seg b{color:var(--txt);font-family:var(--mono)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  ol{margin:10px 0 0 18px;font-size:13px;color:var(--dim);line-height:1.7}ol b{color:var(--txt)}
+  .disc{font-size:11.5px;color:var(--dim);line-height:1.55;margin-top:8px}
+  .toast{font-size:13px;color:var(--accent2);text-align:center;margin-top:12px;min-height:16px}
+  footer{color:var(--dim);font-size:11.5px;text-align:center;padding:24px 18px;line-height:1.6;max-width:620px;margin:0 auto}
+  footer b{color:var(--dim)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><span class="dot"></span>KICK&nbsp;TRACK <small>CAMERA</small></div>
+  <a class="back" href="field-goal-tracker.html">Simulator →</a>
+</header>
+
+<div class="wrap">
+  <!-- progress -->
+  <div class="stepper" id="stepper">
+    <div class="step active" data-s="source"><span class="num">1</span><span class="lbl">Camera</span><span class="bar"></span></div>
+    <div class="step" data-s="angle"><span class="num">2</span><span class="lbl">Angle</span><span class="bar"></span></div>
+    <div class="step" data-s="scale"><span class="num">3</span><span class="lbl">Scale</span><span class="bar"></span></div>
+    <div class="step" data-s="ready"><span class="num">4</span><span class="lbl">Kick</span></div>
+  </div>
+
+  <!-- video stage -->
+  <div class="stage" id="stage">
+    <video id="video" playsinline muted></video>
+    <canvas id="overlay"></canvas>
+    <div class="emptyState" id="emptyState"><div class="big">🏈</div><div>Your camera or video shows up here.<br>Pick how you want to film below.</div></div>
+    <div class="pulse" id="pulse"><span class="rec"></span>TRACKING — KICK!</div>
+    <div class="verdict" id="verdict"></div>
+    <div class="coach" id="coach"></div>
+  </div>
+
+  <!-- action dock -->
+  <div class="dock">
+
+    <!-- STEP 1: source -->
+    <div class="panel show" id="panelSource">
+      <div class="h">How do you want to film?</div>
+      <div class="hsub">Track live through your camera, or upload a clip you already filmed. A clip is usually steadier and more accurate.</div>
+      <div class="choices">
+        <div class="choice" id="cCam"><div class="ico">📷</div><div class="t">Use my camera</div><div class="d">Track kicks live, right now</div></div>
+        <div class="choice" id="cUp"><div class="ico">🎞️</div><div class="t">Upload a clip</div><div class="d">Pick a video from your device</div></div>
+      </div>
+      <input type="file" id="fileIn" accept="video/*"
+        style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;left:-9999px" />
+      <div class="toast" id="toast"></div>
+    </div>
+
+    <!-- STEP 2: angle -->
+    <div class="panel" id="panelAngle">
+      <div class="h">Where's the camera?</div>
+      <div class="hsub">This tells the app which numbers it can measure.</div>
+      <div class="choices">
+        <div class="choice" id="aSide"><div class="ico">📐</div><div class="t">From the side</div><div class="d">Speed, launch angle, apex height, hang time</div></div>
+        <div class="choice" id="aBehind"><div class="ico">🎯</div><div class="t">From behind</div><div class="d">Left / right and GOOD or NO GOOD</div></div>
+      </div>
+      <div class="linkrow"><button class="link muted" id="angleBack">← back</button></div>
+    </div>
+
+    <!-- STEP 3: scale -->
+    <div class="panel" id="panelScale">
+      <div class="h">Show it the size of the field</div>
+      <div class="hsub" id="scaleSub">Tap the <b>two goalposts</b> on the video above. That's how it turns pixels into real yards.</div>
+      <details class="distbox" id="distBox">
+        <summary>Not using the goalposts? Set your own distance</summary>
+        <div class="row">
+          <div><label>Distance between your two taps</label><input type="number" id="refDist" value="18.5" step="0.5" min="1" /></div>
+          <div style="flex:.6"><label>Units</label><select id="refUnit"><option value="ft">feet</option><option value="yd">yards</option><option value="m">metres</option></select></div>
+        </div>
+        <div class="disc" style="margin-top:8px">Goalposts are <b>18.5&nbsp;ft</b> apart. Or tap two yard lines and enter the yards between them.</div>
+      </details>
+      <div class="linkrow">
+        <button class="link" id="scaleRedo">↻ start taps over</button>
+        <button class="link muted" id="scaleBack">← back</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: ready / track -->
+    <div class="panel" id="panelReady">
+      <button class="primary" id="armBtn">🏈 &nbsp;Track my kick</button>
+      <div class="linkrow">
+        <button class="link" id="redoScale">↻ re-set scale</button>
+        <button class="link" id="changeAngle">↔ change angle</button>
+        <button class="link muted" id="newSource">⤺ new source</button>
+      </div>
+      <div class="toast" id="toast2">Line up the kick so the whole flight is in frame, then tap Track.</div>
+    </div>
+
+    <!-- tracking -->
+    <div class="panel" id="panelTracking">
+      <button class="primary rec" id="stopTrack">■ &nbsp;Stop &amp; show result</button>
+      <div class="toast">It stops on its own when the ball leaves the frame.</div>
+    </div>
+
+    <!-- results -->
+    <div class="panel" id="panelResult">
+      <div class="resultHead" id="resultHead"></div>
+      <div class="metrics" id="metrics"></div>
+      <button class="primary" id="trackAnother" style="margin-top:16px">🏈 &nbsp;Track another</button>
+    </div>
+  </div>
+
+  <!-- fine tune + tips -->
+  <details class="box" id="tuneBox">
+    <summary>Fine-tune tracking</summary>
+    <div class="seg"><span>Sensitivity (raise if it misses the ball)</span><b><span id="vSens">28</span></b></div>
+    <input type="range" id="sens" min="10" max="70" value="28" />
+    <div class="seg"><span>Ignore bottom of frame (hides your leg/body)</span><b><span id="vIgn">22</span>%</b></div>
+    <input type="range" id="ign" min="0" max="60" value="22" />
+  </details>
+
+  <details class="box">
+    <summary>Tips for a clean track</summary>
+    <ol>
+      <li><b>Prop the phone up and don't move it</b> — a still camera is the #1 thing for good numbers.</li>
+      <li>Get the <b>whole flight in frame</b>, with plain background (sky is perfect) behind the arc.</li>
+      <li><b>From the side</b> = speed/angle/apex/hang. <b>From behind</b> = left/right + make or miss.</li>
+      <li>If it follows your leg instead of the ball, open <b>Fine-tune</b> and nudge both sliders up.</li>
+    </ol>
+  </details>
+</div>
+
+<footer>
+  This is <b>camera estimation, not radar.</b> A phone can get launch angle, hang time, apex, rough ball speed, and
+  left/right pretty well — but not spin rate, and accuracy depends on a steady camera and an honest scale. Real TrackMan
+  is a $10k+ radar; this is a free, in-browser take in the same spirit.
+</footer>
+
+<script>
+/* ============================================================
+   Field Goal Tracker — Camera (motion-tracking) estimator
+   Guided UI flow + vision engine
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const video=$('video'), overlay=$('overlay'), octx=overlay.getContext('2d'), stage=$('stage');
+
+// processing buffer (downscaled for speed)
+const proc=document.createElement('canvas');
+const pctx=proc.getContext('2d',{willReadFrequently:true});
+const PW=320; let PH=180;
+
+let mode='live', view='side', facing='environment';
+let stream=null, running=false, tracking=false;
+let prevGray=null, path=[], t0=0, lostFrames=0, hadBall=false;
+let calPts=[], calibrating=false, feetPerProcPx=null;
+const useRVFC='requestVideoFrameCallback' in HTMLVideoElement.prototype;
+const MPH_PER_FTPS=0.681818, unitToFt={ft:1,yd:3,m:3.28084};
+
+/* ===================== STEP FLOW ===================== */
+const STEPS=['source','angle','scale','ready'];
+let step='source';
+function goTo(s){
+  step=s;
+  ['Source','Angle','Scale','Ready','Tracking','Result'].forEach(p=>$('panel'+p).classList.remove('show'));
+  if(s==='source') $('panelSource').classList.add('show');
+  else if(s==='angle') $('panelAngle').classList.add('show');
+  else if(s==='scale'){ $('panelScale').classList.add('show'); beginCalibration(); }
+  else if(s==='ready') $('panelReady').classList.add('show');
+  else if(s==='tracking') $('panelTracking').classList.add('show');
+  else if(s==='result') $('panelResult').classList.add('show');
+  updateStepper(s);
+  stage.classList.toggle('aiming', s==='scale');
+  if(s!=='scale'){ calibrating=false; hideCoach(); }
+}
+function updateStepper(s){
+  const order={source:0,angle:1,scale:2,ready:3,tracking:3,result:3};
+  const idx=order[s];
+  document.querySelectorAll('.stepper .step').forEach((el,i)=>{
+    el.classList.toggle('active', i===idx && s!=='result');
+    el.classList.toggle('done', i<idx || s==='result' || (i<=idx && s==='result'));
+  });
+  // mark earlier ones done
+  document.querySelectorAll('.stepper .step').forEach((el,i)=>{ if(i<idx) el.classList.add('done'); });
+}
+
+/* coaching banner */
+function coach(main,sub){ const c=$('coach'); c.innerHTML=main+(sub?'<div class="sub">'+sub+'</div>':''); c.classList.add('show'); }
+function hideCoach(){ $('coach').classList.remove('show'); }
+
+/* ===================== STEP 1: SOURCE ===================== */
+$('cCam').onclick = async ()=>{
+  mode='live'; select('cCam','cUp');
+  await startCamera();
+};
+$('cUp').onclick = ()=>{ mode='upload'; select('cUp','cCam'); $('toast').textContent='Opening your files…'; $('fileIn').click(); };
+function select(on,off){ $(on).classList.add('sel'); $(off).classList.remove('sel'); }
+
+async function startCamera(){
+  try{
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:false});
+    video.srcObject=stream; video.removeAttribute('src'); await video.play();
+    $('emptyState').style.display='none';
+    onSourceReady(); goTo('angle');
+  }catch(e){ $('toast').textContent='Could not open camera ('+e.message+'). Try "Upload a clip" instead.'; }
+}
+$('fileIn').onchange = e=>{
+  const f = e.target.files && e.target.files[0];
+  if(!f){ $('toast').textContent=''; return; }
+  mode='upload';
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+  try{ video.pause(); }catch(_){}
+  video.srcObject=null;
+  video.src=URL.createObjectURL(f); video.muted=true; video.playsInline=true; video.preload='auto';
+  $('toast').textContent='Reading "'+f.name+'"…';
+
+  let started=false, poll, timeout;
+  const cleanup=()=>{ clearInterval(poll); clearTimeout(timeout); };
+  const proceed=()=>{
+    if(started || !video.videoWidth) return;   // need real frame dimensions first
+    started=true; cleanup();
+    $('toast').textContent='';
+    $('emptyState').style.display='none';
+    onSourceReady();
+    goTo('angle');
+    // coax a still frame onto the screen to tap on (play briefly, then pause)
+    video.play().then(()=>{ setTimeout(()=>{ try{ video.pause(); video.currentTime=0; }catch(_){} }, 60); })
+                .catch(()=>{ try{ video.currentTime=0.05; }catch(_){} });
+  };
+  video.onloadedmetadata=proceed; video.onloadeddata=proceed; video.oncanplay=proceed;
+  poll=setInterval(()=>{ if(video.videoWidth) proceed(); }, 100);   // safety net for browsers that skip events
+  timeout=setTimeout(()=>{
+    if(started) return; cleanup();
+    $('cUp').classList.remove('sel');
+    $('toast').textContent='Couldn\'t read that clip in the browser. iPhone videos are often .mov / HEVC, which most browsers can\'t open — try an MP4 (H.264), or use the live camera.';
+  }, 6000);
+  video.load();
+};
+function onSourceReady(){ sizeBuffers(); startLoop(); }
+
+/* ===================== STEP 2: ANGLE ===================== */
+$('aSide').onclick=()=>{ view='side'; select('aSide','aBehind'); rebuildMetricTiles(); goTo('scale'); };
+$('aBehind').onclick=()=>{ view='behind'; select('aBehind','aSide'); rebuildMetricTiles(); goTo('scale'); };
+$('angleBack').onclick=()=>goTo('source');
+
+/* ===================== STEP 3: SCALE ===================== */
+function beginCalibration(){
+  calibrating=true; calPts=[]; feetPerProcPx=null;
+  $('scaleSub').innerHTML = view==='behind'
+    ? 'Tap the <b>left goalpost</b>, then the <b>right goalpost</b> on the video above.'
+    : 'Tap <b>two points</b> on the video that you know the real distance between (the goalposts = 18.5 ft works great).';
+  coach('👆 Tap point 1 of 2','Tap '+(view==='behind'?'the left upright':'your first reference point'));
+  drawOverlay(null);   // clear any old markers even while the video is paused
+}
+$('scaleRedo').onclick=()=>beginCalibration();
+$('scaleBack').onclick=()=>goTo('angle');
+overlay.addEventListener('click', ev=>{
+  if(!calibrating) return;
+  const r=overlay.getBoundingClientRect();
+  const x=(ev.clientX-r.left)/r.width, y=(ev.clientY-r.top)/r.height;
+  calPts.push({x,y});
+  drawOverlay(null);   // render pins immediately (video may be paused on uploads)
+  if(calPts.length===1){
+    coach('👆 Tap point 2 of 2','Now tap '+(view==='behind'?'the right upright':'the second point'));
+  }else if(calPts.length===2){
+    calibrating=false;
+    const dx=(calPts[1].x-calPts[0].x)*PW, dy=(calPts[1].y-calPts[0].y)*PH;
+    const pxDist=Math.hypot(dx,dy)||1;
+    const realFt=(+$('refDist').value)*unitToFt[$('refUnit').value];
+    feetPerProcPx=realFt/pxDist;
+    coach('✅ Scale locked in','You\'re ready — line up the kick.');
+    setTimeout(()=>{ goTo('ready'); }, 700);
+  }
+});
+
+/* ===================== STEP 4: TRACK ===================== */
+$('armBtn').onclick=()=>{
+  if(feetPerProcPx==null){ goTo('scale'); return; }
+  path=[]; hadBall=false; lostFrames=0; tracking=true; t0=0;
+  resetVerdict();
+  goTo('tracking');
+  $('pulse').classList.add('show'); hideCoach();
+  if(mode==='upload'){ video.currentTime=0; video.play(); }
+};
+$('stopTrack').onclick=()=>finishTrack();
+$('redoScale').onclick=()=>goTo('scale');
+$('changeAngle').onclick=()=>goTo('angle');
+$('newSource').onclick=()=>{ stopEverything(); goTo('source'); };
+$('trackAnother').onclick=()=>{ resetVerdict(); goTo('ready'); };
+
+function finishTrack(){
+  tracking=false; $('pulse').classList.remove('show');
+  if(mode==='upload') video.pause();
+  if(path.length<5){
+    goTo('ready');
+    $('toast2').textContent='Hmm, didn\'t catch enough of the ball. Try raising Sensitivity (Fine-tune) or reframing, then Track again.';
+    return;
+  }
+  const t1=path[0].t; path.forEach(p=>p.t-=t1);
+  compute();
+  goTo('result');
+}
+
+/* ===================== VISION ENGINE ===================== */
+$('sens').oninput=e=>$('vSens').textContent=e.target.value;
+$('ign').oninput =e=>$('vIgn').textContent=e.target.value;
+
+function sizeBuffers(){
+  const vw=video.videoWidth||1280, vh=video.videoHeight||720;
+  PH=Math.round(PW*vh/vw); proc.width=PW; proc.height=PH;
+  overlay.width=overlay.clientWidth; overlay.height=overlay.clientHeight||(overlay.clientWidth*vh/vw);
+}
+window.addEventListener('resize',()=>{ if(video.videoWidth){ overlay.width=overlay.clientWidth; overlay.height=overlay.clientHeight; } });
+
+function startLoop(){
+  if(running) return; running=true;
+  if(useRVFC) video.requestVideoFrameCallback(rvfcLoop);
+  else requestAnimationFrame(rafLoop);
+}
+function rvfcLoop(now,meta){ if(!running) return; process(meta&&meta.mediaTime!=null?meta.mediaTime:nowSec()); video.requestVideoFrameCallback(rvfcLoop); }
+function rafLoop(){ if(!running) return; process(nowSec()); requestAnimationFrame(rafLoop); }
+function nowSec(){ return mode==='upload' ? video.currentTime : performance.now()/1000; }
+// uploaded clip reaching its end should finish the track, not hang
+video.addEventListener('ended', ()=>{ if(tracking) finishTrack(); });
+video.addEventListener('error', ()=>{ if(mode==='upload'){ $('emptyState').style.display='flex';
+  $('toast').textContent='That video format wouldn\'t play in the browser. Try an MP4 (H.264), or use the live camera.'; goTo('source'); } });
+
+function process(tNow){
+  if(video.readyState<2) return;
+  pctx.drawImage(video,0,0,PW,PH);
+  const img=pctx.getImageData(0,0,PW,PH).data;
+  const gray=new Float32Array(PW*PH);
+  for(let i=0,j=0;i<img.length;i+=4,j++) gray[j]=img[i]*0.3+img[i+1]*0.59+img[i+2]*0.11;
+  const thr=+$('sens').value;
+  const maxRow=PH-Math.round(PH*(+$('ign').value)/100);
+  let sx=0,sy=0,sw=0,cnt=0;
+  if(prevGray){
+    for(let y=0;y<maxRow;y++) for(let x=0;x<PW;x++){
+      const idx=y*PW+x, d=Math.abs(gray[idx]-prevGray[idx]);
+      if(d>thr){ sx+=x*d; sy+=y*d; sw+=d; cnt++; }
+    }
+  }
+  prevGray=gray;
+  const ballSeen=cnt>=4 && cnt<PW*maxRow*0.35 && sw>0;
+  let cx=null,cy=null; if(ballSeen){ cx=sx/sw; cy=sy/sw; }
+  if(tracking){
+    if(ballSeen){ path.push({x:cx,y:cy,t:tNow-t0}); hadBall=true; lostFrames=0; }
+    else if(hadBall){ lostFrames++; if(lostFrames>14 && path.length>4) finishTrack(); }
+  }
+  drawOverlay(cx,cy);
+}
+
+function drawOverlay(cx,cy){
+  const W=overlay.width=overlay.clientWidth, H=overlay.height=overlay.clientHeight||(W*PH/PW);
+  octx.clearRect(0,0,W,H);
+  const sX=v=>v/PW*W, sY=v=>v/PH*H;
+  if(calPts.length){
+    octx.lineWidth=2; octx.strokeStyle='#ffd166'; octx.fillStyle='#ffd166';
+    if(calPts.length===2){ octx.beginPath(); octx.moveTo(calPts[0].x*W,calPts[0].y*H); octx.lineTo(calPts[1].x*W,calPts[1].y*H); octx.stroke(); }
+    calPts.forEach((p,i)=>{ octx.beginPath(); octx.arc(p.x*W,p.y*H,8,0,7); octx.fill();
+      octx.fillStyle='#04130b'; octx.font='bold 11px sans-serif'; octx.textAlign='center'; octx.textBaseline='middle';
+      octx.fillText(i+1,p.x*W,p.y*H); octx.fillStyle='#ffd166'; });
+  }
+  if(path.length>1){
+    octx.strokeStyle='#19e58f'; octx.lineWidth=4; octx.lineJoin='round'; octx.shadowColor='rgba(25,229,143,.6)'; octx.shadowBlur=8;
+    octx.beginPath(); path.forEach((p,i)=> i?octx.lineTo(sX(p.x),sY(p.y)):octx.moveTo(sX(p.x),sY(p.y))); octx.stroke();
+    octx.shadowBlur=0;
+  }
+  if(cx!=null && (tracking||running)){
+    octx.fillStyle='#fff'; octx.beginPath(); octx.arc(sX(cx),sY(cy),6,0,7); octx.fill();
+    octx.strokeStyle=tracking?'#19e58f':'#3bb6ff'; octx.lineWidth=3; octx.stroke();
+  }
+}
+
+/* ===================== METRICS ===================== */
+function compute(){
+  const fpp=feetPerProcPx, p0=path[0], pe=path[path.length-1];
+  const F=path.map(p=>({fx:(p.x-p0.x)*fpp, fy:(p0.y-p.y)*fpp, t:p.t}));
+  const k=Math.min(6,F.length);
+  const slope=key=>{ let st=0,sv=0,stt=0,stv=0; for(let i=0;i<k;i++){const t=F[i].t,v=F[i][key]; st+=t;sv+=v;stt+=t*t;stv+=t*v;} const den=(k*stt-st*st)||1e-6; return (k*stv-st*sv)/den; };
+  const vx=slope('fx'), vy=slope('fy');
+  const speed=Math.hypot(vx,vy)*MPH_PER_FTPS;
+  const angle=Math.atan2(vy,Math.abs(vx))*180/Math.PI;
+  const apex=Math.max(...F.map(p=>p.fy));
+  const hang=pe.t, carry=Math.abs(pe.fx)/3;
+
+  if(view==='side'){
+    setTile('mSpeed',speed.toFixed(0)); setTile('mAngle',angle.toFixed(0));
+    setTile('mHang',hang.toFixed(2)); setTile('mApex',apex.toFixed(0));
+    setTile('mCarry',carry.toFixed(0)); setTile('mFrames',path.length);
+    $('resultHead').innerHTML='💥 <span class="em">'+speed.toFixed(0)+' mph</span> off the foot, '
+      +angle.toFixed(0)+'° launch — peaked at '+apex.toFixed(0)+' ft with '+hang.toFixed(1)+'s hang time.';
+  }else{
+    behindResult(F);
+  }
+}
+function behindResult(F){
+  const apex=Math.max(...F.map(p=>p.fy));
+  setTile('mApex',apex.toFixed(0)); setTile('mFrames',path.length);
+  if(calPts.length<2){ $('resultHead').textContent='Behind view needs the two uprights marked.'; return; }
+  const Lx=Math.min(calPts[0].x,calPts[1].x)*PW, Rx=Math.max(calPts[0].x,calPts[1].x)*PW;
+  const barY=(calPts[0].y+calPts[1].y)/2*PH, cx=(Lx+Rx)/2;
+  let best=null; for(const p of path){ if(p.x>Lx-10&&p.x<Rx+10){ if(!best||p.y<best.y) best=p; } }
+  const cr=best||path[path.length-1];
+  const offFt=(cr.x-cx)*feetPerProcPx;
+  const inW=cr.x>=Lx&&cr.x<=Rx, over=cr.y<=barY, good=inW&&over;
+  setTile('mHang',(path[path.length-1].t).toFixed(2));
+  setTile('mCarry',Math.abs(offFt).toFixed(1));
+  showVerdict(good, good?'GOOD':(!inW?(offFt<0?'WIDE LEFT':'WIDE RIGHT'):'SHORT'));
+  $('resultHead').innerHTML = good
+    ? '✅ <span class="em">GOOD!</span> Through the uprights, '+Math.abs(offFt).toFixed(1)+' ft from dead center.'
+    : '❌ <span style="color:var(--warn)">NO GOOD</span> — '+(!inW?(offFt<0?'wide left':'wide right'):'under the bar')+', '+Math.abs(offFt).toFixed(1)+' ft off center.';
+}
+
+function rebuildMetricTiles(){
+  $('metrics').innerHTML = view==='side' ? `
+    <div class="tile hi"><div class="k">Ball Speed</div><div class="v"><span id="mSpeed">–</span><span class="u">mph</span></div></div>
+    <div class="tile b"><div class="k">Launch Angle</div><div class="v"><span id="mAngle">–</span><span class="u">°</span></div></div>
+    <div class="tile"><div class="k">Hang Time</div><div class="v"><span id="mHang">–</span><span class="u">s</span></div></div>
+    <div class="tile b"><div class="k">Apex Height</div><div class="v"><span id="mApex">–</span><span class="u">ft</span></div></div>
+    <div class="tile"><div class="k">Carry (tracked)</div><div class="v"><span id="mCarry">–</span><span class="u">yd</span></div></div>
+    <div class="tile g"><div class="k">Frames</div><div class="v"><span id="mFrames">–</span></div></div>` : `
+    <div class="tile g"><div class="k">Off Center</div><div class="v"><span id="mCarry">–</span><span class="u">ft</span></div></div>
+    <div class="tile b"><div class="k">Apex Height</div><div class="v"><span id="mApex">–</span><span class="u">ft</span></div></div>
+    <div class="tile"><div class="k">Hang Time</div><div class="v"><span id="mHang">–</span><span class="u">s</span></div></div>
+    <div class="tile g"><div class="k">Frames</div><div class="v"><span id="mFrames">–</span></div></div>`;
+}
+function setTile(id,v){ const e=$(id); if(e) e.textContent=v; }
+function showVerdict(good,txt){ const v=$('verdict'); v.textContent=good?'GOOD':('NO GOOD'); v.className='verdict '+(good?'good':'miss'); }
+function resetVerdict(){ const v=$('verdict'); v.className='verdict'; v.textContent=''; }
+
+function stopEverything(){
+  running=false; tracking=false;
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+  video.srcObject=null; video.removeAttribute('src'); prevGray=null; path=[]; calPts=[]; feetPerProcPx=null;
+  $('pulse').classList.remove('show'); $('emptyState').style.display='flex';
+  $('cCam').classList.remove('sel'); $('cUp').classList.remove('sel');
+  octx.clearRect(0,0,overlay.width||0,overlay.height||0);
+}
+
+/* init */
+rebuildMetricTiles();
+if(!navigator.mediaDevices){ $('toast').textContent='This browser can\'t open the camera — use "Upload a clip".'; }
+</script>
+</body>
+</html>
