@@ -243,6 +243,7 @@
   <button class="topbtn" onclick="exportBackup()">⬇ Backup</button>
   <button class="topbtn" onclick="document.getElementById('restoreFile').click()">⬆ Restore</button>
   <input type="file" id="restoreFile" accept="application/json" style="display:none" onchange="restoreBackup(event)">
+  <button class="topbtn" onclick="openSlackSettings()" title="Connect Slack">🔗 Slack</button>
   <button class="topbtn" onclick="lockApp()" title="Lock this app">🔒 Lock</button>
 </header>
 
@@ -297,7 +298,8 @@
           <div class="grid2">
             <label class="field">
               <span class="lab">Customer</span>
-              <select id="saleCustomer"></select>
+              <select id="saleCustomer" onchange="saleCustomerChange()"></select>
+              <div class="hint" id="saleTierInfo"></div>
             </label>
             <label class="field">
               <span class="lab">Needed by (delivery date)</span>
@@ -339,7 +341,10 @@
   <section class="page" id="page-orders">
     <div class="pagehead-row">
       <div><h2 class="pagehead">Orders</h2><p>Everything you've sold, and what still needs buying.</p></div>
-      <button class="btn" onclick="go('newsale')">＋ New Sale</button>
+      <div class="row-flex">
+        <button class="btn secondary" onclick="openSlackModal()">📥 From Slack message</button>
+        <button class="btn" onclick="go('newsale')">＋ New Sale</button>
+      </div>
     </div>
     <div class="toolbar">
       <div class="search"><input id="orderSearch" placeholder="Search orders…" oninput="renderOrders()"></div>
@@ -399,6 +404,22 @@
         <button class="btn secondary" onclick="exportPricingCSV()">⬇ Export price list</button>
       </div>
     </div>
+
+    <div class="card" id="tierCard">
+      <h3>🏷️ Your three customer prices — markup above cost</h3>
+      <p class="muted" style="margin-bottom:14px;font-size:13.5px">
+        Each customer is set to one of these tiers. The prices in the table are your <strong>cost plus the markup</strong>.
+        Change a % here and every price (and every customer on that tier) updates instantly.</p>
+      <div class="grid3">
+        <label class="field" style="margin-bottom:0"><span class="lab">High buyer markup %</span>
+          <input type="number" id="tierHigh" min="0" step="any" oninput="saveTierMarkups()"></label>
+        <label class="field" style="margin-bottom:0"><span class="lab">Medium buyer markup %</span>
+          <input type="number" id="tierMedium" min="0" step="any" oninput="saveTierMarkups()"></label>
+        <label class="field" style="margin-bottom:0"><span class="lab">Low buyer markup %</span>
+          <input type="number" id="tierLow" min="0" step="any" oninput="saveTierMarkups()"></label>
+      </div>
+    </div>
+
     <div class="toolbar">
       <div class="search"><input id="priceSearch" placeholder="Search products…" oninput="renderPricing()"></div>
     </div>
@@ -440,13 +461,28 @@
   <!-- ============ CUSTOMERS ============ -->
   <section class="page" id="page-customers">
     <div class="pagehead-row">
-      <div><h2 class="pagehead">Customers</h2><p>The companies you sell to.</p></div>
-      <button class="btn" onclick="openCustomerModal()">＋ Add Customer</button>
+      <div><h2 class="pagehead">Customers</h2><p>The companies you sell to, and the pricing tier each one gets.</p></div>
+      <div class="row-flex">
+        <button class="btn secondary" onclick="document.getElementById('custFile').click()">⬆ Import customers</button>
+        <input type="file" id="custFile" accept=".csv,text/csv" multiple style="display:none" onchange="importCustomerCSV(event)">
+        <button class="btn" onclick="openCustomerModal()">＋ Add Customer</button>
+      </div>
     </div>
     <div class="toolbar">
       <div class="search"><input id="custSearch" placeholder="Search customers…" oninput="renderCustomers()"></div>
     </div>
     <div class="table-wrap" id="custTableWrap"></div>
+    <details class="help">
+      <summary>How do I import customers (with their margins)?</summary>
+      <div>
+        Save your customer sheet as a <code class="k">.csv</code> and click <strong>Import customers</strong>.
+        Recognized columns: <code class="k">company</code>/<code class="k">name</code>, <code class="k">contact</code>,
+        <code class="k">phone</code>, <code class="k">email</code>, <code class="k">notes</code>, and either a
+        <code class="k">tier</code> column (<em>high</em>/<em>medium</em>/<em>low</em>) or a
+        <code class="k">markup</code>/<code class="k">margin</code> number (e.g. <em>40</em>) for a custom % above cost.
+        Matching names are updated; new ones are added.
+      </div>
+    </details>
   </section>
 
 </main>
@@ -499,6 +535,17 @@
         <label class="field"><span class="lab">Phone</span><input id="custPhone"></label>
       </div>
       <label class="field"><span class="lab">Email</span><input id="custEmail" type="email"></label>
+      <div class="grid2">
+        <label class="field"><span class="lab">Pricing tier</span>
+          <select id="custTier" onchange="custTierChange()">
+            <option value="high">High buyer</option>
+            <option value="medium">Medium buyer</option>
+            <option value="low">Low buyer</option>
+            <option value="custom">Custom %…</option>
+          </select></label>
+        <label class="field"><span class="lab">Markup % above cost</span>
+          <input id="custMarkup" type="number" min="0" step="any"></label>
+      </div>
       <label class="field" style="margin-bottom:0"><span class="lab">Notes</span>
         <textarea id="custNotes" rows="2"></textarea></label>
     </div>
@@ -506,6 +553,51 @@
       <button class="btn danger small" id="custDeleteBtn" style="margin-right:auto;display:none" onclick="deleteCustomer()">Delete</button>
       <button class="btn secondary" onclick="closeModal('customerModal')">Cancel</button>
       <button class="btn" onclick="saveCustomer()">Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLACK / TEXT ORDER MODAL ============ -->
+<div class="modal-bg" id="slackModal">
+  <div class="modal">
+    <div class="mhead"><h3>📥 Add order from a Slack message</h3><button class="xbtn" onclick="closeModal('slackModal')">×</button></div>
+    <div class="mbody">
+      <p class="muted" style="font-size:13.5px;margin-bottom:10px">
+        Paste the message exactly as it comes in on Slack. <strong>First line is the customer</strong>,
+        then one line per item — like <code class="k">three heirloom tomatoes</code>.</p>
+      <textarea id="slackText" rows="6" placeholder="David&#10;one heirloom tomato&#10;three roma tomatoes&#10;two cases romaine" oninput="previewSlack()" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px"></textarea>
+      <div id="slackPreview" style="margin-top:12px"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn secondary" onclick="closeModal('slackModal')">Cancel</button>
+      <button class="btn" id="slackCreateBtn" onclick="createSlackOrder()">Create order</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SLACK CONNECTION SETTINGS ============ -->
+<div class="modal-bg" id="slackSettingsModal">
+  <div class="modal">
+    <div class="mhead"><h3>🔗 Connect Slack</h3><button class="xbtn" onclick="closeModal('slackSettingsModal')">×</button></div>
+    <div class="mbody">
+      <p class="muted" style="font-size:13.5px;margin-bottom:14px">
+        Once the connector is set up (see <code class="k">slack-connector/README</code>), paste its web address and key here.
+        After that, orders posted in your Slack channel show up automatically — no extra steps.</p>
+      <label class="field"><span class="lab">Connector web address</span>
+        <input id="slackUrl" placeholder="https://your-connector.onrender.com"></label>
+      <label class="field"><span class="lab">Access key</span>
+        <input id="slackKey" placeholder="the APP_KEY you set on the connector"></label>
+      <label class="field" style="margin-bottom:0;display:flex;align-items:center;gap:8px;flex-direction:row">
+        <input type="checkbox" id="slackAuto" style="width:auto"> <span class="lab" style="margin:0">Automatically pull new Slack orders</span></label>
+      <details class="help"><summary>How does this work?</summary>
+        <div>A tiny always-on “connector” listens to your Slack channel. When someone posts an order, it parses it
+        and this app pulls it in automatically every 30 seconds while open (and catches up on anything posted while
+        it was closed). Setup steps are in the <code class="k">slack-connector</code> folder of your project.</div>
+      </details>
+    </div>
+    <div class="mfoot">
+      <button class="btn secondary" onclick="pollSlack(true)">Check now</button>
+      <button class="btn" onclick="saveSlackSettings()">Save</button>
     </div>
   </div>
 </div>
@@ -622,14 +714,21 @@ function checkAuth(){
 }
 
 const DB_KEY = "farmlind_db_v1";
-let db = { products:[], customers:[], sales:[] };
+let db = { products:[], customers:[], sales:[], tiers:null };
 let saleLines = [];          // working line items for New Sale
 let editingSaleId = null;    // if editing an existing order
+
+/* default customer pricing tiers — markup % ABOVE cost (editable in the Pricing tab) */
+const DEFAULT_TIERS = { high:{name:"High buyer",markup:40}, medium:{name:"Medium buyer",markup:30}, low:{name:"Low buyer",markup:15} };
 
 /* ---------- storage ---------- */
 function load(){
   try{ const raw = localStorage.getItem(DB_KEY); if(raw) db = JSON.parse(raw); }catch(e){}
   if(!db.products) db.products=[]; if(!db.customers) db.customers=[]; if(!db.sales) db.sales=[];
+  if(!db.tiers) db.tiers=JSON.parse(JSON.stringify(DEFAULT_TIERS));
+  ["high","medium","low"].forEach(k=>{ if(!db.tiers[k]) db.tiers[k]={...DEFAULT_TIERS[k]}; });
+  if(!db.slack) db.slack={url:"",key:"",enabled:false,lastSeen:0};
+  db.customers.forEach(c=>{ if(!c.tier) c.tier="medium"; });
   if(db.products.length===0 && db.customers.length===0 && db.sales.length===0) seedSample();
 }
 function save(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
@@ -646,17 +745,38 @@ function seedSample(){
     p("Broccoli Crowns","Brassica","case",25,12,15,24),
   ];
   db.customers = [
-    c("Sysco Foods","Maria Lopez","555-0142","orders@sysco-example.com"),
-    c("Green Leaf Restaurant","Tony Hale","555-0177","tony@greenleaf-example.com"),
-    c("Fresh Market Co.","","555-0190",""),
+    c("Sysco Foods","Maria Lopez","555-0142","orders@sysco-example.com","high"),
+    c("Green Leaf Restaurant","Tony Hale","555-0177","tony@greenleaf-example.com","medium"),
+    c("Fresh Market Co.","","555-0190","","low"),
   ];
   save();
 }
 function p(name,cat,unit,qty,low,cost,price){
   return {id:uid(),name,category:cat,unit,qty:+qty,low:+low,cost:+cost,price:+price};
 }
-function c(name,contact,phone,email){
-  return {id:uid(),name,contact,phone,email,notes:""};
+function c(name,contact,phone,email,tier){
+  return {id:uid(),name,contact,phone,email,notes:"",tier:tier||"medium",customMarkup:0};
+}
+
+/* ---------- pricing-tier helpers ---------- */
+function tierMarkup(key){ const t=db.tiers[key]; return t?(+t.markup||0):0; }
+function customerMarkup(c){
+  if(!c) return tierMarkup("medium");
+  if(c.tier==="custom") return +c.customMarkup||0;
+  return tierMarkup(c.tier||"medium");
+}
+function customerTierLabel(c){
+  if(!c) return "—";
+  if(c.tier==="custom") return "Custom · "+(+c.customMarkup||0)+"% markup";
+  const t=db.tiers[c.tier||"medium"]; return t?`${t.name} · ${t.markup}% markup`:"—";
+}
+/* sell price = cost + markup%, rounded to the cent */
+function priceFromCost(cost,markupPct){ return Math.round((+cost||0)*(1+(+markupPct||0)/100)*100)/100; }
+/* what a given customer pays for a product (falls back to stored price if no cost set) */
+function productPriceForCustomer(prod,c){
+  const cost=+prod.cost||0;
+  if(cost>0) return priceFromCost(cost,customerMarkup(c));
+  return +prod.price||0;
 }
 
 /* ---------- helpers ---------- */
@@ -827,12 +947,14 @@ function renderInventory(){
   if(items.length===0){ wrap.innerHTML=emptyState("🥕","No products","Add a product or import your spreadsheet."); updateBadges(); return; }
   wrap.innerHTML=`<table><thead><tr>
     <th>Product</th><th>Category</th><th class="num">On hand</th><th>Unit</th>
-    <th class="num">Cost</th><th class="num">Sell</th><th>Status</th><th></th></tr></thead><tbody>
-    ${items.map(p=>{ const st=stockStatus(p); return `<tr class="clickable" onclick="openProductModal('${p.id}')">
+    <th class="num">Cost</th><th class="num">Sell (med)</th><th>Status</th><th></th></tr></thead><tbody>
+    ${items.map(p=>{ const st=stockStatus(p);
+      const sell = p.cost>0 ? money(priceFromCost(p.cost,db.tiers.medium.markup)) : (p.price?money(p.price):"—");
+      return `<tr class="clickable" onclick="openProductModal('${p.id}')">
       <td><strong>${esc(p.name)}</strong></td>
       <td><span class="tag-cat">${esc(p.category||"—")}</span></td>
       <td class="num">${num(p.qty)}</td><td>${esc(p.unit||"")}</td>
-      <td class="num">${p.cost?money(p.cost):"—"}</td><td class="num">${p.price?money(p.price):"—"}</td>
+      <td class="num">${p.cost?money(p.cost):"—"}</td><td class="num">${sell}</td>
       <td><span class="pill ${st.cls}">${st.txt}</span></td>
       <td class="right"><button class="btn ghost small">Edit</button></td></tr>`; }).join("")}
     </tbody></table>`;
@@ -1006,36 +1128,52 @@ function exportInventoryCSV(){
 /* ============================================================
    PRICING  (costs & sell prices; imports price-list spreadsheets)
    ============================================================ */
+function saveTierMarkups(){
+  const g=id=>{ const v=parseFloat(document.getElementById(id).value); return isNaN(v)?0:v; };
+  db.tiers.high.markup=g("tierHigh");
+  db.tiers.medium.markup=g("tierMedium");
+  db.tiers.low.markup=g("tierLow");
+  save();
+  renderPricingTable();      // refresh prices without losing focus on the % input
+  renderCustomers();
+}
 function renderPricing(){
+  document.getElementById("tierHigh").value=db.tiers.high.markup;
+  document.getElementById("tierMedium").value=db.tiers.medium.markup;
+  document.getElementById("tierLow").value=db.tiers.low.markup;
+  renderPricingTable();
+}
+function renderPricingTable(){
   const q=(document.getElementById("priceSearch").value||"").toLowerCase();
   let items=db.products.filter(p=>p.name.toLowerCase().includes(q)||(p.category||"").toLowerCase().includes(q));
   items.sort((a,b)=>a.name.localeCompare(b.name));
   const wrap=document.getElementById("priceTableWrap");
   if(items.length===0){ wrap.innerHTML=emptyState("💲","No products yet","Import a price list, or add products in Inventory first."); return; }
+  const hm=db.tiers.high.markup, mm=db.tiers.medium.markup, lm=db.tiers.low.markup;
   wrap.innerHTML=`<table><thead><tr>
-    <th>Product</th><th>Category</th><th>Unit</th>
-    <th class="num">Your cost</th><th class="num">Sell price</th><th class="num">Margin</th><th class="num">Margin %</th><th></th></tr></thead><tbody>
+    <th>Product</th><th>Category</th><th class="num">Your cost</th>
+    <th class="num">High (${num(hm)}%)</th><th class="num">Medium (${num(mm)}%)</th><th class="num">Low (${num(lm)}%)</th><th></th></tr></thead><tbody>
     ${items.map(p=>{
-      const margin=(p.price||0)-(p.cost||0);
-      const pct = p.price>0 ? (margin/p.price*100) : null;
-      const mcls = margin<0?'style="color:var(--red);font-weight:700"':(margin>0?'style="color:var(--green-dark);font-weight:700"':'');
+      const cell=mk=> p.cost>0 ? money(priceFromCost(p.cost,mk)) : '<span class="muted">—</span>';
       return `<tr class="clickable" onclick="openProductModal('${p.id}')">
         <td><strong>${esc(p.name)}</strong></td>
         <td><span class="tag-cat">${esc(p.category||"—")}</span></td>
-        <td>${esc(p.unit||"")}</td>
-        <td class="num">${p.cost?money(p.cost):"—"}</td>
-        <td class="num">${p.price?money(p.price):"—"}</td>
-        <td class="num" ${mcls}>${(p.price||p.cost)?money(margin):"—"}</td>
-        <td class="num">${pct===null?"—":pct.toFixed(0)+"%"}</td>
+        <td class="num">${p.cost?money(p.cost):'<span class="muted">set cost</span>'}</td>
+        <td class="num">${cell(hm)}</td>
+        <td class="num">${cell(mm)}</td>
+        <td class="num">${cell(lm)}</td>
         <td class="right"><button class="btn ghost small">Edit</button></td></tr>`; }).join("")}
     </tbody></table>`;
 }
 function exportPricingCSV(){
-  const head=["name","category","unit","cost","price"];
+  const head=["name","category","unit","cost","high_price","medium_price","low_price"];
   const lines=[head.join(",")];
   db.products.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(p=>{
-    lines.push([p.name,p.category,p.unit,p.cost,p.price]
-      .map(v=>{ const s=String(v??""); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }).join(","));
+    const row=[p.name,p.category,p.unit,p.cost,
+      p.cost>0?priceFromCost(p.cost,db.tiers.high.markup):"",
+      p.cost>0?priceFromCost(p.cost,db.tiers.medium.markup):"",
+      p.cost>0?priceFromCost(p.cost,db.tiers.low.markup):""];
+    lines.push(row.map(v=>{ const s=String(v??""); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }).join(","));
   });
   downloadFile("farmlind_price_list.csv",lines.join("\n"),"text/csv");
   toast("Price list exported");
@@ -1160,13 +1298,23 @@ function renderCustomers(){
   const wrap=document.getElementById("custTableWrap");
   if(items.length===0){ wrap.innerHTML=emptyState("🏢","No customers","Add the companies you sell to."); return; }
   wrap.innerHTML=`<table><thead><tr>
-    <th>Company</th><th>Contact</th><th>Phone</th><th>Email</th><th class="num">Orders</th><th></th></tr></thead><tbody>
-    ${items.map(c=>{ const cnt=db.sales.filter(s=>s.customerId===c.id).length; return `<tr class="clickable" onclick="openCustomerModal('${c.id}')">
-      <td><strong>${esc(c.name)}</strong></td><td>${esc(c.contact||"—")}</td>
-      <td>${esc(c.phone||"—")}</td><td>${esc(c.email||"—")}</td>
+    <th>Company</th><th>Pricing tier</th><th>Contact</th><th>Phone</th><th class="num">Orders</th><th></th></tr></thead><tbody>
+    ${items.map(c=>{ const cnt=db.sales.filter(s=>s.customerId===c.id).length;
+      const tcls = c.tier==="high"?"pill ok":c.tier==="low"?"pill gray":c.tier==="custom"?"pill blue":"pill low";
+      return `<tr class="clickable" onclick="openCustomerModal('${c.id}')">
+      <td><strong>${esc(c.name)}</strong></td>
+      <td><span class="${tcls}">${esc(customerTierLabel(c))}</span></td>
+      <td>${esc(c.contact||"—")}</td>
+      <td>${esc(c.phone||"—")}</td>
       <td class="num">${cnt}</td>
       <td class="right"><button class="btn ghost small">Edit</button></td></tr>`; }).join("")}
     </tbody></table>`;
+}
+function custTierChange(){
+  const tier=document.getElementById("custTier").value;
+  const mk=document.getElementById("custMarkup");
+  if(tier==="custom"){ mk.readOnly=false; mk.style.background="#fff"; }
+  else{ mk.value=tierMarkup(tier); mk.readOnly=true; mk.style.background="#f3f6f3"; }
 }
 function openCustomerModal(id){
   const del=document.getElementById("custDeleteBtn");
@@ -1179,12 +1327,16 @@ function openCustomerModal(id){
     document.getElementById("custPhone").value=c.phone||"";
     document.getElementById("custEmail").value=c.email||"";
     document.getElementById("custNotes").value=c.notes||"";
+    document.getElementById("custTier").value=c.tier||"medium";
+    document.getElementById("custMarkup").value=customerMarkup(c);
     del.style.display="inline-flex";
   }else{
     document.getElementById("customerModalTitle").textContent="Add Customer";
     ["custId","custName","custContact","custPhone","custEmail","custNotes"].forEach(i=>document.getElementById(i).value="");
+    document.getElementById("custTier").value="medium";
     del.style.display="none";
   }
+  custTierChange();
   document.getElementById("customerModal").classList.add("open");
   setTimeout(()=>document.getElementById("custName").focus(),50);
 }
@@ -1192,11 +1344,14 @@ function saveCustomer(){
   const name=document.getElementById("custName").value.trim();
   if(!name){ toast("Please enter a company name","warn"); return; }
   const id=document.getElementById("custId").value;
+  const tier=document.getElementById("custTier").value;
   const data={ name,
     contact:document.getElementById("custContact").value.trim(),
     phone:document.getElementById("custPhone").value.trim(),
     email:document.getElementById("custEmail").value.trim(),
-    notes:document.getElementById("custNotes").value.trim() };
+    notes:document.getElementById("custNotes").value.trim(),
+    tier,
+    customMarkup: tier==="custom" ? (+document.getElementById("custMarkup").value||0) : 0 };
   if(id){ Object.assign(customerById(id),data); toast("Customer updated"); }
   else{ db.customers.push({id:uid(),...data}); toast("Customer added"); }
   save(); closeModal("customerModal"); renderCustomers(); renderSale();
@@ -1207,6 +1362,53 @@ function deleteCustomer(){
   if(!confirm(`Delete "${c.name}"?`)) return;
   db.customers=db.customers.filter(x=>x.id!==id);
   save(); closeModal("customerModal"); renderCustomers(); renderSale(); toast("Customer deleted");
+}
+
+/* ---------- customer import (with pricing tier / margin) ---------- */
+function importCustomerCSV(ev){
+  const files=Array.from(ev.target.files||[]); if(!files.length) return;
+  let pending=files.length, rows=[], hadError=false;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{ try{ rows.push(...customerRowsFromCSV(e.target.result)); }catch(err){ hadError=true; console.error(err); }
+      if(--pending===0) applyCustomerImport(rows,hadError); };
+    reader.onerror=()=>{ hadError=true; if(--pending===0) applyCustomerImport(rows,hadError); };
+    reader.readAsText(file);
+  });
+  ev.target.value="";
+}
+function customerRowsFromCSV(text){
+  const rows=parseCSV(text); if(rows.length<2) return [];
+  const h=rows[0].map(x=>x.trim().toLowerCase());
+  const find=(...names)=>{ for(const n of names){ const i=h.indexOf(n); if(i>=0)return i; }
+    for(const n of names){ const i=h.findIndex(x=>x.includes(n)); if(i>=0)return i; } return -1; };
+  const ci={ name:find("company","name","customer","client"), contact:find("contact","person","rep"),
+    phone:find("phone","tel","number"), email:find("email","e-mail"),
+    tier:find("tier","buyer","level","type"), markup:find("markup","margin","percent","%"), notes:find("notes","note") };
+  if(ci.name<0) throw new Error("no name column");
+  const out=[];
+  for(let r=1;r<rows.length;r++){
+    const cells=rows[r]; const name=(cells[ci.name]||"").trim(); if(!name) continue;
+    const s=i=>i<0?"":(cells[i]||"").trim();
+    let tier="medium", custom=0;
+    const tierTxt=s(ci.tier).toLowerCase();
+    if(tierTxt.includes("high")) tier="high";
+    else if(tierTxt.includes("low")) tier="low";
+    else if(tierTxt.includes("med")) tier="medium";
+    if(ci.markup>=0){ const mv=parseFloat(s(ci.markup).replace(/[%,]/g,"")); if(!isNaN(mv)){ tier="custom"; custom=mv; } }
+    out.push({name,contact:s(ci.contact),phone:s(ci.phone),email:s(ci.email),notes:s(ci.notes),tier,customMarkup:custom});
+  }
+  return out;
+}
+function applyCustomerImport(rows,hadError){
+  if(rows.length===0){ toast(hadError?"Couldn't read those files":"No customers found","bad"); return; }
+  let added=0,updated=0;
+  rows.forEach(nc=>{
+    const ex=db.customers.find(c=>c.name.toLowerCase()===nc.name.toLowerCase());
+    if(ex){ Object.assign(ex,nc); updated++; } else { db.customers.push({id:uid(),...nc}); added++; }
+  });
+  save(); renderCustomers(); renderSale();
+  toast(`Customers imported ✓ ${added} added, ${updated} updated`);
 }
 
 /* ============================================================
@@ -1225,6 +1427,22 @@ function renderSale(){
   if(!document.getElementById("saleDate").value){
     document.getElementById("saleDate").value=new Date().toISOString().slice(0,10);
   }
+  updateSaleTierLabel();
+}
+function currentSaleCustomer(){ return customerById(document.getElementById("saleCustomer").value); }
+function updateSaleTierLabel(){
+  const info=document.getElementById("saleTierInfo"); if(!info) return;
+  const c=currentSaleCustomer();
+  info.innerHTML = c ? `Prices auto-fill at <strong>${esc(customerTierLabel(c))}</strong> — you can still tweak any line.`
+                     : `Pick a customer and prices fill in at their tier.`;
+}
+/* customer changed → re-price every line that wasn't hand-edited */
+function saleCustomerChange(){
+  const c=currentSaleCustomer();
+  saleLines.forEach(ln=>{
+    if(!ln.priceEdited && ln.productId){ const p=productById(ln.productId); if(p) ln.price=productPriceForCustomer(p,c); }
+  });
+  renderLineItems(); recalcSale(); updateSaleTierLabel();
 }
 function addLineItem(skipRender){
   saleLines.push({productId:"",qty:1,price:0});
@@ -1257,7 +1475,7 @@ function renderLineItems(){
 function lineProductChange(i,pid){
   saleLines[i].productId=pid;
   const p=productById(pid);
-  if(p && !saleLines[i].priceEdited){ saleLines[i].price=p.price||0; }
+  if(p && !saleLines[i].priceEdited){ saleLines[i].price=productPriceForCustomer(p,currentSaleCustomer()); }
   renderLineItems(); recalcSale();
 }
 function lineQty(i,v){ saleLines[i].qty=+v||0; updateLineHint(i); recalcSale(); }
@@ -1320,7 +1538,7 @@ function resetSale(ask){
   document.getElementById("saleCustomer").value="";
   document.getElementById("saleNotes").value="";
   document.getElementById("saleDate").value=new Date().toISOString().slice(0,10);
-  addLineItem(true); renderLineItems(); recalcSale();
+  addLineItem(true); renderLineItems(); recalcSale(); updateSaleTierLabel();
 }
 function saveSale(){
   const customerId=document.getElementById("saleCustomer").value;
@@ -1347,6 +1565,151 @@ function saveSale(){
   go("orders");
   if(sh.length>0) toast(`Order saved — ${sh.length} item(s) to buy. Check the shopping list.`,"warn");
   else toast("Order saved ✓");
+}
+
+/* ============================================================
+   SLACK / TEXT ORDERS
+   Turns a message like:   David
+                           one heirloom tomato
+                           three roma tomatoes
+   into a real order, matching products and flagging shortages.
+   (This same parser is what the always-on Slack connector will use.)
+   ============================================================ */
+const NUM_WORDS={zero:0,a:1,an:1,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,
+ eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,
+ twenty:20,thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,couple:2,few:3};
+const NUM_MULT={dozen:12,hundred:100};
+const UNIT_WORDS=new Set(["case","cases","box","boxes","flat","flats","bag","bags","lb","lbs","pound","pounds",
+ "crown","crowns","bunch","bunches","head","heads","carton","cartons","piece","pieces","ct","count","of","x"]);
+function cleanWord(w){ return w.toLowerCase().replace(/[^a-z]/g,""); }
+function parseQtyLine(line){
+  line=line.trim();
+  let qty=1, rest=line;
+  const m=line.match(/^(\d+(?:\.\d+)?)\s*(?:x|\*)?\s+(.*)$/i);
+  if(m){ qty=parseFloat(m[1]); rest=m[2]; }
+  else{
+    const tokens=line.split(/\s+/); let i=0,cur=0,used=false;
+    while(i<tokens.length && i<3){
+      const w=cleanWord(tokens[i]);
+      if(NUM_WORDS[w]!==undefined){ cur+=NUM_WORDS[w]; used=true; i++; }
+      else if(NUM_MULT[w]!==undefined){ cur=(cur||1)*NUM_MULT[w]; used=true; i++; }
+      else break;
+    }
+    if(used){ qty=cur||1; rest=tokens.slice(i).join(" "); }
+  }
+  let nt=rest.split(/\s+/);
+  while(nt.length>1 && UNIT_WORDS.has(cleanWord(nt[0]))) nt.shift();
+  return {qty, name:nt.join(" ").trim()};
+}
+function parseSlackOrder(text){
+  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  if(lines.length<1) return null;
+  return {customerName:lines[0], items:lines.slice(1).map(parseQtyLine).filter(it=>it.name)};
+}
+/* best-effort product match by name */
+function matchProduct(name){
+  const n=name.toLowerCase().trim(); if(!n) return null;
+  let p=db.products.find(x=>x.name.toLowerCase()===n); if(p) return p;
+  p=db.products.find(x=>x.name.toLowerCase().includes(n)||n.includes(x.name.toLowerCase())); if(p) return p;
+  const nt=new Set(n.split(/\s+/));
+  let best=null,bestScore=0;
+  db.products.forEach(x=>{ const sc=x.name.toLowerCase().split(/\s+/).filter(t=>nt.has(t)).length; if(sc>bestScore){bestScore=sc;best=x;} });
+  return bestScore>0?best:null;
+}
+function openSlackModal(){
+  document.getElementById("slackText").value="";
+  document.getElementById("slackPreview").innerHTML="";
+  document.getElementById("slackModal").classList.add("open");
+  setTimeout(()=>document.getElementById("slackText").focus(),60);
+}
+function previewSlack(){
+  const text=document.getElementById("slackText").value;
+  const box=document.getElementById("slackPreview");
+  const parsed=parseSlackOrder(text);
+  if(!parsed || !parsed.customerName){ box.innerHTML=""; return; }
+  const cust=db.customers.find(c=>c.name.toLowerCase()===parsed.customerName.toLowerCase());
+  const rows=parsed.items.map(it=>{
+    const p=matchProduct(it.name);
+    const label = p ? `<strong>${esc(p.name)}</strong>` : `<strong>${esc(it.name)}</strong> <span class="pill blue">new product</span>`;
+    const have = p?Math.max(0,p.qty):0; const short=Math.max(0,it.qty-have);
+    const st = p ? (short>0?`<span style="color:var(--amber);font-weight:700">buy ${num(short)}</span>`:`<span class="pill ok">in stock</span>`) : `<span style="color:var(--amber);font-weight:700">buy ${num(it.qty)}</span>`;
+    return `<div class="shortage-line"><span>${num(it.qty)} × ${label}</span>${st}</div>`;
+  }).join("");
+  box.innerHTML=`<div class="shortage-box ${parsed.items.some(it=>{const p=matchProduct(it.name);return !p||it.qty>Math.max(0,p?p.qty:0);})?'has':'none'}">
+    <h4>👤 ${esc(parsed.customerName)} ${cust?`<span class="pill ${cust.tier==='high'?'ok':cust.tier==='low'?'gray':'low'}">${esc(customerTierLabel(cust))}</span>`:'<span class="pill blue">new customer</span>'}</h4>
+    ${rows||'<p class="muted" style="font-size:13px">Add item lines below the name…</p>'}</div>`;
+}
+/* shared core: turn a parsed {customerName, items:[{qty,name}]} into a real order.
+   Used by the paste box AND the live Slack poller. Returns a summary or null. */
+function createParsedOrder(parsed, source){
+  if(!parsed || !parsed.customerName || !parsed.items || parsed.items.length===0) return null;
+  let customer=db.customers.find(c=>c.name.toLowerCase()===parsed.customerName.toLowerCase());
+  let newCust=false;
+  if(!customer){ customer={id:uid(),name:parsed.customerName,contact:"",phone:"",email:"",notes:source||"From Slack",tier:"medium",customMarkup:0}; db.customers.push(customer); newCust=true; }
+  let newProds=0;
+  const items=parsed.items.map(it=>{
+    let p=matchProduct(it.name);
+    if(!p){ p={id:uid(),name:it.name,category:"",unit:"",qty:0,low:0,cost:0,price:0}; db.products.push(p); newProds++; }
+    return {productId:p.id,name:p.name,qty:it.qty,price:productPriceForCustomer(p,customer)};
+  });
+  db.sales.push({ id:uid(),created:Date.now(),customerId:customer.id,
+    date:new Date().toISOString().slice(0,10), notes:source||"From Slack message", status:"open", items });
+  return {customer:customer.name, newCust, newProds, count:items.length};
+}
+function createSlackOrder(){
+  const parsed=parseSlackOrder(document.getElementById("slackText").value);
+  if(!parsed || !parsed.customerName){ toast("Add a customer name on the first line","warn"); return; }
+  if(!parsed.items || parsed.items.length===0){ toast("Add at least one item line","warn"); return; }
+  const r=createParsedOrder(parsed,"From Slack message");
+  save(); closeModal("slackModal"); refreshAll(); go("orders");
+  let extra=[]; if(r.newCust) extra.push("new customer added"); if(r.newProds) extra.push(r.newProds+" new product"+(r.newProds>1?"s":"")+" added");
+  toast("Order created ✓"+(extra.length?" — "+extra.join(", "):""));
+}
+
+/* ---------- live Slack connection (polls the connector for new messages) ---------- */
+function openSlackSettings(){
+  const s=db.slack||{};
+  document.getElementById("slackUrl").value=s.url||"";
+  document.getElementById("slackKey").value=s.key||"";
+  document.getElementById("slackAuto").checked=!!s.enabled;
+  document.getElementById("slackSettingsModal").classList.add("open");
+}
+function saveSlackSettings(){
+  db.slack={ url:document.getElementById("slackUrl").value.trim().replace(/\/$/,""),
+             key:document.getElementById("slackKey").value.trim(),
+             enabled:document.getElementById("slackAuto").checked,
+             lastSeen:(db.slack&&db.slack.lastSeen)||0 };
+  save(); closeModal("slackSettingsModal");
+  toast(db.slack.enabled?"Slack connected ✓ checking for orders…":"Slack settings saved");
+  if(db.slack.enabled) pollSlack(true);
+}
+let slackTimer=null;
+function startSlackPolling(){
+  if(slackTimer) clearInterval(slackTimer);
+  if(db.slack && db.slack.enabled && db.slack.url){
+    slackTimer=setInterval(()=>pollSlack(false), 30000);  // every 30s
+    pollSlack(false);
+  }
+}
+async function pollSlack(announce){
+  const s=db.slack; if(!s || !s.enabled || !s.url) return;
+  try{
+    const res=await fetch(`${s.url}/pending?key=${encodeURIComponent(s.key||"")}`,{cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const list=(data&&data.orders)||[];
+    if(list.length===0){ if(announce) toast("Connected ✓ no new Slack orders"); return; }
+    let made=0; const ids=[];
+    list.forEach(o=>{ const r=createParsedOrder({customerName:o.customerName,items:o.items},"From Slack (auto)"); if(r){ made++; ids.push(o.id); } });
+    if(made>0){
+      save(); refreshAll();
+      try{ await fetch(`${s.url}/ack`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:s.key||"",ids})}); }catch(e){}
+      toast(`📥 ${made} new Slack order${made>1?"s":""} added`);
+    }
+  }catch(err){
+    if(announce) toast("Couldn't reach the Slack connector — check the URL","bad");
+    console.warn("Slack poll failed:",err);
+  }
 }
 
 /* ============================================================
@@ -1438,7 +1801,7 @@ function editOrder(id){
   document.getElementById("saleCustomer").value=o.customerId;
   document.getElementById("saleDate").value=o.date||"";
   document.getElementById("saleNotes").value=o.notes||"";
-  renderLineItems(); recalcSale();
+  renderLineItems(); recalcSale(); updateSaleTierLabel();
 }
 function deleteOrder(id){
   if(!confirm("Delete this order permanently?")) return;
@@ -1496,8 +1859,10 @@ const HELP_KB=[
    a:"<strong>Welcome! Here's the quick start:</strong><br>1️⃣ <strong>Update inventory</strong> — import your produce spreadsheet (Inventory tab or the Dashboard button).<br>2️⃣ Add the <strong>Customers</strong> you sell to.<br>3️⃣ Go to <strong>New Sale</strong>, pick a customer, add items. If you sell more than you have, I'll tell you exactly how much to buy.<br>Ask me about any of these for more detail!"},
   {k:["import inventory","update inventory","upload inventory","inventory spreadsheet","load inventory","import my inventory","csv inventory"],
    a:"<strong>To update your inventory from a spreadsheet:</strong><br>1. Save it as a <code>.csv</code> (Excel/Sheets: File → Download/Save As → CSV).<br>2. Click <strong>⬆ Update inventory</strong> on the Inventory tab (or the Dashboard).<br>3. Pick one or several files, then choose <strong>Replace everything</strong> (use your sheet as the full list) or <strong>Add &amp; update</strong> (keep what's there).<br>Columns it reads: name, quantity, unit, price, cost, category, low stock."},
-  {k:["price list","pricing","import price","update price","change price","cost","margin","sell price","prices"],
-   a:"<strong>Pricing tab:</strong> shows every product's cost, sell price, and margin. Click <strong>⬆ Import price list</strong> to load a price spreadsheet — choose <em>Update matches only</em> or <em>Update &amp; add new</em>. Prices you import here instantly update Inventory, new Sales, and Earnings, because it's all one connected list. You can also click any product to edit its price by hand."},
+  {k:["price list","pricing","import price","update price","change price","cost","margin","sell price","prices","markup"],
+   a:"<strong>Pricing tab:</strong> you set <strong>three markups above cost</strong> — High, Medium, and Low buyer — and the table shows all three prices for every product (cost × markup). Change a % and every price and customer on that tier updates. Each customer is tagged with a tier (or a custom %) on the Customers tab, and a New Sale auto-fills that customer's prices. Click <strong>⬆ Import price list</strong> to load product costs from a spreadsheet."},
+  {k:["tier","buyer","high buyer","low buyer","medium buyer","customer price","three prices","different price"],
+   a:"<strong>Customer pricing tiers:</strong> on the <strong>Pricing</strong> tab set the markup % for High, Medium, and Low buyers. Then on the <strong>Customers</strong> tab give each company a tier (or a custom %). When you make a sale, the prices fill in automatically at that customer's tier — and you can still adjust any line. You can also import customers with their tiers/margins from a spreadsheet."},
   {k:["new sale","make a sale","sell","create order","place order","sell produce","add sale"],
    a:"<strong>New Sale tab:</strong> pick the customer and delivery date, then add each product and quantity. As you type, each line shows if it's in stock or short, and the panel on the right lists <strong>exactly how much to buy before the sale</strong>. Press <strong>Save Order</strong> when done."},
   {k:["short","shortage","how much to buy","missing","don't have","not enough","buy before","run out","need to buy"],
@@ -1578,6 +1943,7 @@ checkAuth();
 load();
 renderDashboard();
 updateBadges();
+startSlackPolling();
 </script>
 </body>
 </html>
